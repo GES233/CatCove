@@ -8,14 +8,14 @@ from json import loads
 
 from sqlalchemy.future import select
 
-from ...db.curd import simple_select
-from ...model.schemas import APIResponseBody, MessageBody, ErrorBody
-from ...model.schemas.users import UserCreateInfo
-from ...model.tables.users import Users
-from ...service.security import token_required
+from db.curd import simple_select
+from model.schemas import APIResponseBody, MessageBody, ErrorBody
+from model.schemas.users import UserCreateInfo
+from model.tables.users import Users
+from service.security import token_required
 
-user_v_0_1 = Blueprint(__name__, "/user")
-sign_up_v_0_1 = Blueprint("signup")
+user_v_0_1 = Blueprint("api_v_0_1_user", "/user")
+sign_up_v_0_1 = Blueprint("signup", "/")
 
 
 class UserInfoView(HTTPMethodView):
@@ -81,4 +81,4 @@ class UserCreateView(HTTPMethodView):
             sql = select(Users).where()
 
 user_v_0_1.add_route(UserInfoView.as_view(), "/<id>", version=0.1)
-sign_up_v_0_1.add_route(UserCreateView.as_view(), version=0.1)
+sign_up_v_0_1.add_route(UserCreateView.as_view(), "/sign_up", version=0.1)

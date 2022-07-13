@@ -1,5 +1,5 @@
 from sqlalchemy.orm import declarative_base
-from ...db import engine_bind  # Absolutely import
+from db import engine_bind  # Absolutely import
 
 from sqlalchemy import Column, Integer, Boolean, String, Text, Date, DateTime, ForeignKey
 from sqlalchemy.orm import relationship

@@ -1,6 +1,6 @@
 from sqlalchemy.future import select
 
-from ..model.tables import Base
+from model.tables import Base
 
 
 async def simple_select(request, model: Base, pk: int):

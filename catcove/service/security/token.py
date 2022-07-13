@@ -4,7 +4,7 @@ from jose.exceptions import JWEError, JWTError
 from pydantic import ValidationError
 
 
-from ...model.schemas import AccessTokenPayloadModel
+from model.schemas import AccessTokenPayloadModel
 
 
 # from catcove.app import create_config_app

@@ -3,7 +3,7 @@ from functools import wraps
 from sanic import json
 from sanic.request import Request
 
-from ...model.schemas import (
+from model.schemas import (
     MessageBody,
     APIResponseBody
 )

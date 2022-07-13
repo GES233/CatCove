@@ -1,10 +1,11 @@
-from catcove import create_app
+from catcove import app_with_env_mode
+import os
 
 if __name__ == "__main__":
-    mode = "dev"
-    app = create_app(mode)
-    if mode == "dev":
+    app = app_with_env_mode()
+    if app.config.ENV == "dev":
         app.run(
+            port="6699",
             host="localhost",
             dev=True,
             debug=True,

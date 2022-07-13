@@ -8,7 +8,8 @@ sys.path.append(app_path)
 
 from catcove.app import create_config_app
 
-app = create_config_app()
+mode = "dev" if not os.environ.get("SANIC_ENV") else os.environ.get("SANIC_ENV")
+app = create_config_app(mode)
 
 engine_bind = create_async_engine(
     url=app.config.SQLALCHEMY_DATABASE_URL,

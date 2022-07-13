@@ -10,7 +10,7 @@ python = "3.10"
 sanic = "22.6.0"
 pydantic= "1.9.0"
 python-jose = "3.3.0"
-sqlalchemy = "1.14.39"
+sqlalchemy = "1.4.39"
 alembic = "1.8.0"
 
 [tool.poetry.dev-dependencies]

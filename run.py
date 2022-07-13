@@ -13,7 +13,7 @@ if __name__ == "__main__":
     else:
         app.run(
             host="0.0.0.0",
-            port="9666",
+            port="6969",
             workers=4,
             access_log=False
         )

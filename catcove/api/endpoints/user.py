@@ -6,7 +6,7 @@ from sanic.response import json
 
 from json import loads
 
-from sqlalchemy.future import select
+from sqlalchemy import select
 
 from db.curd import simple_select
 from model.schemas import APIResponseBody, MessageBody, ErrorBody
@@ -74,11 +74,11 @@ class UserCreateView(HTTPMethodView):
         ...
         session = request.ctx.session
         async with session.begin():
-            # `sql`
-            # SELECT id FROM users
-            # WHERE users.nickname = {username}
-            # ...
-            sql = select(Users).where()
+            # Fxxk sqlalchemy.
+            sql = select(Users).\
+                where(
+                    ...
+                )
 
 user_v_0_1.add_route(UserInfoView.as_view(), "/<id>", version=0.1)
 sign_up_v_0_1.add_route(UserCreateView.as_view(), "/sign_up", version=0.1)

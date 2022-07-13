@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "catcove"
+version = "0.1.0"
+description = "Cat Cove--Home."
+authors = ["GES233 <2580585287@qq.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "3.10"
+sanic = "22.6.0"
+pydantic= "1.9.0"
+python-jose = "3.3.0"
+sqlalchemy = "1.14.39"
+alembic = "1.8.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

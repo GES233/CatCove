@@ -22,7 +22,7 @@ def token_required(wrapped):
         async def decorated_func(request: Request, *args, **kwargs):
 
             authenticated_info = check_token(
-                request.token,
+                request.cookies.get("AuthorizationToken"),
                 request.app.config.SECRET_KEY,
                 "u"
             )
@@ -49,9 +49,9 @@ def token_required(wrapped):
                 )
             elif authenticated_info == 3:
                 # re-excute the gettoken.
-                if request.headers.getone("X-Auth-RefreshToken", None):
+                if request.headers.get("AuthRefreshToken"):
                     refresh_token_info = check_token(
-                        request.headers.get("X-Auth-RefreshToken", None),
+                        request.headers.get("AuthRefreshToken"),
                         request.app.config.SECRET_KEY,
                         "r"
                     )
@@ -77,8 +77,12 @@ def token_required(wrapped):
                             # Using old data.
                             data = dict,
                             sign=True)
-                        request.headers.update(token = f"Authorization: Token {token}")
+                        # request.headers.update(token = f"Authorization: Token {token}")
+                        # response.cookie.get
+                        request.cookies["AuthorizationToken"] = token
                         response = await func(request, *args, **kwargs)
+                        # Use Set-cookie.
+                        response.cookies["AuthorizationToken"] = token
                         return response
             elif authenticated_info == 0:
                 response = await func(request, *args, **kwargs)

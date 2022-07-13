@@ -1,12 +1,12 @@
 from datetime import timedelta
 from sanic import Blueprint, Request
-from sanic.response import json
+from sanic.response import json, redirect
 from sanic_ext import openapi
 
 from catcove.service.security import (
     get_token,
     check_token,
-    token_required
+    get_payload
 )
 from catcove.model.schemas import (
     APIResponseBody,
@@ -23,10 +23,10 @@ auth_v_0_1 = Blueprint("api_v_0_1_auth")
 @auth_v_0_1.get("/getUserToken")
 async def get_user_token(request: Request):
     # `/api/v1/getUserToken`
-    if request.headers.getone("X-Auth-RefreshToken", None):
+    if request.cookies.get("AuthRefreshToken"):
         refresh_token_info = check_token(
-            request.headers.get("X-Auth-RefreshToken", None),
-            request.app.config.SECRET,
+            request.cookies.get("AuthRefreshToken"),
+            request.app.config.SECRET_KEY,
             "r"
         )
         if refresh_token_info != 0:
@@ -36,23 +36,26 @@ async def get_user_token(request: Request):
                     code=4500,
                     data="UNAUTHORIZED",
                     detail=MessageBody(
-                    body="您太久没登录了，需要重新登录"
-                    )
-                    ).dict(), 401
-                )
+                        body="您太久没登录了，需要重新登录"
+                    )).dict(), 401)
         else:
-            request.headers.update(token = f"Authorization: Token {get_token()}")
-            return json(return_6700("当当当当！新的令牌已备好！！").dict(), 201)
+            payload: dict = eval(get_payload(
+                request.cookies.get("AuthRefreshToken"),
+                request.app.config.SECRET_KEY,
+                False))
+            response = json(return_6700("当当当当！新的令牌已备好！！").dict(), 201)
+            response.cookies["AuthorizationToken"] = get_token(
+                {"uid", payload["uid"]},
+                request.app.config.SECRET_KEY)
+            return response
     else:
         return json(
                 APIResponseBody(
                     code=4500,
                     data="UNAUTHORIZED",
                     detail=MessageBody(
-                    body="您太久没登录了，需要重新登录"
-                    )
-                    ).dict(), 401
-                )
+                        body="您太久没登录了，需要重新登录"
+                    )).dict(), 401)
 
 
 @auth_v_0_1.get("/getRefreshToken")
@@ -63,9 +66,8 @@ async def get_refresh_token(request: Request):
             code=4500,
             data="UNAUTHORIZED",
             detail=MessageBody(
-                body="您太久没登录了，需要重新登录"
-            )
-        ).dict(), 401)
+                body="您需要重新登录"
+            )).dict(), 401)
     
     uid = request.conn_info.ctx.current_user.id
 
@@ -83,9 +85,11 @@ async def get_refresh_token(request: Request):
         expire_time=timedelta(days=45),
         sign=False  # Using encrypt.
     )
-    request.headers.add("X-Auth-RefreshToken", token)
+    response = redirect("/api/v0.1/getUserToken", content_type="application/json")
+    # response = json(return_6700("New Refresh Token generated.").dict(), 201)
+    response.cookies["AuthRefreshToken"] = token
     del request.conn_info.ctx.current_user
-    return json(return_6700("New User Token generated.").dict(), 201)
+    return response
 
 @auth_v_0_1.post("/login")
 @openapi.definition(
@@ -95,3 +99,5 @@ async def login(request: Request):
     ...
     if not hasattr(request.conn_info.ctx, "current_user"):
         request.conn_info.ctx.current_user = ...
+    ...
+    return redirect("/api/v0.1/getRefrashToken", content_type="application/json")

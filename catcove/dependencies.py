@@ -31,7 +31,8 @@ def load_config(app: Sanic, instance_path: str | None = None) -> None:
     else:  # production
         from setting.pro import ProductionConfig
         app.update_config(ProductionConfig)
-        click.secho("[WARN]: In production enviorment, please use instence.yaml at root path.", fg="yellow")
+        if not instance_path:
+            click.secho("[WARN]: In production enviorment, please use instence.yaml at root path.", fg="yellow")
 
     app.update_config({"APP_ROOT_PATH": app_path})
 
@@ -59,9 +60,10 @@ about_content = [
 "欢迎来到 `CatCove` ，这里是为了给某些拥有特定爱好的人（我们通常称其为「同好」\
 ，而「我们」特指网站管理员，恕下面不再添加方括号）交流相对私密的爱好而被设立的论\
 坛。",
-"由于用户的属性以及用户讨论内容的私密性，恕不会对外人开放，抱歉。如果有异议或是\
-对圈子有兴趣，请电邮私聊我。",
-"如果您是圈内人的话，可以和已经是 `CatCove` 成员的其他同好联系以索取邀请码。"
+"由于用户的属性以及用户讨论内容的私密性，恕不对外人开放，我们对此感到非常抱歉。如\
+果有异议或是对圈子有兴趣，请通过电邮与我联系。",
+"如果您是圈内人（标志之一是了解我所说的这些「黑话」）的话，可以和已经成为 `CatCo\
+ve` 成员的其他同好联系以获得邀请码。"
 ]
 
 def register_basic_responce(app: Sanic):

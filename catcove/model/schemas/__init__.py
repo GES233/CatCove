@@ -35,7 +35,10 @@ def return_6700(data: BaseModel | str):
 
 # ==== Body of token ==== #
 
-class AccessTokenPayloadModel(BaseModel):
-    """ Return the token. """
+class TokenPrePayloadModel(BaseModel):
+    """ The payload to generate the token. """
     uid: int
+
+class AccessTokenPayloadModel(TokenPrePayloadModel):
+    """ Mature token. """
     exp: Union[datetime, str, None]

@@ -21,7 +21,7 @@ def upgrade():
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False, comment="The ID of user in 'users'."),
     sa.Column('status', sa.String(length=16), nullable=True),
-    sa.Column('jion_time', sa.DateTime(), nullable=True),
+    sa.Column('join_time', sa.DateTime(), nullable=True),
     sa.Column('nickname', sa.String(length=128), nullable=True),
     sa.Column('username', sa.String(length=64), nullable=True, comment='username is ASCII only.'),
     sa.Column('email', sa.String(length=256), nullable=True),

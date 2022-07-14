@@ -34,14 +34,14 @@ class UserEditableInfo(BaseModel):
 class UserInfo(UserEditableInfo):
     id: int
     status: Status
-    jion_time: datetime
+    join_time: datetime
     username: str | None = None
 
 
 class UserDB(BaseModel):
     id: int
     status: Status
-    jion_time: datetime
+    join_time: datetime
     nickname: str
     email: str
     password: str

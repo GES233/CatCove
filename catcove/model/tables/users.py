@@ -16,7 +16,7 @@ class Users(Base):
     )
     # status: `normal`, `blocked`, `freeze`, `newbie`, `deleted`
     status = Column(String(16), default="newbie")
-    jion_time = Column(DateTime, default=datetime.utcnow())
+    join_time = Column(DateTime, default=datetime.utcnow())
     nickname = Column(
         String(128),
         unique=True,

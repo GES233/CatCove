@@ -1,22 +1,20 @@
-import pprint
-from flask import redirect
 from pydantic import ValidationError
 from sanic import Blueprint, Request
 from sanic.views import HTTPMethodView
-from sanic.response import json
 
-from json import loads
 
 from sqlalchemy.sql import select, or_
 from catcove.model.schemas import return_6700
+from catcove.model.schemas.users import UserInfo
 
 from db import engine_bind
-from db.curd import insert_data
+from db.curd import insert_data, simple_select
 from model.schemas import APIResponseBody, MessageBody, ErrorBody
 from model.schemas.users import UserCreateInfo
 from model.tables import Base
 from model.tables.users import Users
 from service.security import token_required
+from catcove.utils import schemasjson
 
 user_v_0_1 = Blueprint("api_v_0_1_user", "/user")
 sign_up_v_0_1 = Blueprint("api_v_0_1_signup")
@@ -27,7 +25,19 @@ class UserInfoView(HTTPMethodView):
     @token_required
     async def get(self, request, id):
         """ Return User infomation. """
-        ...
+        # session = request.ctx.session
+        user = await simple_select(request, Users, id)
+        info = return_6700(
+            data=(UserInfo(
+            id=user.id,
+            status=user.status,
+            nickname=user.nickname,
+            username=user.username,
+            gender=user.gender,
+            info=user.info,
+            join_time=user.join_time
+        )))
+        return schemasjson(info)
     
     @token_required
     async def post(self, request, id):
@@ -54,28 +64,28 @@ class UserCreateView(HTTPMethodView):
             print(data)
         except KeyError as lose_data:
             ...
-            return json(APIResponseBody(
+            return schemasjson(APIResponseBody(
                 code=0000,
                 data="Error when process login form.",
                 detail=MessageBody(
                     body=str(lose_data)
-                )).dict(), 500)
+                )), 500)
         except TypeError as internal_error:
             ...
-            return json(APIResponseBody(
+            return schemasjson(APIResponseBody(
                 code=0000,
                 data="Error when process login form.",
                 detail=MessageBody(
                     body=str(internal_error)
-                )).dict(), 500)
+                )), 500)
         except ValidationError as format_error:
             ...
-            return json(APIResponseBody(
+            return schemasjson(APIResponseBody(
                 code=0000,
                 data="Error when process login form.",
                 detail=ErrorBody(
                     body=format_error.errors()
-                )).dict(), 400)
+                )), 400)
         else:
             # Data's ok.
             # Query the invication code firstly.
@@ -95,12 +105,12 @@ class UserCreateView(HTTPMethodView):
                 # Returned a user list or None.
                 user_common_name = await session.execute(sql)
                 result = user_common_name.scalars().all()
-            if result: return json(APIResponseBody(
+            if result: return schemasjson(APIResponseBody(
                 code=0000,
                 data="Error when process login form.",
                 detail=ErrorBody(
                     body=f"Have the same name with {result}."
-                )).dict(), 400)  # Register failer -- common name.
+                )), 400)  # Register failer -- common name.
             else:
                 pre_register_user = Users(
                     nickname=data.nickname,
@@ -112,7 +122,7 @@ class UserCreateView(HTTPMethodView):
                 ...
                 # bug: sanic.exceptions.ServerError: 
                 # Invalid response type <Response 237 bytes [302 FOUND]> (need HTTPResponse)
-                return json(return_6700(data="您已成功注册！").dict(), 201)  # redirect("/api/v0.1/getRefreshToken", )
+                return schemasjson(return_6700(data="您已成功注册！"), 201)  # redirect("/api/v0.1/getRefreshToken", )
 
 
 user_v_0_1.add_route(UserInfoView.as_view(), "/<id>", version=0.1)

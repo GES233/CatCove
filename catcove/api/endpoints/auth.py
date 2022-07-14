@@ -1,8 +1,9 @@
 from datetime import timedelta
 from sanic import Blueprint, Request
-from sanic.response import json, redirect
+from sanic.response import redirect
 from sanic_ext import openapi
 
+from catcove.utils import schemasjson
 from catcove.service.security import (
     get_token,
     check_token,
@@ -31,43 +32,43 @@ async def get_user_token(request: Request):
         )
         if refresh_token_info != 0:
             # if refresh token expired or invalid:
-            return json(
+            return schemasjson(
                 APIResponseBody(
                     code=4500,
                     data="UNAUTHORIZED",
                     detail=MessageBody(
                         body="您太久没登录了，需要重新登录"
-                    )).dict(), 401)
+                    )), 401)
         else:
             payload: dict = eval(get_payload(
                 request.cookies.get("AuthRefreshToken"),
                 request.app.config.SECRET_KEY,
                 False))
-            response = json(return_6700("当当当当！新的令牌已备好！！").dict(), 201)
+            response = schemasjson(return_6700("当当当当！新的令牌已备好！！"), 201)
             response.cookies["AuthorizationToken"] = get_token(
                 {"uid", payload["uid"]},
                 request.app.config.SECRET_KEY)
             return response
     else:
-        return json(
+        return schemasjson(
                 APIResponseBody(
                     code=4500,
                     data="UNAUTHORIZED",
                     detail=MessageBody(
                         body="您太久没登录了，需要重新登录"
-                    )).dict(), 401)
+                    )), 401)
 
 
 @auth_v_0_1.get("/getRefreshToken")
 async def get_refresh_token(request: Request):
     if not hasattr(request.conn_info.ctx, "current_user"):
         # need login.
-        return json(APIResponseBody(
+        return schemasjson(APIResponseBody(
             code=4500,
             data="UNAUTHORIZED",
             detail=MessageBody(
                 body="您需要重新登录"
-            )).dict(), 401)
+            )), 401)
     
     uid = request.conn_info.ctx.current_user.id
 

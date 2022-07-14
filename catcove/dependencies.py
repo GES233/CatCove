@@ -4,8 +4,8 @@ import os
 from contextvars import ContextVar
 
 from sanic import Sanic
-from sanic.response import json
 
+from catcove.utils import schemasjson
 from catcove.model.schemas import (
     MessageBody,
     return_6700
@@ -87,19 +87,19 @@ def register_basic_responce(app: Sanic):
     # Index responce: Hello world.
     @app.route("/")
     async def index(request):
-        return json(body=return_6700(MessageBody(body="Hello World!")).dict())
+        return schemasjson(body=return_6700(MessageBody(body="Hello World!")))
 
 
     @app.route("/about")
     async def about(request):
-        return json(return_6700(
+        return schemasjson(return_6700(
             AnouncementBody(
                     body=Anouncement(title="关于🐱Cave",
                     author="administrator",
                     content=about_content
                 )
             )
-        ).dict())
+        ))
 
 # ==== Middleware ==== #
 

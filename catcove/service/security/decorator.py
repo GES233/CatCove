@@ -1,8 +1,8 @@
 from functools import wraps
 
-from sanic import json
 from sanic.request import Request
 
+from catcove.utils import schemasjson
 from model.schemas import (
     MessageBody,
     APIResponseBody
@@ -28,24 +28,24 @@ def token_required(wrapped):
             )
 
             if authenticated_info == 2:
-                return json(
+                return schemasjson(
                     APIResponseBody(
                         code=4500,
                         data="UNAUTHORIZED",
                         detail=MessageBody(
                             body="疑验丁真，鉴定为假。"
                         )
-                    ).dict(), 401
+                    ), 401
                 )
             elif authenticated_info == 1:
-                return json(
+                return schemasjson(
                     APIResponseBody(
                         code=4500,
                         data="UNAUTHORIZED",
                         detail=MessageBody(
                             body="需要登录捏。"
                         )
-                    ).dict(), 401
+                    ), 401
                 )
             elif authenticated_info == 3:
                 # re-excute the gettoken.
@@ -57,14 +57,14 @@ def token_required(wrapped):
                     )
                     if refresh_token_info != 0:
                         # if refresh token expired or invalid:
-                        return json(
+                        return schemasjson(
                             APIResponseBody(
                                 code=4500,
                                 data="UNAUTHORIZED",
                                 detail=MessageBody(
                                     body="您太久没登录了，需要重新登录"
                                 )
-                            ).dict(), 401
+                            ), 401
                         )
                     else:
                         dict = eval(get_payload(

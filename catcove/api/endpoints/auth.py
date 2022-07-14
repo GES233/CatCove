@@ -97,8 +97,14 @@ async def get_refresh_token(request: Request):
     summary=" Login and get the token. "
     )
 async def login(request: Request):
+    if request.body == None:
+        return schemasjson(APIResponseBody(
+            code=4700,
+            data="Bad request",
+            detail=MessageBody(body="Login data required")
+        ))
     ...
     if not hasattr(request.conn_info.ctx, "current_user"):
         request.conn_info.ctx.current_user = ...
     ...
-    return redirect("/api/v0.1/getRefrashToken", content_type="application/json")
+    return redirect("/api/v0.1/auth/getRefrashToken", content_type="application/json")

@@ -1,6 +1,7 @@
 from pydantic import ValidationError
 from sanic import Blueprint, Request
 from sanic.views import HTTPMethodView
+from sanic.response import redirect
 
 
 from sqlalchemy.sql import select, or_
@@ -64,6 +65,13 @@ class UserCreateView(HTTPMethodView):
             # in Windows:
             # curl -Uri "Addr" -Method Post -Body '{...}'
             raw_data = request.json
+            if raw_data == None:
+                return schemasjson(APIResponseBody(
+                    code=4700,
+                    data="Bad request",
+                    detail=MessageBody(body="Login data required")
+                ))
+            
             data = UserCreateInfo(
                 nickname = raw_data["nickname"],
                 email = raw_data["email"],
@@ -130,7 +138,8 @@ class UserCreateView(HTTPMethodView):
                 ...
                 # bug: sanic.exceptions.ServerError: 
                 # Invalid response type <Response 237 bytes [302 FOUND]> (need HTTPResponse)
-                return schemasjson(return_6700(data="您已成功注册！"), 201)  # redirect("/api/v0.1/getRefreshToken", )
+                # return schemasjson(return_6700(data="您已成功注册！"), 201) 
+                return redirect("/api/v0.1/getRefreshToken", content_type="application/json")
 
 
 user_v_0_1.add_route(UserInfoView.as_view(), "/<id>", version=0.1)

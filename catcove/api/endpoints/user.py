@@ -25,9 +25,9 @@ class UserInfoView(HTTPMethodView):
     @token_required
     async def get(self, request, id):
         """ Return User infomation. """
-        # session = request.ctx.session
         user = await simple_select(request, Users, id)
-        info = return_6700(
+        if user:
+            info = return_6700(
             data=(UserInfo(
             id=user.id,
             status=user.status,
@@ -36,8 +36,16 @@ class UserInfoView(HTTPMethodView):
             gender=user.gender,
             info=user.info,
             join_time=user.join_time
-        )))
-        return schemasjson(info)
+            )))
+            return schemasjson(info)
+        else:
+            return schemasjson(
+                APIResponseBody(
+                    code=6000,
+                    data="Not Found",
+                    detail="查无此人"
+                ), 404
+            )
     
     @token_required
     async def post(self, request, id):

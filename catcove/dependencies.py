@@ -66,8 +66,7 @@ def load_config(app: Sanic, instance_path: str | None = None) -> None:
 def register_static(app: Sanic):
 
     # Static file at root path.
-    app.static("/", f"{app_path}/static")
-    app.url_for("static", name="static", filename="/favicon.ico")
+    app.static("/favicon.ico", f"{app_path}/static/favicon.ico")
 
 # ==== Responce ==== #
 

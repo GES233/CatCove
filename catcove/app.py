@@ -14,7 +14,7 @@ def create_app(mode: str | None):
     # Register application.
     mode = "dev" if mode == None else mode
     app.update_config({"ENV": mode})
-    load_config(app)
+    load_config(app, "instance.yaml")
 
     # Linsteners and Middleware.
     register_middleware(app)

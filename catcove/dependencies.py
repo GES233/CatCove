@@ -15,6 +15,21 @@ app_path = os.path.abspath(os.path.join(os.path.abspath(os.path.dirname(__file__
 
 # ==== Configure ==== #
 
+def padding_instance_file(instance_path: str):
+    from mako.template import Template
+
+    instance_template = Template(
+        filename=f"{app_path}/catcove/setting/instance.yaml.mako",
+        )
+    click.secho("Generate SECRET_KEY ...")
+    ssl_code = str(os.popen("openssl rand -base64 32").readline().strip('\n'))
+    click.secho(f"SECRET_KEY:{ssl_code}")
+    content = instance_template.render(openssl_key=ssl_code)
+    file = open(f"{app_path}/{instance_path}", "x")
+    file.write(content)
+
+
+
 def load_config(app: Sanic, instance_path: str | None = None) -> None:
     """ Usage:
         >>> app = Sanic(__name__)
@@ -38,8 +53,8 @@ def load_config(app: Sanic, instance_path: str | None = None) -> None:
 
     if instance_path:
         if not os.path.exists(f"{app_path}/{instance_path}"):
-            os.makedirs(f"{app_path}/{instance_path}")
-            ...
+            # os.makedirs(f"{app_path}/{instance_path}")
+            padding_instance_file(instance_path)
         
         with open(f"{app_path}/{instance_path}") as f:
             data = yaml.load(f, Loader=yaml.FullLoader)

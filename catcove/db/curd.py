@@ -8,7 +8,7 @@ async def simple_select(request, model: Base, pk: int):
     async with session.begin():
         sql = select(model).where(model.id==pk)
         result = await session.execute(sql)
-        data = result.scalars()
+        data = result.scalars().first()
         session.expunge(data) if data else None
     
     # after session commit.

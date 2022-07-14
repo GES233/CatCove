@@ -1,4 +1,5 @@
 from datetime import datetime
+from email.policy import default
 from bcrypt import gensalt, hashpw, checkpw
 
 from . import *
@@ -14,7 +15,7 @@ class Users(Base):
         comment="The ID of user in 'users'."
     )
     # status: `normal`, `blocked`, `freeze`, `newbie`, `deleted`
-    status = Column(String(16))
+    status = Column(String(16), default="newbie")
     jion_time = Column(DateTime, default=datetime.utcnow())
     nickname = Column(
         String(128),
@@ -33,11 +34,11 @@ class Users(Base):
     gender = Column(String(2), nullable=True)
     birth = Column(Date, nullable=True)
     info = Column(Text, nullable=True)
-    is_spectator = Column(Boolean, default=False)
+    is_spectator = Column(Boolean, default=0)
 
     def encrypt_passwd(self, password: str) -> None:
         salt = gensalt()
-        self.passwd = hashpw(password.encode("utf-8"), salt)
+        self.password = hashpw(password.encode("utf-8"), salt)
     
     def check_passwd(self, password: str) -> bool:
         return True if checkpw(password.encode("utf-8"), self.passwd) else False

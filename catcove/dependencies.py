@@ -114,12 +114,14 @@ def register_middleware(app: Sanic):
     @app.on_request
     async def inject_session(request):
         request.ctx.session = async_sessoin()
-        request.ctx.session_ctx_token = _base_model_session_ctx.set(request.ctx.session)
+        # request.ctx.session_ctx_token = _base_model_session_ctx.set(request.ctx.session)
     
     @app.on_response
     async def close_session(request, responce):
         if hasattr(request.ctx, "session_ctx_token"):
-            _base_model_session_ctx.reset(request.ctx.session_ctx_token)
+            # _base_model_session_ctx.reset(request.ctx.session_ctx_token)
+            # RuntimeError: <Token used var=<ContextVar name='session' at ...19565C10> at ...1AA9B840> 
+            # has already been used once
             await request.ctx.session.close()
     
     # ==== UserLogin === #

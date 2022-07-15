@@ -1,6 +1,7 @@
 from datetime import timedelta
 from sanic import Blueprint, HTTPResponse, Request
 from sanic_ext import openapi
+from sqlalchemy import or_, select
 
 from catcove.model.tables import Users
 from catcove.utils import schemasjson
@@ -30,6 +31,14 @@ auth_v_0_1 = Blueprint("api_v_0_1_auth")
     description="get Token to cookie."
 )
 async def get_token(request: Request):
+    """ Get Token: Get to token to access some sentitive and security data.
+        
+        ========
+        reliable: login authentication and arguments(optional)
+
+        flowchart:
+        ...
+    """
     response: HTTPResponse = schemasjson(return_6700("成功获得令牌"))
     
     # refresh.
@@ -72,22 +81,21 @@ async def get_token(request: Request):
     summary=" Login and get the token. "
 )
 async def login(request: Request):
-    if not request.body:
-        return schemasjson(APIResponseBody(
-            code=4700,
-            data="Bad request",
-            detail=MessageBody(body="Login data required")
-        ))
-    try:
-        form = request.json
-        form = UserLoginSchema(
-            nickname=form["nickname"],
-            password=form["password"]
-        )
-    except : ...
-    
+    model = body_to_model(request, UserLoginSchema)
+    if model == None:
+        return schemasjson(return_invalid("请输入内容！"))
+    nickname = model.nickname
+    password = model.password
     # Query from DB.
     session = request.ctx.session
+    async with session.begin():
+        sql = select(Users).where(
+            or_(
+                Users.nickname == nickname,
+                Users.email == nickname,
+                Users.username == nickname
+            )
+        )
     refresh_token = generate_refresh_token(
             data={
                 "uid": ...

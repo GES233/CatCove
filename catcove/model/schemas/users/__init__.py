@@ -56,7 +56,7 @@ class UserDB(BaseModel):
 
 
 class UserLoginSchema(BaseModel):
-    username: int | str
+    nickname: int | str
     password: str
     
 

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Any, List, Union
+from typing import Any, List, Union, Tuple
 from datetime import datetime
 
 # ==== Body of API ==== #
@@ -42,3 +42,11 @@ class TokenPrePayloadModel(BaseModel):
 class AccessTokenPayloadModel(TokenPrePayloadModel):
     """ Mature token. """
     exp: Union[datetime, str, None]
+
+
+# ==== Errors ==== #
+
+class SingleSchemasErrorModel(BaseModel):
+    loc: Tuple[int | str]
+    msg: str
+    type: str

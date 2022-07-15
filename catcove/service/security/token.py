@@ -47,6 +47,6 @@ def get_refreshtoken_payload(token: str, key: str) -> dict | None:
 
 
 def get_user(payload: dict | None) -> dict | None:
-    # if payload == None: return None
+    if payload == None: return None
     exp = payload.pop("exp")
     return None if exp - datetime.utcnow() < 0 else payload

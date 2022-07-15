@@ -1,13 +1,14 @@
 from pydantic import ValidationError
 from sanic import Blueprint, Request
 from sanic.views import HTTPMethodView
-from sanic.response import redirect
+from sanic.log import logger
+from sanic.exceptions import BadRequest
 
 
 from sqlalchemy.sql import select, or_
+
 from catcove.model.schemas import return_6700
 from catcove.model.schemas.users import UserInfo
-
 from db import engine_bind
 from db.curd import insert_data, simple_select
 from model.schemas import APIResponseBody, MessageBody, ErrorBody
@@ -29,24 +30,21 @@ class UserInfoView(HTTPMethodView):
         user = await simple_select(request, Users, id)
         if user:
             info = return_6700(
-            data=(UserInfo(
-            id=user.id,
-            status=user.status,
-            nickname=user.nickname,
-            username=user.username,
-            gender=user.gender,
-            info=user.info,
-            join_time=user.join_time
-            )))
+                data=(UserInfo(
+                    id=user.id,
+                    status=user.status,
+                    nickname=user.nickname,
+                    username=user.username,
+                    gender=user.gender,
+                    info=user.info,
+                    join_time=user.join_time)))
             return schemasjson(info)
         else:
             return schemasjson(
                 APIResponseBody(
                     code=6000,
                     data="Not Found",
-                    detail="查无此人"
-                ), 404
-            )
+                    detail="查无此人"), 404)
     
     @token_required
     async def post(self, request, id):
@@ -64,13 +62,15 @@ class UserCreateView(HTTPMethodView):
         try:
             # in Windows:
             # curl -Uri "Addr" -Method Post -Body '{...}'
-            raw_data = request.json
-            if raw_data == None:
+            if not request.json:
+                # Still return 400 if can not parse json.
                 return schemasjson(APIResponseBody(
                     code=4700,
                     data="Bad request",
                     detail=MessageBody(body="Login data required")
-                ))
+                ), 400)
+            
+            raw_data = request.json
             
             data = UserCreateInfo(
                 nickname = raw_data["nickname"],
@@ -78,34 +78,26 @@ class UserCreateView(HTTPMethodView):
                 password = raw_data["password"],
                 confirm_password = raw_data["confirm_password"])
             print(data)
-        except KeyError as lose_data:
-            ...
+        except BadRequest:
+            # Will replece it.
+            # Using custome Exception later.
             return schemasjson(APIResponseBody(
                 code=0000,
-                data="Error when process login form.",
+                data="Error when process register form.",
                 detail=MessageBody(
-                    body=str(lose_data)
+                    body="JSON解析错误"
                 )), 500)
-        except TypeError as internal_error:
-            ...
+        except:
+            logger.info("Some error occerd when registration.")
             return schemasjson(APIResponseBody(
                 code=0000,
-                data="Error when process login form.",
+                data="Error when process register form.",
                 detail=MessageBody(
-                    body=str(internal_error)
+                    body=""
                 )), 500)
-        except ValidationError as format_error:
-            ...
-            return schemasjson(APIResponseBody(
-                code=0000,
-                data="Error when process login form.",
-                detail=ErrorBody(
-                    body=format_error.errors()
-                )), 400)
         else:
             # Data's ok.
             # Query the invication code firstly.
-            ...
             session: engine_bind = request.ctx.session
             async with session.begin():
             # Fxxk sqlalchemy.
@@ -115,17 +107,18 @@ class UserCreateView(HTTPMethodView):
                         or_(
                             users.c["nickname"] == data.nickname,
                             users.c["email"] == data.nickname,
-                            # users.c["username"] == data.nickname
+                            users.c["username"] == data.nickname,
+                            users.c["email"] == data.email
                         )
                     )
-                # Returned a user list or None.
                 user_common_name = await session.execute(sql)
+                # Returned a user list or None.
                 result = user_common_name.scalars().all()
             if result: return schemasjson(APIResponseBody(
                 code=0000,
                 data="Error when process login form.",
                 detail=ErrorBody(
-                    body=f"Have the same name with {result}."
+                    body="你和别人重名了，改！"
                 )), 400)  # Register failer -- common name.
             else:
                 pre_register_user = Users(
@@ -134,12 +127,8 @@ class UserCreateView(HTTPMethodView):
                 )
                 pre_register_user.encrypt_passwd(password=data.password)
                 _ = await insert_data(request, data=pre_register_user)
-                # add request.conn_info.ctx.current_user.
                 ...
-                # bug: sanic.exceptions.ServerError: 
-                # Invalid response type <Response 237 bytes [302 FOUND]> (need HTTPResponse)
-                # return schemasjson(return_6700(data="您已成功注册！"), 201) 
-                return redirect("/api/v0.1/getRefreshToken", content_type="application/json")
+                return schemasjson(return_6700(data="您已成功注册！"), 201)
 
 
 user_v_0_1.add_route(UserInfoView.as_view(), "/<id>", version=0.1)

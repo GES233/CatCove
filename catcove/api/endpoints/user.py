@@ -26,7 +26,7 @@ class UserInfoView(HTTPMethodView):
 
     @token_required
     async def get(self, request, id):
-        """ Get User: Return User infomation.
+        """ Get User: Return User profile.
             
             ========
             reliable:
@@ -58,6 +58,15 @@ class UserInfoView(HTTPMethodView):
     
     @token_required
     async def post(self, request, id):
+        """ Modify: Change User's infomation.
+            
+            ========
+            reliable:
+            * Token, to get user's id and role.`
+            * id (as a argument)
+
+            flowchart: ...
+        """
         ...
     
     @token_required

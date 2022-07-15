@@ -34,7 +34,7 @@ class Posts(Base):
 class PostsUnderThread(Posts):
     __tablename__ = "posts"
 
-    # parent = Column(Integer, ForeignKey("threads.id"))
+    parent = Column(Integer, ForeignKey("threads.id"))
     loc = Column(
         Integer,
         comment="loc(location), i.e. index in thread."

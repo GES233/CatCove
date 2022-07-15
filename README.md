@@ -55,8 +55,7 @@ python run.py
 - [ ] 基本的用户注册功能（后端部分）
   - [x] 如果数据无误能够向数据库内填充数据
   - [x] 如果密码重复能够通过Responce报错
-  - [ ] 注册部分与鉴权相连接，自动跳转到令牌领取处
-    - [ ] Context 相关
+  - [x] ~~注册部分与鉴权相连接，自动跳转到令牌领取处~~ 登录后自动加载 Cookie
   - [ ] 邀请码相关机制
 - [ ] 内容
   - [ ] UserPost
@@ -65,7 +64,7 @@ python run.py
 - [ ] 前端的模板
  - [ ] Jinja2 + Bootstrap
 - [ ] 完整的鉴权功能
-  - [ ] cookie、custom header双重选择
+  - [ ] cookie、custom header双重选择（后者需要前端的JS脚本）
   - [ ] 基于 Redis 的令牌黑名单
 
 

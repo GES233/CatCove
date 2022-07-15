@@ -34,10 +34,12 @@ async def get_token(request: Request):
     """ Get Token: Get to token to access some sentitive and security data.
         
         ========
-        reliable: login authentication and arguments(optional)
+        reliable: login authentication(AuthRefreshToken).
+            *: I moved give AuthRefreshToken to /login. 
 
         flowchart:
-        ...
+        1. check AuthRefreshToken.
+        2. update AuthRefreshToken and AuthorizationToken if goted, else .
     """
     response: HTTPResponse = schemasjson(return_6700("成功获得令牌"))
     
@@ -55,7 +57,7 @@ async def get_token(request: Request):
         # Update refresh token.
         new_refresh_token = generate_refresh_token(
             data={
-                "uid": ...
+                "uid": payload.uid
             },
             key=request.app.config.SECRET_KEY,
             expire_time=timedelta(days=45))
@@ -89,6 +91,7 @@ async def login(request: Request):
     # Query from DB.
     session = request.ctx.session
     async with session.begin():
+        # Now, returned a `Users` instance instead of a primary key.
         sql = select(Users).where(
             or_(
                 Users.nickname == nickname,
@@ -96,9 +99,18 @@ async def login(request: Request):
                 Users.username == nickname
             )
         )
+        result = await session.execute(sql)
+        data: Users | None = result.scalars().first()
+        if not data:
+            return schemasjson(return_invalid("宁是申必壬？"))
+        session.expunge(data)
+    
+    if data.check_passwd(password) is False:
+        return schemasjson(return_invalid("密码错了"))
+    
     refresh_token = generate_refresh_token(
             data={
-                "uid": ...
+                "uid": data.id
             },
         key=request.app.config.SECRET_KEY,
         expire_time=timedelta(days=45))

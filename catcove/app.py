@@ -4,7 +4,8 @@ from dependencies import (
     register_basic_responce,
     register_routers,
     register_static,
-    register_middleware
+    register_middleware,
+    register_extensions
 )
 
 
@@ -14,7 +15,7 @@ def create_app(mode: str | None):
     # Register application.
     mode = "dev" if mode == None else mode
     app.update_config({"ENV": mode})
-    load_config(app, "instance.yaml")
+    load_config(app, "instance")
 
     # Linsteners and Middleware.
     register_middleware(app)
@@ -30,6 +31,9 @@ def create_app(mode: str | None):
 
     # Routers.
     register_routers(app)
+
+    # Extensions
+    register_extensions(app)
 
     return app
 

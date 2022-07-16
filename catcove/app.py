@@ -17,6 +17,9 @@ def create_app(mode: str | None):
     app.update_config({"ENV": mode})
     load_config(app, "instance")
 
+    # Extensions
+    register_extensions(app)
+
     # Linsteners and Middleware.
     register_middleware(app)
     
@@ -31,9 +34,6 @@ def create_app(mode: str | None):
 
     # Routers.
     register_routers(app)
-
-    # Extensions
-    register_extensions(app)
 
     return app
 

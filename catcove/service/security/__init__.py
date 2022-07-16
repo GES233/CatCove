@@ -2,6 +2,7 @@
 from sanic import Sanic
 from sanic_jwt import Initialize
 from functools import wraps
+from pathlib import Path
 
 from catcove.service.security.func import authenticate
 
@@ -12,21 +13,20 @@ def add_sanic_jwt(app: Sanic):
     if app.config["ENV"] == "dev" or\
             app.config["ENV"] == "development" or\
             app.config["ENV"] == "test":
-        from setting.dev import SanicJWTDevConfig
-
         Initialize(
-        app,
-        authenticate,
-        configuration_class=SanicJWTDevConfig
+            app,
+            authenticate,
+            public_key=Path(app.config.APP_INSTANCE_PATH,'ecpubkey.pem'),
+            private_key=Path(app.config.APP_INSTANCE_PATH,'eckey.pem')
         )
     else:  # production
-        from setting.pro import SanicJWTProConfig
-
         Initialize(
-        app,
-        authenticate,
-        configuration_class=SanicJWTProConfig
+            app,
+            authenticate,
+            public_key=Path(app.config.APP_INSTANCE_PATH,'ecpubkey.pem'),
+            private_key=Path(app.config.APP_INSTANCE_PATH,'eckey.pem')
         )
+
 
 def token_required(wrapped):
     """ Fake function, change this func after all logic parts are over. """

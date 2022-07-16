@@ -29,6 +29,7 @@
 * Pydantic, 接口的检查
 * pyyaml, 加载位于项目根目录的 `instance.yaml` 作为实例的配置
 * ~~python-jose~~ Sanic-JWT, 令牌的生成
+* pathlib, 用来代替 `os.path`
 
 ### 下载
 

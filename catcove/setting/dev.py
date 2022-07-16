@@ -30,13 +30,11 @@ class DevelopmentConfig:
     # Connect
     KEEP_ALIVE_TIMEOUT: int = 10
 
+    # Sanic_JWT
 
-class SanicJWTDevConfig(Configuration):
-    debug: bool = True
-    secret: str = "SRSGjUV5SNzML4DnU9ibDMYUGyQdo33SZqXi/92VLC8="
-    # algorithm: str = "ES256"
-    auth_mode: bool = False
-    url_prefix: str = "/api/v0.1/auth"
-    user_id: str = "id"
-    SANIC_JWT_PUBLIC_KEY = ""
-    SANIC_JWT_PRIVATE_KEY = ""
+    SANIC_JWT_DEBUG: bool = True
+    SANIC_JWT_SECRET: str = "SRSGjUV5SNzML4DnU9ibDMYUGyQdo33SZqXi/92VLC8="
+    SANIC_JWT_ALGORITHM: str = "ES256"
+    SANIC_JWT_AUTH_MODE: bool = False
+    SANIC_JWT_URL_PREFIX: str = "/api/v0.1/auth"
+    SANIC_JWT_USER_ID: str = "id"

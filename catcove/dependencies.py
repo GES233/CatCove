@@ -109,7 +109,7 @@ def register_middleware(app: Sanic):
 
     from catcove.db import async_sessoin
 
-    _base_model_session_ctx = ContextVar("session")
+    # _base_model_session_ctx = ContextVar("session")
     
     @app.on_request
     async def inject_session(request):
@@ -123,15 +123,6 @@ def register_middleware(app: Sanic):
             # RuntimeError: <Token used var=<ContextVar name='session' at ...19565C10> at ...1AA9B840> 
             # has already been used once
             await request.ctx.session.close()
-    
-    # ==== UserLogin === #
-
-    # Create after login or register.
-    _current_user_ctx = ContextVar("current_user")
-    
-    # === UserToken === #
-
-    ...
 
     # === CORS === #
 
@@ -144,6 +135,9 @@ def register_middleware(app: Sanic):
 # ==== Routers ==== #
 
 def register_routers(app: Sanic):
+
+    # === API === #
+
     from api import app_api as api_route
 
     app.blueprint(api_route)

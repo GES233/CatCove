@@ -1,4 +1,5 @@
 from functools import wraps
+from pathlib import Path
 
 def token_required(wrapped):
     """ Fake function, change this func after all logic parts are over. """

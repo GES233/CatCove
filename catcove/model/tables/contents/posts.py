@@ -10,7 +10,8 @@ class Posts(Base):
     id = Column(
         Integer,
         primary_key=True,
-        index=True
+        index=True,
+        unique=True
     )
     @declared_attr
     def owner_id(self):
@@ -43,4 +44,4 @@ class PostsUnderThread():  # Remove heritage.
 
 class UserPosts(Posts):
     __tablename__ = "userposts"
-    user = relationship("Users", back_populates="post")
+    owner = relationship("Users", back_populates="userposts")

@@ -43,7 +43,7 @@ class Users(Base):
         | Users |one --> zero/many| Content |
         +-------+                 +---------+
     """
-    userposts = relationship("UserPosts", back_populates="post_owner")
+    userposts = relationship("UserPosts", back_populates="owner")
     # posts = relationship("Posts")
     # comments = relationship("Comments")  # I don't add here.
 

@@ -1,8 +1,8 @@
 """Add UserPosts.
 
-Revision ID: d38656be4b0a
+Revision ID: fa42d0869353
 Revises: 335e500a5909
-Create Date: 2022-07-16 11:01:17.684550+08:00
+Create Date: 2022-07-16 12:07:36.882867+08:00
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'd38656be4b0a'
+revision = 'fa42d0869353'
 down_revision = '335e500a5909'
 branch_labels = None
 depends_on = None
@@ -27,7 +27,7 @@ def upgrade():
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_userposts_id'), 'userposts', ['id'], unique=False)
+    op.create_index(op.f('ix_userposts_id'), 'userposts', ['id'], unique=True)
     # ### end Alembic commands ###
 
 

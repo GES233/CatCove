@@ -52,7 +52,7 @@ class Users(Base):
         self.password = hashpw(password.encode("utf-8"), salt)
     
     def check_passwd(self, password: str) -> bool:
-        return True if checkpw(password.encode("utf-8"), self.passwd) else False
+        return True if checkpw(password.encode("utf-8"), self.password) else False
 
     def __repr__(self) -> str:
         return 'User %s (uid:%d)' %(self.nickname, self.id)

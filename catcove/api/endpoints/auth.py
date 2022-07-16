@@ -28,7 +28,7 @@ auth_v_0_1 = Blueprint("api_v_0_1_auth")
 @openapi.definition(
     description="get Token to cookie."
 )
-async def get_token(request: Request):
+async def get_token(request: Request, response: HTTPResponse | None = None):
     """ Get Token: Get to token to access some sentitive and security data.
         
         ========
@@ -39,24 +39,35 @@ async def get_token(request: Request):
         1. check AuthRefreshToken.
         2. update AuthRefreshToken and AuthorizationToken if goted, else .
     """
-    response: HTTPResponse = schemasjson(return_6700("成功获得令牌"))
+    if not response:
+        response: HTTPResponse = schemasjson(return_6700("成功获得令牌"))
     
     # refresh.
     if request.cookies.get("AuthRefreshToken") or response.cookies.get("AuthRefreshToken"):
         refresh_token = request.cookies.get("AuthRefreshToken")
         if not refresh_token:
             refresh_token = response.cookies.get("AuthRefreshToken")
-        if not refresh_token: return schemasjson(return_invalid())
+        if not refresh_token:
+            return schemasjson(return_invalid("需要登录凭证"))
+        
+        # If token exists => to str
+        refresh_token = refresh_token.__str__().split(";")[0].strip("AuthRefreshToken=")
+        # refresh_token = refresh_token.cookie_headers.get("AuthRefreshToken")
+
+        
         payload = get_user(get_refreshtoken_payload(
             refresh_token,
             request.app.config.SECRET_KEY
         ))
-        if not payload: return schemasjson(return_invalid())
+        if not get_refreshtoken_payload(
+            refresh_token,
+            request.app.config.SECRET_KEY
+        ): return schemasjson(return_invalid(offset=+5))
+        if not payload: return schemasjson(return_invalid(offset=+2))
         # Update refresh token.
+        print(TokenPrePayloadModel(uid=payload.id))
         new_refresh_token = generate_refresh_token(
-            data={
-                "uid": payload.uid
-            },
+            data=TokenPrePayloadModel(uid=payload.id),
             key=request.app.config.SECRET_KEY,
             expire_time=timedelta(days=45))
         response.cookies["AuthRefreshToken"] = new_refresh_token
@@ -84,6 +95,7 @@ async def login(request: Request):
     model = body_to_model(request, UserLoginSchema)
     if model == None:
         return schemasjson(return_invalid("请输入内容！"))
+    elif isinstance(model, HTTPResponse): return model
     nickname = model.nickname
     password = model.password
     # Query from DB.
@@ -107,13 +119,13 @@ async def login(request: Request):
         return schemasjson(return_invalid("密码错了"))
     
     refresh_token = generate_refresh_token(
-            data={
-                "uid": data.id
-            },
+            data=TokenPrePayloadModel(uid=data.id),
         key=request.app.config.SECRET_KEY,
         expire_time=timedelta(days=45))
+    
+    response: HTTPResponse = schemasjson(return_6700("成功获得令牌"))
     response.cookies["AuthRefreshToken"] = refresh_token
     response.cookies["AuthRefreshToken"]["httponly"] = True
     response.cookies["AuthRefreshToken"]["path"] = "/api/v0.1/"
-    response = await get_token(request)
+    response = await get_token(request, response)
     return response

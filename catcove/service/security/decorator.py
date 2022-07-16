@@ -16,13 +16,14 @@ from .token import (
 )
 
 
-def return_invalid(text: str | None = None):
+def return_invalid(text: str | None = None, offset: int | None = None):
+    code = 4500 + offset if offset else 4500
     return APIResponseBody(
-        code=4500,
+        code=code,
         data="UNAUTHORIZED",
         detail=MessageBody(body="疑验丁真，鉴定为假。")
     ) if not text else APIResponseBody(
-        code=4500,
+        code=code,
         data="UNAUTHORIZED",
         detail=MessageBody(body=text)
     )
@@ -34,6 +35,7 @@ def token_required(wrapped):
         @wraps(func)
         async def decorated_func(request: Request, *args, **kwargs):
             token_from_head = request.cookies.get("AuthorizationToken")
+            token_from_head = token_from_head.__str__().split(";")[0].strip("AuthorizationToken=")
             token = get_token_payload(token_from_head)  # not have token, or token invalid.
             if not token:
                 return schemasjson(return_invalid(), 401)

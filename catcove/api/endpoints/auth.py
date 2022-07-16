@@ -19,7 +19,7 @@ from catcove.model.schemas import (
     TokenPrePayloadModel,
 )
 from catcove.model.schemas.users import UserLoginSchema
-from catcove.api.utils import body_to_model
+from catcove.api.utils import body2model_via_json as body_to_model
 
 # ==== Routers ==== #
 

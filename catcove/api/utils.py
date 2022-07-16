@@ -7,7 +7,7 @@ from catcove.utils import schemasjson
 from ..model.schemas import SingleSchemasErrorModel, APIResponseBody, ErrorBody
 
 
-def body_to_model(request: Request, model: BaseModel) -> BaseModel | HTTPResponse | None | Any:
+def body2model_via_json(request: Request, model: BaseModel) -> BaseModel | HTTPResponse | None | Any:
     try:
         raw_data = request.body
         if not raw_data: return None
@@ -16,7 +16,7 @@ def body_to_model(request: Request, model: BaseModel) -> BaseModel | HTTPRespons
         result = model(**result)
     except TypeError or ValueError:
          return schemasjson(APIResponseBody(
-                code=6000,
+                code=6002,
                 data="Ooops",
                 detail=ErrorBody(
                     body="JSON解码过程中发生错误"
@@ -29,17 +29,20 @@ def body_to_model(request: Request, model: BaseModel) -> BaseModel | HTTPRespons
                 SingleSchemasErrorModel(**e)
             )
         return schemasjson(APIResponseBody(
-                code=6000,
+                code=6002,
                 data="Ooops",
                 detail=ErrorBody(
                     body=error_list
                 )
             ))
     except: return schemasjson(APIResponseBody(
-                code=6000,
+                code=6002,
                 data="Ooops",
                 detail=ErrorBody(
                     body="一些未知错误发生了"
                 )
             ))
     else: return result.json()
+
+
+def body2model_via_form(request: Request, model: BaseModel) -> BaseModel | HTTPResponse | None | Any: ...

@@ -16,7 +16,7 @@ from model.tables import Base
 from model.tables.users import Users
 from service.security import token_required
 from catcove.utils import schemasjson
-from catcove.api.utils import body_to_model
+from catcove.api.utils import body2model_via_json as body_to_model
 
 user_v_0_1 = Blueprint("api_v_0_1_user", "/user")
 sign_up_v_0_1 = Blueprint("api_v_0_1_signup")

@@ -17,7 +17,6 @@ def body2model_via_json(request: Request, model: BaseModel) -> BaseModel | HTTPR
         if not raw_data: return None
         json_content = loads(request.body)
         result = model(**json_content)
-        result = model(**result)
     except TypeError or ValueError:
          return schemasjson(APIResponseBody(
                 code=6002,
@@ -39,14 +38,15 @@ def body2model_via_json(request: Request, model: BaseModel) -> BaseModel | HTTPR
                     body=error_list
                 )
             ))
-    except: return schemasjson(APIResponseBody(
+    except:
+        return schemasjson(APIResponseBody(
                 code=6002,
                 data="Ooops",
                 detail=ErrorBody(
                     body="一些未知错误发生了"
                 )
             ))
-    else: return result  # .json()
+    else: return result
 
 
 def body2model_via_form(request: Request, model: BaseModel) -> BaseModel | HTTPResponse | None | Any:

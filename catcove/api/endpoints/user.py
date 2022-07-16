@@ -1,4 +1,4 @@
-from sanic import Blueprint, Request
+from sanic import Blueprint, HTTPResponse, Request
 from sanic.views import HTTPMethodView
 from sqlalchemy.sql import select, or_
 
@@ -50,7 +50,7 @@ class UserInfoView(HTTPMethodView):
         else:
             return schemasjson(
                 APIResponseBody(
-                    code=6000,
+                    code=6401,
                     data="Not Found",
                     detail="查无此人"), 404)
     
@@ -89,19 +89,18 @@ class UserCreateView(HTTPMethodView):
         """
         # 1.
         data = body_to_model(request, UserCreateInfo)
+        if isinstance(data, HTTPResponse):
+            return data
 
         # 2.
         session: engine_bind = request.ctx.session
         async with session.begin():
-        # Fxxk sqlalchemy.
-            users = Base.metadata.tables["users"]
-            sql = select(users.c["id"]).\
+            sql = select(Users).\
                 where(
                     or_(
-                        users.c["nickname"] == data.nickname,
-                        users.c["email"] == data.nickname,
-                        users.c["username"] == data.nickname,
-                        users.c["email"] == data.email
+                        Users.nickname == data.nickname,
+                        Users.username == data.nickname,
+                        Users.email == data.email
                     )
                 )
             user_common_name = await session.execute(sql)
@@ -110,10 +109,10 @@ class UserCreateView(HTTPMethodView):
         
         # 3.
         if result: return schemasjson(APIResponseBody(
-            code=0000,
-            data="Error when process login form.",
+            code=6250,
+            data="Something happened.",
             detail=ErrorBody(
-                body="你和别人重名了，改！"
+                body="你和别的用户重名了，改！"
             )), 400)  # Register failer -- common name.
         else:
             pre_register_user = Users(

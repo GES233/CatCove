@@ -28,6 +28,7 @@ class Gender(Enum):
 class UserEditableInfo(BaseModel):
     nickname: str
     gender: Gender | None = Gender.other
+    birth: date | None = None
     info: str | None = None
 
 

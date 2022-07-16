@@ -3,8 +3,7 @@ from sanic import Blueprint, HTTPResponse, Request
 from sanic_ext import openapi
 from sqlalchemy import or_, select
 
-from catcove.model.tables import Users
-from catcove.utils import schemasjson
+from catcove.api.utils import body2model_via_json as body_to_model
 from catcove.service.security import (
     get_token as generate_user_token,
     generate_refresh_token,
@@ -13,13 +12,12 @@ from catcove.service.security import (
 )
 from catcove.service.security.decorator import return_invalid
 from catcove.model.schemas import (
-    APIResponseBody,
-    MessageBody,
     return_6700,
     TokenPrePayloadModel,
+    UserLoginSchema
 )
-from catcove.model.schemas.users import UserLoginSchema
-from catcove.api.utils import body2model_via_json as body_to_model
+from catcove.model.tables import Users
+from catcove.utils import schemasjson
 
 # ==== Routers ==== #
 

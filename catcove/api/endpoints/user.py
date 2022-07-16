@@ -1,20 +1,18 @@
-from pydantic import ValidationError
 from sanic import Blueprint, Request
 from sanic.views import HTTPMethodView
-from sanic.log import logger
-from sanic.exceptions import BadRequest
-
 from sqlalchemy.sql import select, or_
 
-from catcove.model.schemas import return_6700
-from catcove.model.schemas.users import UserInfo
-from db import engine_bind
-from db.curd import insert_data, simple_select
-from model.schemas import APIResponseBody, MessageBody, ErrorBody
-from model.schemas.users import UserCreateInfo
-from model.tables import Base
-from model.tables.users import Users
-from service.security import token_required
+from catcove.db import engine_bind
+from catcove.db.curd import insert_data, simple_select
+from catcove.model.schemas import (
+    APIResponseBody,
+    ErrorBody,
+    return_6700,
+    UserInfo,
+    UserCreateInfo
+)
+from catcove.model.tables import Base, Users
+from catcove.service.security import token_required
 from catcove.utils import schemasjson
 from catcove.api.utils import body2model_via_json as body_to_model
 

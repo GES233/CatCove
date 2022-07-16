@@ -4,7 +4,11 @@ from json import loads
 from typing import Any
 
 from catcove.utils import schemasjson
-from ..model.schemas import SingleSchemasErrorModel, APIResponseBody, ErrorBody
+from catcove.model.schemas import (
+    SingleSchemasErrorModel,
+    APIResponseBody,
+    ErrorBody
+)
 
 
 def body2model_via_json(request: Request, model: BaseModel) -> BaseModel | HTTPResponse | None | Any:
@@ -42,7 +46,8 @@ def body2model_via_json(request: Request, model: BaseModel) -> BaseModel | HTTPR
                     body="一些未知错误发生了"
                 )
             ))
-    else: return result.json()
+    else: return result  # .json()
 
 
-def body2model_via_form(request: Request, model: BaseModel) -> BaseModel | HTTPResponse | None | Any: ...
+def body2model_via_form(request: Request, model: BaseModel) -> BaseModel | HTTPResponse | None | Any:
+    ...

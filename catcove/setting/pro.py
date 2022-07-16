@@ -1,3 +1,6 @@
+from sanic_jwt import Configuration
+from pathlib import Path
+
 
 class ProductionConfig:
     # mode
@@ -18,3 +21,10 @@ class ProductionConfig:
     SQLALCHEMY_DATABASE_URL: str = f"{DB_DIALECT}+{DB_DRIVER}://{DB_ADDR}/{DB_LOCATION}"
     SQLALCHEMY_DATABASE_ENCODING: str = "utf8"
     SQLALCHEMY_DATABASE_ECHO: bool = True
+
+class SanicJWTProConfig(Configuration):
+    algorithm: str = "ES256"
+    auth_mode: bool = False
+    user_id: str = "id"
+    def get_url():
+        ...

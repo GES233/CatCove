@@ -12,7 +12,6 @@ from catcove.model.schemas import (
     UserCreateInfo
 )
 from catcove.model.tables import Base, Users
-from catcove.service.security import token_required
 from catcove.utils import schemasjson
 from catcove.api.utils import body2model_via_json as body_to_model
 
@@ -22,7 +21,6 @@ sign_up_v_0_1 = Blueprint("api_v_0_1_signup")
 
 class UserInfoView(HTTPMethodView):
 
-    @token_required
     async def get(self, request, id):
         """ Get User: Return User profile.
             
@@ -54,7 +52,7 @@ class UserInfoView(HTTPMethodView):
                     data="Not Found",
                     detail="查无此人"), 404)
     
-    @token_required
+
     async def post(self, request, id):
         """ Modify: Change User's infomation.
             
@@ -67,7 +65,7 @@ class UserInfoView(HTTPMethodView):
         """
         ...
     
-    @token_required
+
     async def delete(self, request, id):
         # delete information, not user.
         ...

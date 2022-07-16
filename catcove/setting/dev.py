@@ -1,3 +1,5 @@
+from sanic_jwt import Configuration
+
 
 class DevelopmentConfig:
     # mode
@@ -27,3 +29,14 @@ class DevelopmentConfig:
 
     # Connect
     KEEP_ALIVE_TIMEOUT: int = 10
+
+
+class SanicJWTDevConfig(Configuration):
+    debug: bool = True
+    secret: str = "SRSGjUV5SNzML4DnU9ibDMYUGyQdo33SZqXi/92VLC8="
+    # algorithm: str = "ES256"
+    auth_mode: bool = False
+    url_prefix: str = "/api/v0.1/auth"
+    user_id: str = "id"
+    SANIC_JWT_PUBLIC_KEY = ""
+    SANIC_JWT_PRIVATE_KEY = ""

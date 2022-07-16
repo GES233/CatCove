@@ -22,9 +22,9 @@ class ProductionConfig:
     SQLALCHEMY_DATABASE_ENCODING: str = "utf8"
     SQLALCHEMY_DATABASE_ECHO: bool = True
 
-class SanicJWTProConfig(Configuration):
-    algorithm: str = "ES256"
-    auth_mode: bool = False
-    user_id: str = "id"
-    def get_url():
-        ...
+    SANIC_JWT_DEBUG: bool = False
+    SANIC_JWT_SECRET: str = SECRET_KEY
+    SANIC_JWT_ALGORITHM: str = "ES256"
+    SANIC_JWT_AUTH_MODE: bool = False
+    SANIC_JWT_URL_PREFIX: str = "/api/v0.1/auth"
+    SANIC_JWT_USER_ID: str = "id"

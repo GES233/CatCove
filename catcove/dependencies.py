@@ -2,16 +2,17 @@ import click
 import yaml
 import os
 from contextvars import ContextVar
+from pathlib import Path, PurePath
 
 from sanic import Sanic
 
-from catcove.utils import schemasjson
-from catcove.model.schemas import (
+from .api.utils import schemasjson
+from .model.schemas import (
     MessageBody,
     return_6700
 )
 
-app_path = os.path.abspath(os.path.join(os.path.abspath(os.path.dirname(__file__)), os.pardir))
+app_path = Path(__file__).cwd()
 
 # ==== Configure ==== #
 
@@ -25,7 +26,7 @@ def padding_instance_file(instance_path: str):
     ssl_code = str(os.popen("openssl rand -base64 32").readline().strip('\n'))
     click.secho(f"SECRET_KEY:{ssl_code}")
     content = instance_template.render(openssl_key=ssl_code)
-    file = open(f"{app_path}/{instance_path}/config.yaml", "x")
+    file = open(f"{instance_path}/config.yaml", "x")
     file.write(content)
 
 
@@ -47,34 +48,42 @@ def load_config(app: Sanic, instance_path: str | None = None) -> None:
         from setting.pro import ProductionConfig
         app.update_config(ProductionConfig)
         if not instance_path:
-            click.secho("[WARN]: In production enviorment, please use instence.yaml at root path.", fg="yellow")
+            click.secho("[WARN]: In production enviorment, please use instence.yaml at root path.",
+                fg="yellow"
+            )
 
     app.update_config({"APP_ROOT_PATH": app_path})
 
-    if instance_path:
-        if not os.path.exists(f"{app_path}/{instance_path}"):
-            # config.yaml
-            os.makedirs(f"{app_path}/{instance_path}")
-            padding_instance_file(instance_path)
+    if not instance_path:
+        instance_path = "instance"
 
-            # Generate KEY file.
-            os.popen(f"cd {app_path}/{instance_path}")
-            os.popen("openssl ecparam -genkey -name secp112r1 -out eckey.pem -text")
-            os.popen("openssl ec -in eckey.pem -pubout -out ecpubkey.pem")
+    instance_path = Path(f"{app_path}/{instance_path}")
+    app.update_config({"APP_INSTANCE_PATH": instance_path})
+
+    if not instance_path.exists():
+        Path.mkdir(instance_path)
+
+        # config.yaml
+        padding_instance_file(instance_path)
+
+        # Generate KEY file.
+        os.popen(f"cd {instance_path} && \
+            openssl ecparam -genkey -name secp112r1 -out eckey.pem -text && \
+            openssl ec -in eckey.pem -pubout -out ecpubkey.pem")
+        # os.popen("openssl ecparam -genkey -name secp112r1 -out eckey.pem -text")
+        # os.popen("openssl ec -in eckey.pem -pubout -out ecpubkey.pem")
         
-        with open(f"{app_path}/{instance_path}/config.yaml") as f:
-            data = yaml.load(f, Loader=yaml.FullLoader)
-        
-        app.update_config(data)
+    # Load from yaml file.
+    with open(f"{instance_path}/config.yaml") as f:
+        data = yaml.load(f, Loader=yaml.FullLoader)
+    
+    app.update_config(data)
 
 # ==== Extensions ==== #
 
 def register_extensions(app: Sanic):
     
-    # Sanic-JWT
-    from catcove.service.security import add_sanic_jwt
-
-    add_sanic_jwt(app)
+    ...
 
 # ==== Static file ==== #
 

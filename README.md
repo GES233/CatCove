@@ -28,7 +28,7 @@
 * alembic, 数据库迁移
 * Pydantic, 接口的检查
 * pyyaml, 加载位于项目根目录的 `instance.yaml` 作为实例的配置
-* ~~python-jose~~ Sanic-JWT, 令牌的生成
+* pathlib, 用来代替 `os.path`
 
 ### 下载
 
@@ -55,7 +55,6 @@ python run.py
 - [ ] 基本的用户注册功能（后端部分）
   - [x] 如果数据无误能够向数据库内填充数据
   - [x] 如果密码重复能够通过Responce报错
-  - [x] ~~注册部分与鉴权相连接，自动跳转到令牌领取处~~ 登录后自动加载 Cookie
   - [ ] 邀请码相关机制
 - [ ] 内容
   - [ ] UserPost
@@ -63,9 +62,6 @@ python run.py
   - [ ] ...
 - [ ] 前端的模板
  - [ ] Jinja2 + Bootstrap
-- [ ] 完整的鉴权功能
-  - [ ] cookie、custom header双重选择（后者需要前端的JS脚本）
-  - [ ] 基于 Redis 的令牌黑名单
 
 
 ## 维护者

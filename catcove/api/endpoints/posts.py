@@ -7,7 +7,7 @@ from sqlalchemy import or_, select
 from catcove.model.tables import Users, UserPosts
 from catcove.model.schemas import return_6700
 from catcove.api.utils import body2model_via_json
-from catcove.utils import schemasjson
+from catcove.api.utils import schemasjson
 from catcove.service.security import token_required
 
 # ==== Routers ==== #

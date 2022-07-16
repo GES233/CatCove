@@ -12,7 +12,7 @@ from catcove.model.schemas import (
     UserCreateInfo
 )
 from catcove.model.tables import Base, Users
-from catcove.utils import schemasjson
+from catcove.api.utils import schemasjson
 from catcove.api.utils import body2model_via_json as body_to_model
 
 user_v_0_1 = Blueprint("api_v_0_1_user", "/user")

@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ValidationError
 from sanic import HTTPResponse, Request
 from json import loads
-from typing import Any
+from typing import Optional, Dict, Any
 
 from catcove.utils import schemasjson
 from catcove.model.schemas import (
@@ -9,6 +9,28 @@ from catcove.model.schemas import (
     APIResponseBody,
     ErrorBody
 )
+
+
+def schemasjson(
+    body: BaseModel,
+    status: int = 200,
+    headers: Optional[Dict[str, str]] = None,
+    content_type: str = "application/json"
+) -> HTTPResponse:
+    """
+    Returns response object with body in json format.
+
+    :param body: Basemodel data, wil formated to json type.
+    :param status: Response code.
+    :param headers: Custom Headers.
+    :param kwargs: Remaining arguments that are passed to the json encoder.
+    """
+    return HTTPResponse(
+        body.json(),
+        headers=headers,
+        status=status,
+        content_type=content_type,
+    )
 
 
 def body2model_via_json(request: Request, model: BaseModel) -> BaseModel | HTTPResponse | None | Any:

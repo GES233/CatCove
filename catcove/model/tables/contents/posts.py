@@ -13,7 +13,7 @@ class Posts(Base):
         index=True
     )
     @declared_attr
-    def owner(self):
+    def owner_id(self):
         return Column(
             Integer,
             ForeignKey("users.id"))
@@ -26,12 +26,12 @@ class Posts(Base):
     def __repr__(self) -> str:
         return '<Post %s from %s at %s>' % (
             self.id,
-            self.owner,
+            self.owner_id,
             self.create_time
         )
 
 
-class PostsUnderThread(Posts):
+class PostsUnderThread():  # Remove heritage.
     __tablename__ = "posts"
 
     parent = Column(Integer, ForeignKey("threads.id"))
@@ -43,3 +43,4 @@ class PostsUnderThread(Posts):
 
 class UserPosts(Posts):
     __tablename__ = "userposts"
+    user = relationship("Users", back_populates="post")

@@ -1,5 +1,4 @@
 from datetime import datetime
-from email.policy import default
 from bcrypt import gensalt, hashpw, checkpw
 
 from . import *
@@ -35,6 +34,18 @@ class Users(Base):
     birth = Column(Date, nullable=True)
     info = Column(Text, nullable=True)
     is_spectator = Column(Boolean, default=0)
+
+    # == With other tables  == #
+
+    """ Contents:
+        
+        +-------+                 +---------+
+        | Users |one --> zero/many| Content |
+        +-------+                 +---------+
+    """
+    userposts = relationship("UserPosts", back_populates="post_owner")
+    # posts = relationship("Posts")
+    # comments = relationship("Comments")  # I don't add here.
 
     def encrypt_passwd(self, password: str) -> None:
         salt = gensalt()

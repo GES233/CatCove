@@ -1,8 +1,7 @@
-from sqlalchemy.orm import declarative_base
-from db import engine_bind  # Absolutely import
-
+from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy import Column, Integer, Boolean, String, Text, Date, DateTime, ForeignKey
-from sqlalchemy.orm import relationship
+
+from db import engine_bind  # Absolutely import
 
 Base = declarative_base(bind=engine_bind)  # autocommit=False, autoflush=False
 
@@ -12,3 +11,4 @@ import os, sys
 app_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 sys.path.append(app_path)
 from .users import Users
+from .contents.posts import UserPosts

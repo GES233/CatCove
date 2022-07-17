@@ -3,7 +3,6 @@ from sanic import HTTPResponse, Request
 from json import loads
 from typing import Optional, Dict, Any
 
-from catcove.utils import schemasjson
 from catcove.model.schemas import (
     SingleSchemasErrorModel,
     APIResponseBody,

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, validator, ValidationError
 from enum import Enum
 from datetime import date, datetime
 
@@ -71,4 +71,4 @@ class UserCreateInfo(BaseModel):
     @validator("confirm_password")
     def passwd_match(cls, v, values, **kwargs):
         if "password" in values and v != values["password"]:
-            raise ValueError("You give me 2 differente passwords, idk which one is yours.")
+            raise ValidationError("You give me 2 differente passwords, idk which one is yours.")

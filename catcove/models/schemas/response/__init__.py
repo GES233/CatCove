@@ -10,4 +10,4 @@ class OriginData(BaseModel):
 class APIResp(BaseModel):
     code: int
     info: str
-    org: BaseModel | str | Any = OriginData
+    org: OriginData | str | Any

@@ -13,14 +13,18 @@ class Posts(Base):
         index=True,
         unique=True
     )
+    
     @declared_attr
     def owner_id(self):
         return Column(
             Integer,
             ForeignKey("users.id"))
+    
     # status: `normal`, `hidden`, `deleted`.
     status = Column(String(16), default="normal")
+
     create_time = Column(DateTime, default=datetime.utcnow())
+
     content = Column(Text)
 
     @declared_attr

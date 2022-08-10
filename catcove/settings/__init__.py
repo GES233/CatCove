@@ -29,17 +29,16 @@ def register_configure(app: Sanic) -> str:
     else: app_mode = app.config.ENV
 
     if app_mode == "dev" or app_mode == "development":
-        print("Configure Mode: Dev")
+        # print("Configure Mode: Dev")
         app.update_config(DevConfig)
     else:
-        # It is production if not at development.
-        print("Configure Mode: Pro")
+        # It will be production if not set to development.
+        # print("Configure Mode: Pro")
         app.update_config(ProConfig)
     
     # About instance file
     if app.config["INSTANCE"] is True:
-        path = Path("instance/")
-        instance_path = APP_PATH / path
+        instance_path = Path(APP_PATH / "instance/")
         config_yaml = Path(instance_path/"config.yml")
         
         

@@ -1,5 +1,7 @@
-from .. import *
 from datetime import datetime
+
+from .. import *
+
 
 class Threads(Base):
     __tablename__ = "threads"
@@ -20,7 +22,7 @@ class Threads(Base):
         String(16)
     )
     create_time = Column(DateTime, default=datetime.utcnow())
-    # parent = Column(Integer, ForeignKey("group.id"))
+    # parent = Column(Integer, ForeignKey("tag.id"))
 
     def __repr__(self) -> str:
         return f"<Thread {self.id} by {self.op}>"

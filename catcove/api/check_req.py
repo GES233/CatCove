@@ -1,5 +1,5 @@
 from json import loads
-from typing import Any, Tuple
+from typing import Any
 from pydantic import BaseModel, ValidationError
 from sanic.request import Request
 from sanic.response import HTTPResponse
@@ -17,8 +17,10 @@ def json2model(
         json_content = loads(body)
         result = model(**json_content)
     except TypeError or ValueError:
+        # request -> json
         ...
     except ValidationError as to_model:
+        # json -> model
         error_list = []
         for e in to_model.errors():
             error_list.append(

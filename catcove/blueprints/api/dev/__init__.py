@@ -15,7 +15,7 @@ async def hello_api(request):
         org="Hello API!"
     ))
 
-from .about import api_about
+from .endpoints.about import api_about
 
 api_dev = Blueprint.group(
     api_endpoint,

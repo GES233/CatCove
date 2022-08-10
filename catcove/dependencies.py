@@ -31,6 +31,23 @@ def register_service(app: Sanic) -> None:
         if hasattr(request.ctx, "session_ctx_token"):
             _base_model_session_ctx.reset(request.ctx.session_ctx_token)
             await request.ctx.session.close()
+    
+    # Render
+
+    @app.listener("before_server_start")
+    async def setup_templates(app: Sanic):
+        from pathlib import Path, PurePath
+        from jinja2 import (
+            Environment,
+            FileSystemLoader,
+            select_autoescape
+        )
+
+        template_path = PurePath( Path(__file__).cwd() / "templates")
+
+        app.ctx.template_env = Environment(
+            loader=FileSystemLoader(template_path),
+        )
 
 
 def load_static(app: Sanic) -> None:
@@ -39,8 +56,12 @@ def load_static(app: Sanic) -> None:
 
     app_path = Path(__file__).cwd()
 
-    favicon_path = PurePath(app_path/"static/img/favicon.ico")
-    robots_path = PurePath(app_path/"static/robots.txt")
+    favicon_path = PurePath( app_path / "static/img/favicon.ico")
+    robots_path = PurePath( app_path / "static/robots.txt")
+    css_path = PurePath( app_path / "static/css")
+    js_path = PurePath( app_path / "static/js")
     
     app.static("/favicon.ico", favicon_path)
     app.static("/robots.txt", robots_path)
+    app.static("/static/css", css_path)
+    app.static("/static/js", js_path)

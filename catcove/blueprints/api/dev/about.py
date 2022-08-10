@@ -9,7 +9,6 @@ api_about = Blueprint("about")
 
 @api_about.route("/about")
 async def about(request):
-    print(about_model())
     return model2json(
         body=APIResp(
             code=code.RETURNED_RESOURCE,

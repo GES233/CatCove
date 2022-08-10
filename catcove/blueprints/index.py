@@ -14,8 +14,7 @@ async def index(request: Request):
     ...
 
     # Render template.
-    print(Sanic.get_app("Meow").ctx.template_env)
-    template: Environment = Sanic.get_app("Meow").ctx.template_env.get_template('base.html')
+    template: Environment = Sanic.get_app("Meow").ctx.template_env.get_template('index.html')
     html_content = template.render(role="index")
 
     return html(html_content)

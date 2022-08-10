@@ -1,4 +1,8 @@
 from sanic import Blueprint
-from .endpoints import endpoint_v_0_1
 
-app_api = Blueprint.group(endpoint_v_0_1, version_prefix="/api/v")
+from .dev import api_dev
+
+api = Blueprint.group(
+    api_dev,
+    # url_prefix="/api"
+)

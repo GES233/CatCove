@@ -1,50 +1,29 @@
 from sanic import Sanic
-from catcove.dependencies import (
-    load_config,
-    register_basic_responce,
-    register_routers,
-    register_static,
-    register_middleware,
-    register_extensions
-)
+from sanic.exceptions import SanicException
+
+from .settings import register_configure
+from .dependencies import register_service
+from .routers import register_routers
 
 
-def create_app(mode: str | None):
-    app = Sanic("CatCove")
+def create_app() -> Sanic:
+    """ Create a Sanic application to run. """
+    app = Sanic("Meow", env_prefix="APP_")
 
-    # Register application.
-    mode = "dev" if mode == None else mode
-    app.update_config({"ENV": mode})
-    load_config(app, "instance")
+    register_configure(app)
 
-    # Extensions
-    register_extensions(app)
+    register_service(app)
 
-    # Linsteners and Middleware.
-    register_middleware(app)
-    
-    # Static
-    register_static(app)
-    
-    # ERROR handler.
-    ...
-
-    # Responce.
-    register_basic_responce(app)
-
-    # Routers.
     register_routers(app)
-
+    
     return app
 
-
-def create_config_app(mode: str | None = None):
-    db_app = Sanic.get_app("CatCove", force_create=True)
-
-    # Register application.
-    mode = "dev" if mode == None else mode
-    db_app.update_config({"ENV": mode})
-    load_config(db_app)
-
-    # return app.
-    return db_app
+def create_config_app() -> Sanic:
+    try:
+        app = Sanic.get_app("Meow")
+        return app
+    except SanicException:
+        # The name must be same, some instruction will run this twice even third time.
+        app = Sanic("Meow", env_prefix="APP_")
+        register_configure(app)
+        return app

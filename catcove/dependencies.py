@@ -1,170 +1,46 @@
-import click
-import yaml
-import os
-from contextvars import ContextVar
-from pathlib import Path, PurePath
-
 from sanic import Sanic
 
-from .api.utils import schemasjson
-from .model.schemas import (
-    MessageBody,
-    return_6700
-)
+# Some contexts.
+from contextvars import ContextVar
 
 _base_model_session_ctx = ContextVar("session")
 
-app_path = Path(__file__).cwd()
 
-# ==== Configure ==== #
+def register_service(app: Sanic) -> None:
 
-def padding_instance_file(instance_path: str):
-    from mako.template import Template
+    # CORS
 
-    instance_template = Template(
-        filename=f"{app_path}/catcove/setting/instance.yaml.mako",
-        )
-    click.secho("Generate SECRET_KEY ...")
-    ssl_code = str(os.popen("openssl rand -base64 32").readline().strip('\n'))
-    click.secho(f"SECRET_KEY:{ssl_code}")
-    content = instance_template.render(openssl_key=ssl_code)
-    file = open(f"{instance_path}/config.yaml", "x")
-    file.write(content)
-
-
-
-def load_config(app: Sanic, instance_path: str | None = None) -> None:
-    """ Usage:
-        >>> app = Sanic(__name__)
-        >>> load_config(app)
-            or
-        >>> load_config(app, "config.yaml")
-    """
-    if app.config["ENV"] == "dev" or app.config["ENV"] == "development":
-        from setting.dev import DevelopmentConfig
-        app.update_config(DevelopmentConfig)
-    elif app.config["ENV"] == "test":
-        from setting.test import TestConfig
-        app.update_config(TestConfig)
-    else:  # production
-        from setting.pro import ProductionConfig
-        app.update_config(ProductionConfig)
-        if not instance_path:
-            click.secho("[WARN]: In production enviorment, please use instence.yaml at root path.",
-                fg="yellow"
-            )
-
-    app.update_config({"APP_ROOT_PATH": app_path})
-
-    if not instance_path:
-        instance_path = "instance"
-
-    instance_path = Path(f"{app_path}/{instance_path}")
-    app.update_config({"APP_INSTANCE_PATH": instance_path})
-
-    if not instance_path.exists():
-        Path.mkdir(instance_path)
-
-        # config.yaml
-        padding_instance_file(instance_path)
-
-        # Generate KEY file.
-        os.popen(f"cd {instance_path} && \
-            openssl ecparam -genkey -name secp112r1 -out eckey.pem -text && \
-            openssl ec -in eckey.pem -pubout -out ecpubkey.pem")
-        # os.popen("openssl ecparam -genkey -name secp112r1 -out eckey.pem -text")
-        # os.popen("openssl ec -in eckey.pem -pubout -out ecpubkey.pem")
-        
-    # Load from yaml file.
-    with open(f"{instance_path}/config.yaml") as f:
-        data = yaml.load(f, Loader=yaml.FullLoader)
-    
-    app.update_config(data)
-
-# ==== Extensions ==== #
-
-def register_extensions(app: Sanic):
-    
-    ...
-
-# ==== Static file ==== #
-
-def register_static(app: Sanic):
-
-    # Static file at root path.
-    app.static("/favicon.ico", f"{app_path}/static/favicon.ico")
-
-# ==== Responce ==== #
-
-about_content = [
-"欢迎来到 `CatCove` ，这里是为了给某些拥有特定爱好的人（我们通常称其为「同好」\
-，而「我们」特指网站管理员，恕下面不再对此添加方括号）交流相对私密的爱好而被设立\
-的论坛。",
-"由于用户的属性以及用户讨论内容的私密性，恕不对外人开放，我们对此感到非常抱歉。如\
-果有异议或是对圈子有兴趣，请通过电邮与我联系。",
-"如果您是圈内人（标志之一是了解我所说的这些「黑话」）的话，可以和已经成为 `CatCo\
-ve` 成员的其他同好联系以获得邀请码。"
-]
-
-def register_basic_responce(app: Sanic):
-    
-    from catcove.model.schemas.content.anounce import AnouncementBody, Anouncement
-
-    # Index responce: Hello world.
-    @app.route("/")
-    async def index(request):
-        return schemasjson(body=return_6700(MessageBody(body="Hello World!")))
-
-
-    @app.route("/about")
-    async def about(request):
-        return schemasjson(return_6700(
-            AnouncementBody(
-                    body=Anouncement(title="关于🐱Cave",
-                    author="administrator",
-                    content=about_content
-                )
-            )
-        ))
-
-# ==== Middleware ==== #
-
-def register_middleware(app: Sanic):
-
-    # === Database === #
-
-    from catcove.db import async_sessoin
-
-    
-    @app.on_request
-    async def inject_session(request):
-        request.ctx.session = async_sessoin()
-        request.ctx.session_ctx_token = _base_model_session_ctx.set(request.ctx.session)
-    
-    @app.on_response
-    async def close_session(request, responce):
-        if hasattr(request.ctx, "session_ctx_token"):
-            _base_model_session_ctx.reset(request.ctx.session_ctx_token)
-            # RuntimeError: <Token used var=<ContextVar name='session' at ...19565C10> at ...1AA9B840> 
-            # has already been used once
-            await request.ctx.session.close()
-
-    # === CORS === #
-
-    from catcove.service.cors import add_cors_headers
-    from catcove.service.cors.options import setup_options
+    from .services.cors import add_cors_headers
+    from .services.cors.options import setup_options
 
     app.register_listener(setup_options, "before_server_start")
     app.register_middleware(add_cors_headers, "response")
 
-# ==== Routers ==== #
+    # Database
 
-def register_routers(app: Sanic):
+    # load session to request.
+    from .db import async_session
 
-    # === API === #
+    @app.on_request
+    async def inject_session(request):
+        request.ctx.session = async_session()
+        request.ctx.session_ctx_token = _base_model_session_ctx.set(request.ctx.session)
+    
+    @app.on_response
+    async def close_session(request, response):
+        if hasattr(request.ctx, "session_ctx_token"):
+            _base_model_session_ctx.reset(request.ctx.session_ctx_token)
+            await request.ctx.session.close()
 
-    from api import app_api as api_route
 
-    app.blueprint(api_route)
+def load_static(app: Sanic) -> None:
 
+    from pathlib import Path, PurePath
 
+    app_path = Path(__file__).cwd()
+
+    favicon_path = PurePath(app_path/"static/img/favicon.ico")
+    robots_path = PurePath(app_path/"static/robots.txt")
+    
+    app.static("/favicon.ico", favicon_path)
+    app.static("/robots.txt", robots_path)

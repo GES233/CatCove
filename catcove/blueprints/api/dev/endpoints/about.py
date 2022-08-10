@@ -1,9 +1,8 @@
 from sanic import Blueprint
 
-from ..response import model2json
-from ..response import code
-from ....models.schemas.response import APIResp, OriginData
-from ....business.about import about_model
+from ...response import model2json, code
+from .....models.schemas.response import APIResp
+from .....business.about import about_model
 
 api_about = Blueprint("about")
 

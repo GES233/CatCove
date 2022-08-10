@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="cmn-Hans">
+<html lang="cmn-Hans" data-theme="dark">
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         {% if title %}
         <title>{{title}} - CatCave</title>
         {% elif role %} {# e.g. CatCave :: Login #}
@@ -10,52 +11,66 @@
         <title>CatCave</title>
         {% endif %}
         <style>
-            /*@import url("{{ url_for('/static/css/...') }}"); /* Exchange if using Sanic. */
+            @import url("/static/css/pico.min.css");
         </style>
+        <!--<link rel="stylesheet" href="/static/css/pico.min.css">-->
     </head>
     <body>
-        <div class="container">
-            <header>
-                <a id="slogan" href="/">
-                    MoewCave<!-- 后面会加上一堆艺术字什么的 -->
-                </a>
-                <nav>
-                    <ul>
-                        <li><a href="#explore">发现</a></li>
-                        <li><a href="#mark">书签</a></li>
-                        <li><a href="#about">关于</a></li>
-                    </ul>
-                </nav>
+        <nav class="container-fluid">
+            <ul>
+                <li><a id="slogan" href="/">
+                    CatCave<!-- 后面会加上一堆艺术字什么的 -->
+                </a></li>
+                <li> | </li>
+                <li><small><a href="/explore">发现</a></small></li>
+                <li><small><a href="/mark">书签</a></small></li>
+                <li><small><a href="/about">关于</a></small></li>
+            </ul>
+            <ul>
+                <li>
                 <div class="user-status">
                     {% if user %}
-                    您好，<a href="#me"><span>{{ user.nickname }}</span></a>
+                    <details role="list" dir="rtl">
+                        <summary aria-haspopup="listbox" role="link">{{ user.name }}</summary>
+                        <ul role="listbox">
+                            <li><a href="#me">个人主页</a></li>
+                        </ul>
+                    </details>
                     {% else %}
-                    还不是成员？那就<a href="#login">登录</a>或者<a href="#sign_up">注册</a>
+                    <details role="list" dir="rtl">
+                        <summary aria-haspopup="listbox" role="link">申必人</summary>
+                        <ul role="listbox">
+                            <li><a href="#login">登录</a></li>
+                            <li><a href="#sign_up">注册</a></li>
+                        </ul>
+                    </details>
                     {% endif %}
                 </div>
-            </header>
-            <hr>
+                </li>
+            </ul>
+        </nav>
+        <hr>
+        <main class="container">
             <div class="content">
-                <div class="site-loc-map"></div>
-                <main>
+                <div class="raw">
                     {% block main %}{% endblock %}
-                </main>
+                </div>
             </div>
-            <footer>
-                <ul>
-                    <li>
-                        <a href="https://github.com/GES233/CatCove">CatCove</a> is a open-source project!
-                    </li>
-                    <li>
-                        Powered by  <a href="https:/sanic.dev">Sanic</a>, a framework as fast as lightning.
-                    </li>
-                    <!--
-                    <li>
-                        Statistics: ...
-                    </li>
-                    -->
-                </ul>
-            </footer>
-        </div>
+        </main>
+        <footer class="container">
+            <ul>
+                <li>
+                    <small>Built with <a href="https://github.com/GES233/CatCove">CatCove</a>.</small>
+                </li>
+                <li>
+                    <small>Powered by <a href="https:/sanic.dev">Sanic</a> and <a href="https://picocss.com/">Pico.css</a>.</small>
+                </li>
+                <!--
+                <li>
+                    Statistics: ...
+                </li>
+                -->
+            </ul>
+        </footer>
     </body>
 </html>

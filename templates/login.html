@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="cmn-Hans" data-theme="dark">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% if title %}
+        <title>{{title}} - CatCave</title>
+        {% elif role %} {# e.g. CatCave :: Login #}
+        <title>CatCave :: {{role}}</title>
+        {% else %}
+        <title>CatCave</title>
+        {% endif %}
+        <style>
+            @import url("/static/css/pico.min.css");
+
+            /* Image in 2nd div */
+            article div:nth-of-type(2) {
+                background-color: #a63bd4;
+                border-radius: 8px;
+                background-image: url("/static/img/61247421_p0.jpg"); /* author: Pixiv@はねこと */
+                background-position: top;
+                background-size: cover;
+            }
+        </style>
+    </head>
+    <body>
+        <main class="container">
+            <article class="grid">
+                <div>
+                    <hgroup>
+                        <h1>登录</h1>
+                        <h2>Membership's world is comming.</h2>
+                    </hgroup>
+                    <form action="" method="post">
+                        <input type="text" name="nickname" placeholder="昵称或邮件地址" aria-label="昵称或邮件地址" autocomplete="nickname" required>
+                        <input type="password" name="password" placeholder="密码" aria-label="密码" autocomplete="current-password" required>
+                        <fieldset>
+                            <label for="remember">
+                              <input type="checkbox" role="switch" id="remember" name="remember">
+                              <span style="font-size: small;">记住我（如果不是自己的电脑请不要点这个！）</span>
+                            </label>
+                        </fieldset>
+                        <button type="submit" class="contrast" onclick="">登录！</button>
+                    </form>
+                </div>
+                <div></div>
+            </article>
+        </main>
+    </body>
+</html>

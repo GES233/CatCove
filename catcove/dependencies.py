@@ -39,8 +39,7 @@ def register_service(app: Sanic) -> None:
         from pathlib import Path, PurePath
         from jinja2 import (
             Environment,
-            FileSystemLoader,
-            select_autoescape
+            FileSystemLoader
         )
 
         template_path = PurePath( Path(__file__).cwd() / "templates")
@@ -58,10 +57,13 @@ def load_static(app: Sanic) -> None:
 
     favicon_path = PurePath( app_path / "static/img/favicon.ico")
     robots_path = PurePath( app_path / "static/robots.txt")
-    css_path = PurePath( app_path / "static/css")
-    js_path = PurePath( app_path / "static/js")
-    
+    css_path = PurePath( app_path / "static/css/")
+    js_path = PurePath( app_path / "static/js/")
+    static_img_path = PurePath( app_path / "static/img/")
+
+
     app.static("/favicon.ico", favicon_path)
     app.static("/robots.txt", robots_path)
     app.static("/static/css", css_path)
     app.static("/static/js", js_path)
+    app.static("/static/img", static_img_path)

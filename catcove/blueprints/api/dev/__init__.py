@@ -5,7 +5,7 @@ api_endpoint = Blueprint("api_dev")
 
 from ..response import code
 from ..response import model2json
-from ...models.schemas.responce import APIResp
+from ....models.schemas.response import APIResp
 
 @api_endpoint.route("/hello", methods=["GET"])
 async def hello_api(request):

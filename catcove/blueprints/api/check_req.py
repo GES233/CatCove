@@ -4,7 +4,7 @@ from pydantic import BaseModel, ValidationError
 from sanic.request import Request
 from sanic.response import HTTPResponse
 
-from ..models.schemas.exceptions import PydanticErrorModel
+from ...models.schemas.exceptions import PydanticErrorModel
 
 
 def json2model(

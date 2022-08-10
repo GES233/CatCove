@@ -9,6 +9,5 @@ def register_routers(app: Sanic):
         return text("Hello, index page here.")
     
     # API
-    from .api import api
-    
+    from .blueprints.api import api
     app.blueprint(api)

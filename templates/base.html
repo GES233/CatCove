@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="cmn-Hans">
+    <head>
+        <meta charset="utf-8">
+        {% if title %}
+        <title>{{title}} - CatCave</title>
+        {% elif role %} {# e.g. CatCave :: Login #}
+        <title>CatCave :: {{role}}</title>
+        {% else %}
+        <title>CatCave</title>
+        {% endif %}
+        <style>
+            /*@import url("{{ url_for('/static/css/...') }}"); /* Exchange if using Sanic. */
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <a id="slogan" href="/">
+                    MoewCave<!-- 后面会加上一堆艺术字什么的 -->
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="#explore">发现</a></li>
+                        <li><a href="#mark">书签</a></li>
+                        <li><a href="#about">关于</a></li>
+                    </ul>
+                </nav>
+                <div class="user-status">
+                    {% if user %}
+                    您好，<a href="#me"><span>{{ user.nickname }}</span></a>
+                    {% else %}
+                    还不是成员？那就<a href="#login">登录</a>或者<a href="#sign_up">注册</a>
+                    {% endif %}
+                </div>
+            </header>
+            <hr>
+            <div class="content">
+                <div class="site-loc-map"></div>
+                <main>
+                    {% block main %}{% endblock %}
+                </main>
+            </div>
+            <footer>
+                <ul>
+                    <li>
+                        <a href="https://github.com/GES233/CatCove">CatCove</a> is a open-source project!
+                    </li>
+                    <li>
+                        Powered by  <a href="https:/sanic.dev">Sanic</a>, a framework as fast as lightning.
+                    </li>
+                    <!--
+                    <li>
+                        Statistics: ...
+                    </li>
+                    -->
+                </ul>
+            </footer>
+        </div>
+    </body>
+</html>

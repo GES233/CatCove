@@ -1,11 +1,11 @@
 from functools import wraps
+from sanic.response import redirect
 
 
 def token_auth(): return True
 def cookie_auth(): return True
 
 def resp_unauth_api(): return ...
-def resp_unauth_html(): return ...
 
 
 def token_required(wrapped):
@@ -35,6 +35,6 @@ def cookie_required(wrapped):
                 response = await func(request, *args, **kwargs)
                 return response
             else:
-                return resp_unauth_html()
+                return redirect("/login")
         return decorated_function
     return decorated(wrapped)

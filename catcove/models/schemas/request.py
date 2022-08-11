@@ -13,5 +13,6 @@ class SignUpModel(BaseModel):
 
 
 class UserLoginModel(BaseModel):
-    nickname: int | str
-    password: str
+    nickname: str | int
+    password: str | int
+    remember: bool

@@ -7,12 +7,10 @@ from pydantic import BaseModel
 from ..db import async_session
 from ..models.schemas.request import UserLoginModel
 
-def form2model(
-    request: Request,
-    model: BaseModel
-    ) -> BaseModel | str | None:
-    ...
-        
+'''fake_db = [
+    {"nickname": "00000", "password": "12345"},
+    {"nickname": "ALG", "password": "admin"}
+]'''
 
 
 async def login_authentication_logic(
@@ -20,6 +18,7 @@ async def login_authentication_logic(
     db_session: async_session) -> bool:
 
     # Simple Read.
+    
     from ..models.tables.users import Users
     async with db_session.begin():
         sql = select(Users).where(
@@ -32,10 +31,12 @@ async def login_authentication_logic(
         users = await db_session.execute(sql)
         user: Users | None = users.scalars().first()
         db_session.expunge(user) if user else None
-    
     # Commit over.
+    
+    # user = fake_db[request_model.nickname]
     if not user: return False  # 查无此人
 
     if user.check_passwd(request_model.password):
+    # if user["password"] == request_model.password:
         return True
     else: return False

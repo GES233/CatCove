@@ -46,9 +46,9 @@ raw_form = LoginForm()
 def validate_login_form(form: LoginForm)-> UserLoginModel | LoginForm:
     if form.validate():
         return UserLoginModel(
-            nickname=form.data["nickname"][0],
-            password=form.data["password"][0],
-            remember=form.data["remember"]
+            nickname=form.nickname.data,
+            password=form.password.data,
+            remember=form.remember.data
         )
     else: return LoginForm()
 

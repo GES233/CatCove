@@ -10,6 +10,8 @@ from wtforms.validators import (
     EqualTo
 )
 
+from ..schemas.request import SignUpModel
+
 class SignUpForm(Form):
     nickname = StringField(
         "nickname",
@@ -62,6 +64,14 @@ class SignUpForm(Form):
         }
     )
 
-form = SignUpForm()
 
-print(form.auto_login)
+def check_signup_form(form: SignUpForm) -> SignUpModel | SignUpForm:
+    if form.validate():
+        return SignUpModel(
+            nickname=form.nickname.data,
+            email=form.email.data,
+            password=form.password.data,
+            confirm=form.confirm.data,
+            auto_login=form.auto_login.data
+        )
+    else: return SignUpForm()

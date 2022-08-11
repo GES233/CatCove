@@ -4,7 +4,7 @@ from sanic.views import HTTPMethodView
 from sanic.exceptions import MethodNotAllowed
 
 from ..business.auth import login_authentication_logic
-from ..services.security.cookie import delete_login_cookie
+from ..services.security.cookie import delete_login_cookie, add_login_cookie
 from ..services.render import render_template
 from ..models.forms.auth import LoginForm, validate_login_form
 from ..models.schemas.request import UserLoginModel
@@ -16,7 +16,7 @@ class UserLoginView(HTTPMethodView):
 
     async def get(self, request: Request):
         # Render
-        return self.login_render(self, LoginForm())
+        return self.login_render(LoginForm())
 
     async def post(self, request: Request):
         # Submit -> POST
@@ -24,29 +24,27 @@ class UserLoginView(HTTPMethodView):
         # Initial work.
         form_data = request.form
         if not form_data:
-            raise MethodNotAllowed(
-                "Post method need a form."
-            )  # BadRequest better.
+            # 怕有人开控制台搞事
+            return self.login_render(LoginForm())
 
+        # Check the form, if invalid, login failed.
         model = validate_login_form(LoginForm(data=form_data))
-
-        # Check here.
         if not isinstance(model, UserLoginModel):
-            return self.login_render(self, model)  # html_content
+            return self.login_render(model)
         
-        # Business Logic.
-        if login_authentication_logic(model, request.ctx.session):
-            # Set-cookie.
-            ...
-            if request.args.get("next"):
-                ...
-            else: return redirect("/")
-        else:
-            # 查无此人/密码错误
+        # Check.
+        user = await login_authentication_logic(model, request.ctx.session)
+        if user is None:
+            # 查无此人
             # Re-render.'''
             ...
             return self.login_render()
-        # return await self.get(request)
+        elif user is False:
+            return self.login_render()
+        else:
+            # Set-cookie.
+            ...
+            return add_login_cookie(redirect("/"), user)
     
     def login_render(self, form) -> HTTPMethodView:
         return html(render_template(

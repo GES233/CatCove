@@ -2,10 +2,12 @@ from typing import Tuple, Any
 from sanic import Request
 from sanic.response import HTTPResponse, redirect
 
+from ...models.tables.users import Users
+
 COOKIE_MAX_AGE = 3600 * 24 * 45
 
 
-def add_login_cookie(response: HTTPResponse) -> HTTPResponse:
+def add_login_cookie(response: HTTPResponse, user: Users) -> HTTPResponse:
 
     # set Cookie.
     response.cookies["UserMeta"] = ...

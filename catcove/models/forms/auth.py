@@ -7,7 +7,6 @@ from wtforms.fields import (
 from wtforms.validators import (
     DataRequired
 )
-from pydantic import ValidationError
 
 from ..schemas.request import UserLoginModel
 

@@ -40,3 +40,13 @@ async def login_authentication_logic(
     # if user["password"] == request_model.password:
         return True
     else: return False
+
+
+async def check_invitecode(
+    code: str,
+    db_session: async_session) -> bool:
+    # Query
+    async with db_session.begin():
+        ...
+    
+    return ...

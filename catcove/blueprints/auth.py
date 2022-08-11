@@ -11,7 +11,6 @@ from ..models.schemas.request import UserLoginModel
 
 auth_bp = Blueprint("auth")
 
-from pprint import pprint
 
 class UserLoginView(HTTPMethodView):
 
@@ -39,7 +38,9 @@ class UserLoginView(HTTPMethodView):
         if login_authentication_logic(model, request.ctx.session):
             # Set-cookie.
             ...
-            return redirect("/")
+            if request.args.get("next"):
+                ...
+            else: return redirect("/")
         else:
             # 查无此人/密码错误
             # Re-render.'''
@@ -53,9 +54,10 @@ class UserLoginView(HTTPMethodView):
             role="Login",
             form=form))
 
-@auth_bp.route("/logout", methods=["GET"])
+
 async def log_out(request):
     content = html(render_template('logout.html'))
     return delete_login_cookie(content)
 
 auth_bp.add_route(UserLoginView.as_view(), "/login")
+auth_bp.add_route(log_out, "/logout")

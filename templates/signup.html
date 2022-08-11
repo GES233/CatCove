@@ -31,14 +31,21 @@
                 <h2></h2>
             </hgroup>
             <form action="">
-                <input type="text" name="nickname" placeholder="昵称" aria-label="昵称或邮件地址" autocomplete="nickname" required>
-                <input type="text" name="email" placeholder="邮件地址" aria-label="邮件地址" autocomplete="email" required>
-                <input type="text" name="invite-code" placeholder="邀请码" data-tooltip="暂时不限制注册" disabled>
+                <!--
+                <input type="text" name="nickname" placeholder="昵称" aria-label="昵称" autocomplete="username" required>
+                <input type="text" name="email" placeholder="邮件地址" aria-label="邮件地址" autocomplete="email" required>-->
+                {{ form.nickname }}
+                {{ form.email }}
+                <input type="text" name="invite-code" placeholder="邀请码（暂时不限制注册）" disabled>
+                <!--
                 <input type="password" name="password" placeholder="密码" aria-label="密码" required>
-                <input type="password" name="confirm" placeholder="确认密码" aria-label="确认密码" required>
+                <input type="password" name="confirm" placeholder="确认密码" aria-label="确认密码" required>-->
+                {{ form.password }}
+                {{ form.confirm }}
                 <fieldset>
                     <label for="auto-login">
-                      <input type="checkbox" role="switch" id="auto-login" name="auto-login">
+                      <!--<input type="checkbox" role="switch" id="auto-login" name="auto-login">-->
+                      {{ form.auto_login }}
                       <span style="font-size: small;" data-tooltip="注册完成后直接进入首页">跳过登录</span>
                     </label>
                 </fieldset>

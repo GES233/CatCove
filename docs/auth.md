@@ -62,4 +62,4 @@
 
 ### Token
 
-采用JWT（AccessToken + RefreshToken），存放在cookie里
+采用JWT（AccessToken + RefreshToken），或存放在cookie里

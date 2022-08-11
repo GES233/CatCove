@@ -10,53 +10,11 @@
         {% else %}
         <title>CatCave</title>
         {% endif %}
-        <style>
-            @import url("/static/css/pico.min.css");
-        </style>
-        <!--<link rel="stylesheet" href="/static/css/pico.min.css">-->
+        {% block costume_style %}{% endblock %}
+        <link rel="stylesheet" href="/static/css/pico.min.css">
     </head>
     <body>
-        <nav class="container-fluid">
-            <ul>
-                <li><a id="slogan" href="/">
-                    CatCave<!-- 后面会加上一堆艺术字什么的 -->
-                </a></li>
-                <li> | </li>
-                <li><small><a href="/explore">发现</a></small></li>
-                <li><small><a href="/mark">书签</a></small></li>
-                <li><small><a href="/about">关于</a></small></li>
-            </ul>
-            <ul>
-                <li>
-                <div class="user-status">
-                    {% if user %}
-                    <details role="list" dir="rtl">
-                        <summary aria-haspopup="listbox" role="link">{{ user.name }}</summary>
-                        <ul role="listbox">
-                            <li><a href="#me">个人主页</a></li>
-                        </ul>
-                    </details>
-                    {% else %}
-                    <details role="list" dir="rtl">
-                        <summary aria-haspopup="listbox" role="link">申必人</summary>
-                        <ul role="listbox">
-                            <li><a href="#login">登录</a></li>
-                            <li><a href="#sign_up">注册</a></li>
-                        </ul>
-                    </details>
-                    {% endif %}
-                </div>
-                </li>
-            </ul>
-        </nav>
-        <hr>
-        <main class="container">
-            <div class="content">
-                <div class="raw">
-                    {% block main %}{% endblock %}
-                </div>
-            </div>
-        </main>
+        {% block main %}{% endblock %}
         <footer class="container">
             <ul>
                 <li>

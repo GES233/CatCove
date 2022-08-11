@@ -1,7 +1,8 @@
-from sanic import Blueprint, Sanic
+from sanic import Blueprint
 from sanic.request import Request
 from sanic.response import html
-from jinja2.environment import Environment
+
+from ..services.render import render_template
 
 index_bp = Blueprint("index")
 
@@ -14,7 +15,6 @@ async def index(request: Request):
     ...
 
     # Render template.
-    template: Environment = Sanic.get_app("Meow").ctx.template_env.get_template('index.html')
-    html_content = template.render(role="index")
+    html_content = render_template("index.html", role="Index")
 
     return html(html_content)

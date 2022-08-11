@@ -6,7 +6,7 @@ class SignUpModel(BaseModel):
     password: str
     confirm_password: str
 
-    @validator
+    @validator("confirm_password")
     def passwd_match(cls, v, values, **kwargs):
         if "password" in values and v != values["password"]:
             raise ValidationError("Password not same!")

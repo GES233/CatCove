@@ -12,7 +12,10 @@
   - alembic
   - Pydantic
   - PyJWT
+  - ujson
   - Jinja2
+  - WTForms
+  - PyYAML
 - Pico.css
 
 ### 代码

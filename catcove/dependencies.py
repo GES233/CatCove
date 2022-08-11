@@ -48,6 +48,10 @@ def register_service(app: Sanic) -> None:
             loader=FileSystemLoader(template_path),
         )
 
+        # globlas functions.
+        # def flash_pop() -> None: ...
+        # app.ctx.template_env.globals["flash_pop"] = flash_pop
+
 
 def load_static(app: Sanic) -> None:
 

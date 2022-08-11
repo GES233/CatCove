@@ -1,7 +1,11 @@
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy import Column, Integer, Boolean, String, Text, Date, DateTime, ForeignKey
 
-from db import engine  # Absolutely import
+try:
+    from db import engine  # Absolutely import
+except ImportError:
+    # From the Application.
+    from ...db import engine
 
 Base = declarative_base(bind=engine)  # autocommit=False, autoflush=False
 

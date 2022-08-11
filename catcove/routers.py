@@ -1,5 +1,4 @@
 from sanic import Sanic
-from sanic.response import text
 
 def register_routers(app: Sanic):
     # API

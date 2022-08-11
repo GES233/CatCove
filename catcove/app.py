@@ -4,7 +4,8 @@ from sanic.exceptions import SanicException
 from .settings import register_configure
 from .dependencies import (
     register_service,
-    load_static)
+    load_static
+)
 from .routers import register_routers
 
 

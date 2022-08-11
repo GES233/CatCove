@@ -3,7 +3,6 @@ from sanic.response import html, redirect
 from sanic.views import HTTPMethodView
 
 from ...business.auth import form2model, login_authentication_logic
-from ...models.schemas.request import UserLoginModel
 from ...services.render import render_template
 
 auth_bp = Blueprint("auth")
@@ -20,13 +19,15 @@ class UserLoginView(HTTPMethodView):
     async def post(self, request: Request):
         # Submit -> POST
 
+        '''
         # Initial work.
         model = form2model(request)
 
         # Check here.
         if not isinstance(model, UserLoginModel):
             # The instance may change.
-            return model
+            ...
+            # return model
         
         # Business Logic.
         if login_authentication_logic(model):
@@ -35,10 +36,10 @@ class UserLoginView(HTTPMethodView):
             return redirect("/")
         else:
             # 查无此人/密码错误
-            # Re-render.
-            html_content = render_template('login.html', role="Login")
-            return html(html_content)
-        # return self.get(request)
+            # Re-render.'''
+        html_content = render_template('login.html', role="Login")
+        return html(html_content)
+        # return await self.get(request)
 
 @auth_bp.route("/logout", methods=["GET"])
 async def log_out(request):

@@ -38,6 +38,7 @@ async def insert_user(
             # status="newbie",
             email=request_model.email,
         )
+        newbie.encrypt_passwd(request_model.password)
         db_session.add(newbie)
         await db_session.flush()
         db_session.expunge(newbie)

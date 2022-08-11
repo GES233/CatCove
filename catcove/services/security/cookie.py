@@ -9,6 +9,9 @@ COOKIE_MAX_AGE = 3600 * 24 * 45
 
 def add_login_cookie(response: HTTPResponse, user: Users) -> HTTPResponse:
 
+    # User payload.
+    user_cookie = generate_cookie(user)
+
     # set Cookie.
     response.cookies["UserMeta"] = ...
     response.cookies["UserMeta"]["path"] = "/"
@@ -37,5 +40,5 @@ def check_cookie(request: Request) -> Tuple[bool, Any]:
         return True, ...
 
 
-def generate_cookie() -> str:
+def generate_cookie(user: Users) -> str:
     ...

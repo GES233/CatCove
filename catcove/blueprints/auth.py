@@ -6,7 +6,13 @@ from sanic.exceptions import MethodNotAllowed
 from ..business.auth import login_authentication_logic
 from ..services.security.cookie import delete_login_cookie, add_login_cookie
 from ..services.render import render_template
-from ..models.forms.auth import LoginForm, validate_login_form
+from ..models.forms.auth import (
+    LoginForm,
+    validate_login_form,
+    form_input,
+    user_not_exist_front,
+    password_not_match_front
+)
 from ..models.schemas.request import UserLoginModel
 
 auth_bp = Blueprint("auth")
@@ -14,9 +20,11 @@ auth_bp = Blueprint("auth")
 
 class UserLoginView(HTTPMethodView):
 
+    form = LoginForm()
+
     async def get(self, request: Request):
         # Render
-        return self.login_render(LoginForm())
+        return self.login_render(self.form)
 
     async def post(self, request: Request):
         # Submit -> POST
@@ -25,10 +33,14 @@ class UserLoginView(HTTPMethodView):
         form_data = request.form
         if not form_data:
             # 怕有人开控制台搞事
-            return self.login_render(LoginForm())
+            return self.login_render(form_input(self.form))
 
         # Check the form, if invalid, login failed.
-        model = validate_login_form(LoginForm(data=form_data))
+        model = validate_login_form(LoginForm(data={
+            "nickname": form_data.get("nickname"),
+            "password": form_data.get("password"),
+            "remember": form_data.get("remember")
+        }))
         if not isinstance(model, UserLoginModel):
             return self.login_render(model)
         
@@ -36,11 +48,10 @@ class UserLoginView(HTTPMethodView):
         user = await login_authentication_logic(model, request.ctx.session)
         if user is None:
             # 查无此人
-            # Re-render.'''
-            ...
-            return self.login_render()
-        elif user is False:
-            return self.login_render()
+            return self.login_render(user_not_exist_front(self.form))
+        elif user == False:
+            # Password error.
+            return self.login_render(password_not_match_front(self.form))
         else:
             # Set-cookie.
             ...

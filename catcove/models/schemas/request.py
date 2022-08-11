@@ -5,8 +5,6 @@ class SignUpModel(BaseModel):
     email: str
     password: str
     confirm: str
-    auto_login: bool | None = None
-    # from App, may not have this item.
 
     @validator("confirm")
     def passwd_match(cls, v, values, **kwargs):

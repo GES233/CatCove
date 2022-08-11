@@ -48,8 +48,11 @@ def register_service(app: Sanic) -> None:
             loader=FileSystemLoader(template_path),
         )
 
-        # globlas functions.
+        # Globlas functions:
+
         # app.ctx.template_env.globals["..."] = ...
+
+        # - user check with cookie.
 
 
 def load_static(app: Sanic) -> None:

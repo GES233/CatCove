@@ -18,3 +18,8 @@ async def index(request: Request):
     html_content = render_template("index.html", role="Index")
 
     return html(html_content)
+
+
+@index_bp.route("/about")
+async def about(request: Request):
+    return html(render_template("about.html", role="About"))

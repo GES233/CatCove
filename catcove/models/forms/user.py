@@ -67,11 +67,17 @@ class SignUpForm(Form):
 
 def check_signup_form(form: SignUpForm) -> SignUpModel | SignUpForm:
     if form.validate():
-        return SignUpModel(
-            nickname=form.nickname.data,
-            email=form.email.data,
-            password=form.password.data,
-            confirm=form.confirm.data,
-            auto_login=form.auto_login.data
-        )
-    else: return SignUpForm()
+        return SignUpModel(**form.data)
+    else:
+        if form.confirm.errors:
+            form.confirm.render_kw["aria-invalid"] = "true"
+        elif form.email.errors:
+            form.email.render_kw["aria-invalid"] = "true"
+        return form
+
+
+def common_user_front(form: SignUpForm) -> SignUpForm:
+    form.nickname.render_kw["aria-invalid"] = "true"
+    form.nickname.render_kw["placeholder"] = "与其他用户重名"
+    form.nickname.render_kw["value"] = ""  # Delete
+    return form

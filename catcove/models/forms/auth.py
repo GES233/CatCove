@@ -50,19 +50,25 @@ def validate_login_form(form: LoginForm)-> UserLoginModel | LoginForm:
             password=form.password.data,
             remember=form.remember.data
         )
-    else: return LoginForm()
+    else:
+        return form
 
 
-def form_render() -> LoginForm:
-    ...
-    # Catch Error(s).
+def form_input(form: LoginForm) -> LoginForm:
+    form.nickname.render_kw["aria-invalid"] = "true"
+    form.nickname.render_kw["placeholder"] = "请填入昵称"
+    form.password.render_kw["aria-invalid"] = "true"
+    form.password.render_kw["placeholder"] = "请填入密码"
+    return form
 
-    # Create a raw-form Replace holderplace.
-    if ...:
-        raw_form.nickname.render_kw["aria-invalid"] = "true"
-        raw_form.nickname.render_kw["placeholder"] = "用户不存在！"
-    elif ...:
-        raw_form.password.render_kw["aria-invalid"] = "true"
-        raw_form.password.render_kw["placeholder"] = "一眼丁真，鉴定为假"
-    ...
 
+def user_not_exist_front(form: LoginForm) -> LoginForm:
+    form.nickname.render_kw["aria-invalid"] = "true"
+    form.nickname.render_kw["placeholder"] = "用户不存在！"
+    return form
+
+
+def password_not_match_front(form: LoginForm) -> LoginForm:
+    form.password.render_kw["aria-invalid"] = "true"
+    form.password.render_kw["placeholder"] = "一眼丁真，鉴定为假"
+    return form

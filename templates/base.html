@@ -4,11 +4,11 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         {% if title %}
-        <title>{{title}} - CatCave</title>
-        {% elif role %} {# e.g. CatCave :: Login #}
-        <title>CatCave :: {{role}}</title>
+        <title>{{title}} - CatCove</title>
+        {% elif role %} {# e.g. CatCove :: Login #}
+        <title>CatCove :: {{role}}</title>
         {% else %}
-        <title>CatCave</title>
+        <title>CatCove</title>
         {% endif %}
         {% block costume_style %}{% endblock %}
         <link rel="stylesheet" href="/static/css/pico.min.css">
@@ -18,10 +18,10 @@
         <footer class="container">
             <ul>
                 <li>
-                    <small>Built with <a href="https://github.com/GES233/CatCove">CatCove</a>.</small>
+                    <small>Built with <a href="https:/sanic.dev">Sanic</a> and <a href="https://picocss.com/">Pico.css</a>.</small>
                 </li>
                 <li>
-                    <small>Powered by <a href="https:/sanic.dev">Sanic</a> and <a href="https://picocss.com/">Pico.css</a>.</small>
+                    <small>Powered by <a href="https://github.com/GES233/CatCove">CatCove</a>.</small>
                 </li>
                 <!--
                 <li>

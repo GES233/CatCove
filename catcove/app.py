@@ -4,7 +4,8 @@ from sanic.exceptions import SanicException
 from .settings import register_configure
 from .dependencies import (
     register_service,
-    load_static
+    load_static,
+    custom_error
 )
 from .routers import register_routers
 
@@ -16,6 +17,8 @@ def create_app() -> Sanic:
     register_configure(app)
 
     register_service(app)
+
+    custom_error(app)
 
     register_routers(app)
 

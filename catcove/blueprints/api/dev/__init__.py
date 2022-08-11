@@ -7,7 +7,7 @@ from ..response import code
 from ..response import model2json
 from ....models.schemas.response import APIResp
 
-@api_endpoint.route("/", methods=["GET"])
+@api_endpoint.route("/", methods=["GET"], error_format="json")
 async def hello_api(request):
     return model2json(APIResp(
         code=code.RETURNED_RESOURCE,

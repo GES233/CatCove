@@ -5,3 +5,7 @@ class PydanticErrorModel(BaseModel):
     loc: Tuple[int | str]
     msg: str
     tpye: str
+
+
+class SanicJSONErrorModel(BaseModel):
+    ...

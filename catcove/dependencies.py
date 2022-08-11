@@ -73,3 +73,8 @@ def load_static(app: Sanic) -> None:
     app.static("/static/css", css_path)
     app.static("/static/js", js_path)
     app.static("/static/img", static_img_path)
+
+
+def custom_error(app: Sanic) -> None:
+    from .errorhanders import CostumErrorHander
+    app.error_handler = CostumErrorHander()

@@ -6,7 +6,7 @@ from .....business.about import about_model
 
 api_about = Blueprint("about")
 
-@api_about.route("/about")
+@api_about.route("/about", error_format="json")
 async def about(request):
     return model2json(
         body=APIResp(

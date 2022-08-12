@@ -76,5 +76,6 @@ def load_static(app: Sanic) -> None:
 
 
 def custom_error(app: Sanic) -> None:
+    # Custom errorhander.
     from .errorhanders import CostumErrorHander
     app.error_handler = CostumErrorHander()

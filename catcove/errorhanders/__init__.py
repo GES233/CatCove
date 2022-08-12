@@ -1,20 +1,4 @@
 from sanic.handlers import ErrorHandler
-from sanic.request import Request
-from sanic.errorpages import (
-    exception_response,
-    BaseRenderer,
-    TextRenderer,
-    RENDERERS_BY_CONTENT_TYPE,
-    CONTENT_TYPE_BY_RENDERERS,
-    RENDERERS_BY_CONFIG
-
-)
-from sanic.response import HTTPResponse
-from sanic.exceptions import BadRequest
-import typing as t
-
-from .render import HTMLRendererWithStyle
-from .api import CustomJSONRenderer
 
 class CostumErrorHander(ErrorHandler):
 
@@ -29,6 +13,24 @@ class CostumErrorHander(ErrorHandler):
             fallback=fallback,
         )
 
+
+
+from sanic.request import Request
+from sanic.errorpages import (
+    exception_response,
+    BaseRenderer,
+    TextRenderer,
+    RENDERERS_BY_CONTENT_TYPE,
+    CONTENT_TYPE_BY_RENDERERS,
+    RENDERERS_BY_CONFIG
+)
+
+from sanic.response import HTTPResponse
+from sanic.exceptions import BadRequest
+import typing as t
+
+from .render import HTMLRendererWithStyle
+from .api import CustomJSONRenderer
 
 def exception_response(
     request: Request,

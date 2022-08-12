@@ -30,12 +30,3 @@ class HTMLRendererWithStyle(HTMLRenderer):
             headers=self.headers
         )
 
-    def render(self) -> HTTPResponse:
-        output = (
-            self.full
-            if self.debug and not getattr(self.exception, "quiet", False)
-            else self.minimal
-        )
-        return output()
-
-

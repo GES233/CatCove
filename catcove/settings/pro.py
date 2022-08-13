@@ -5,6 +5,8 @@ class ProConfig:
     
     # secret related
     SECRET_KEY: str = "Q5Vl39OD8CQ93/pgY3k1wJrPpbnaP5EIYvxzruRAnxo="
+    ECC_PRIVATE_KEY = None  # In instance.
+    ECC_PUBLIC_KEY = None
     
     # database
     # sqlalchemy

@@ -1,4 +1,5 @@
 from typing import Tuple, Any
+from Crypto.PublicKey import ECC
 from sanic import Request
 from sanic.response import HTTPResponse, redirect
 
@@ -33,7 +34,7 @@ def delete_login_cookie(response: HTTPResponse) -> HTTPResponse:
 def check_cookie(request: Request) -> Tuple[bool, Any]:
     try:
         cookie = request.cookies.get("UserMeta")
-        ...
+        if not cookie: return False, None
     except TypeError or ValueError:
         return False, None
     else:
@@ -42,3 +43,4 @@ def check_cookie(request: Request) -> Tuple[bool, Any]:
 
 def generate_cookie(user: Users) -> str:
     ...
+

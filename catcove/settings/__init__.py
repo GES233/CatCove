@@ -11,9 +11,12 @@ def padding_instance(app_path) -> str:
     from mako.template import Template
     
     template = Template(filename=f"{app_path}/catcove/settings/config.yaml.mako")
+    
     # SECRET: $ openssl rand -base64 32
     str_key = (os.popen("openssl rand -base64 32").readline().strip("\n"))
-    return template.render(openssl_key=str_key)
+    return template.render(
+        openssl_key=str_key,
+        instance_path=f"{app_path}/instance")
 
 
 
@@ -25,19 +28,21 @@ def register_configure(app: Sanic) -> str:
     # **This Setting IS NOT used for running.**
     # `APP_ENV`
     if not app.config.get("ENV"):
-        app_mode = None
+        app_mode = "pro"
+        # It will be production if not set to development.
     else: app_mode = app.config.ENV
+    
+    # print(app_mode)
 
     if app_mode == "dev" or app_mode == "development":
         # print("Configure Mode: Dev")
         app.update_config(DevConfig)
     else:
-        # It will be production if not set to development.
         # print("Configure Mode: Pro")
         app.update_config(ProConfig)
     
     # About instance file
-    if app.config["INSTANCE"] is True:
+    if app.config["INSTANCE"] == True:
         instance_path = Path(APP_PATH / "instance/")
         config_yaml = Path(instance_path/"config.yml")
         
@@ -49,7 +54,7 @@ def register_configure(app: Sanic) -> str:
 
             # Create_Key file.
             os.popen(f"cd {instance_path} && \
-                openssl ecparam -genkey -name secp112r1 -out eckey.pem -text && \
+                openssl ecparam -genkey -name prime256v1 -out eckey.pem -text && \
                 openssl ec -in eckey.pem -pubout -out ecpubkey.pem")
         
         # Config YAML file.

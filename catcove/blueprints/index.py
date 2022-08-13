@@ -23,3 +23,8 @@ async def index(request: Request):
 @index_bp.route("/about")
 async def about(request: Request):
     return html(render_template("about.html", role="About"))
+
+
+@index_bp.route("/md-help")
+async def md_help(request: Request):
+    return html(render_template("markdown-demo.html", title="如何使用Markdown？"))

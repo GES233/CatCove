@@ -54,7 +54,7 @@ def register_configure(app: Sanic) -> str:
 
             # Create_Key file.
             os.popen(f"cd {instance_path} && \
-                openssl ecparam -genkey -name prime256v1 -out eckey.pem -text && \
+                openssl ecparam -genkey -noout -name prime256v1 -out eckey.pem -text && \
                 openssl ec -in eckey.pem -pubout -out ecpubkey.pem")
         
         # Config YAML file.

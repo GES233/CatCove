@@ -53,6 +53,9 @@ def register_service(app: Sanic) -> None:
         # app.ctx.template_env.globals["..."] = ...
 
         # - user check with cookie.
+    
+    # Key
+    # from .services.security.crypto import ...
 
 
 def load_static(app: Sanic) -> None:

@@ -32,14 +32,14 @@
                 {% if user %}
                 <details role="list" dir="rtl">
                     <summary aria-haspopup="listbox" role="link">{{ user.name }}</summary>
-                    <ul role="listbox">
+                    <ul>
                         <li><a href="#me">个人主页</a></li>
                     </ul>
                 </details>
                 {% else %}
-                <details role="list" dir="rtl">
+                <details role="list" dir="rtl"><!-- CSS need, if wanna a HTML5 env, remove it. -->
                     <summary aria-haspopup="listbox" role="link">申必人</summary>
-                    <ul role="listbox">
+                    <ul>
                         <li><a href="/login">登录</a></li>
                         <li><a href="/signup">注册</a></li>
                     </ul>

@@ -1,9 +1,11 @@
 from functools import wraps
 from sanic.response import redirect
+from sanic.request import Request
 
-
-def token_auth(): return True
-def cookie_auth(): return True
+from . import (
+    token_auth,
+    cookie_auth
+)
 
 def resp_unauth_api(): return ...
 
@@ -11,11 +13,11 @@ def resp_unauth_api(): return ...
 def token_required(wrapped):
     def decorated(func):
         @wraps(func)
-        async def decorated_function(request, *args, **kwargs):
+        async def decorated_function(request: Request, *args, **kwargs):
 
-            is_authenticated = token_auth(request)
+            current_user = token_auth(request.headers.get(""))
 
-            if is_authenticated:
+            if isinstance(current_user, dict):
                 response = await func(request, *args, **kwargs)
                 return response
             else:
@@ -27,11 +29,11 @@ def token_required(wrapped):
 def cookie_required(wrapped):
     def decorated(func):
         @wraps(func)
-        async def decorated_function(request, *args, **kwargs):
+        async def decorated_function(request: Request, *args, **kwargs):
 
-            is_authenticated = cookie_auth(request)
+            current_user = cookie_auth(request.cookies.get(""))
 
-            if is_authenticated:
+            if isinstance(current_user, dict):
                 response = await func(request, *args, **kwargs)
                 return response
             else:

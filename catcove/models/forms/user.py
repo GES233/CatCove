@@ -71,8 +71,13 @@ def check_signup_form(form: SignUpForm) -> SignUpModel | SignUpForm:
     else:
         if form.confirm.errors:
             form.confirm.render_kw["aria-invalid"] = "true"
+            form.confirm.render_kw["placeholder"] = "密码不一致"
+            form.confirm.render_kw["value"] = ""
+            form.password.render_kw["value"] = ""
         elif form.email.errors:
             form.email.render_kw["aria-invalid"] = "true"
+            form.email.render_kw["placeholder"] = "邮件错误"
+            form.email.render_kw["value"] = ""
         return form
 
 

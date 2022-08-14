@@ -9,9 +9,9 @@ from ...models.tables.users import Users
 from ...models.forms.user import SignUpForm, check_signup_form, common_user_front
 from ...business.user.signup import common_user_query, insert_user
 
-async def signup_render(form) -> HTTPMethodView:
+def signup_render(form) -> HTTPMethodView:
         return html(
-            body = await render_template(
+            body = render_template(
             'signup.html',
             role="Sign up",
             form=form)
@@ -23,13 +23,13 @@ class SignUpView(HTTPMethodView):
     form = SignUpForm()
 
     async def get(self, request):
-        return await signup_render(self.form)
+        return signup_render(self.form)
     
     async def post(self, request: Request):
         form_data = request.form
         if not form_data:
             # Bad request.
-            return await signup_render(self.form)
+            return signup_render(self.form)
 
         temp_form = SignUpForm(data={
                 "nickname": form_data.get("nickname"),
@@ -40,7 +40,7 @@ class SignUpView(HTTPMethodView):
         model = check_signup_form(temp_form)
         if isinstance(model, SignUpForm):
             # Which field's error?
-            return await signup_render(model)
+            return signup_render(model)
         # model: SignUpModel
 
         # InviteCode check.
@@ -50,7 +50,7 @@ class SignUpView(HTTPMethodView):
         unique = await common_user_query(model, request.ctx.session)
         if not unique:
             # Common nickname.
-            return await signup_render(common_user_front(temp_form))
+            return signup_render(common_user_front(temp_form))
         
         # E-mail check.
         ...
@@ -60,7 +60,7 @@ class SignUpView(HTTPMethodView):
 
         # Add Cookie and redirect.
         auto_login: bool = temp_form.auto_login
-        if auto_login:
+        if auto_login == True:  # Not work yet.
             return add_login_cookie(redirect("/"), user)
         else:
             # NOT GET methos.

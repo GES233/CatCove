@@ -45,8 +45,7 @@ def register_service(app: Sanic) -> None:
         template_path = PurePath( Path(__file__).cwd() / "catcove/templates")
 
         app.ctx.template_env = Environment(
-            loader=FileSystemLoader(template_path),
-            enable_async=True
+            loader=FileSystemLoader(template_path)
         )
 
         # Globlas functions:

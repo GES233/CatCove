@@ -1,5 +1,5 @@
 from sanic import Blueprint, Request
-from sanic.response import html, redirect
+from sanic.response import html, redirect, HTTPResponse
 from sanic.views import HTTPMethodView
 
 from ..business.auth import login_authentication_logic
@@ -58,9 +58,9 @@ class UserLoginView(HTTPMethodView):
             ...
             return add_login_cookie(redirect("/"), user)
     
-    async def login_render(self, form) -> HTTPMethodView:
+    def login_render(self, form) -> HTTPResponse:
         return html(
-            body = await render_template(
+            body = render_template(
             'auth/login.html',
             role="Login",
             form=form)
@@ -68,8 +68,8 @@ class UserLoginView(HTTPMethodView):
 
 
 async def log_out(request):
-    content = html(body = await render_template('auth/logout.html'))
-    return delete_login_cookie(content)
+    content = html(render_template('auth/logout.html'))
+    return delete_login_cookie(request, content)
 
 
 auth_bp.add_route(UserLoginView.as_view(), "/login")

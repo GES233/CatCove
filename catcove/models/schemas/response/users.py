@@ -5,16 +5,16 @@ from pydantic import BaseModel
 
 
 class Status(Enum):
-    normal = "normal",
-    blocked = "blocked",
-    freeze = "freeze",
-    newbie = "newbie",
+    normal = "normal"
+    blocked = "blocked"
+    freeze = "freeze"
+    newbie = "newbie"
     deleted = "deleted"
 
 
 class Gender(Enum):
     male = "M"
-    female = "f"
+    female = "F"
     other = "O"
 
 

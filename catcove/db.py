@@ -2,10 +2,10 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
 # Load application's path to package
-import os, sys
+import sys
+from pathlib import Path
 
-app_path = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), os.pardir))
+app_path = Path( Path(__file__).cwd() / "catcove" )
 sys.path.append(app_path)
 # Load setting from app
 

@@ -62,8 +62,8 @@ def load_static(app: Sanic) -> None:
 
     from pathlib import Path, PurePath
 
-    app_path = Path(__file__).cwd()
-    static_path = PurePath(app_path / "catcove/static")
+    prj_path = Path(__file__).cwd()
+    static_path = PurePath(prj_path / "catcove/static")
 
     favicon_path = PurePath( static_path / "img/favicon.ico")
     robots_path = PurePath( static_path / "robots.txt")

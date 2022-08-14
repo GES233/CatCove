@@ -8,22 +8,22 @@ from .test import TestConfig
 from .pro import ProConfig
 
 
-def padding_instance(app_path) -> str:
+def padding_instance(prj_path) -> str:
     from mako.template import Template
     
-    template = Template(filename=f"{app_path}/catcove/settings/config.yaml.mako")
+    template = Template(filename=f"{prj_path}/catcove/settings/config.yaml.mako")
     
     # SECRET: $ openssl rand -base64 32
     str_key = (os.popen("openssl rand -base64 32").readline().strip("\n"))
     return template.render(
         openssl_key=str_key,
-        instance_path=f"{app_path}/instance")
+        instance_path=f"{prj_path}/instance")
 
 
 
 def register_configure(app: Sanic) -> str:
     # set path.
-    APP_PATH = Path(__file__).cwd()
+    PRJ_PATH = Path(__file__).cwd()
     
     # Set mode from enviorment firstly.
     # **This Setting IS NOT used for running.**
@@ -48,7 +48,7 @@ def register_configure(app: Sanic) -> str:
     
     # About instance file
     if app.config["INSTANCE"] == True:
-        instance_path = Path(APP_PATH / "instance/")
+        instance_path = Path(PRJ_PATH / "instance/")
         config_yaml = Path(instance_path/"config.yml")
         
         
@@ -66,7 +66,7 @@ def register_configure(app: Sanic) -> str:
         if not config_yaml.exists():
             config_yaml.touch(exist_ok=True)
             ...
-            config_yaml.write_text(padding_instance(APP_PATH), encoding="utf-8")
+            config_yaml.write_text(padding_instance(PRJ_PATH), encoding="utf-8")
         
         with open(config_yaml) as f:
             instance_config = yaml.load(f, Loader=yaml.FullLoader)

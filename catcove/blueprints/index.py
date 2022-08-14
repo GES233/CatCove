@@ -15,16 +15,20 @@ async def index(request: Request):
     ...
 
     # Render template.
-    html_content = render_template("index.html", role="Index")
+    html_content = await render_template("index.html", role="Index")
 
     return html(html_content)
 
 
 @index_bp.route("/about")
 async def about(request: Request):
-    return html(render_template("about.html", role="About"))
+    return html(
+        body = await render_template("about.html", role="About")
+    )
 
 
 @index_bp.route("/md-help")
 async def md_help(request: Request):
-    return html(render_template("markdown-demo.html", title="如何使用Markdown？"))
+    return html(
+        body = await render_template("markdown-demo.html", title="如何使用Markdown？")
+    )

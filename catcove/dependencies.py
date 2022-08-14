@@ -46,6 +46,7 @@ def register_service(app: Sanic) -> None:
 
         app.ctx.template_env = Environment(
             loader=FileSystemLoader(template_path),
+            enable_async=True
         )
 
         # Globlas functions:

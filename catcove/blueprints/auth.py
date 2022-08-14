@@ -56,15 +56,17 @@ class UserLoginView(HTTPMethodView):
             ...
             return add_login_cookie(redirect("/"), user)
     
-    def login_render(self, form) -> HTTPMethodView:
-        return html(render_template(
+    async def login_render(self, form) -> HTTPMethodView:
+        return html(
+            body = await render_template(
             'auth/login.html',
             role="Login",
-            form=form))
+            form=form)
+        )
 
 
 async def log_out(request):
-    content = html(render_template('auth/logout.html'))
+    content = html(body = await render_template('auth/logout.html'))
     return delete_login_cookie(content)
 
 

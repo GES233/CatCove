@@ -4,6 +4,7 @@ import yaml
 import os
 
 from .dev import DevConfig
+from .test import TestConfig
 from .pro import ProConfig
 
 
@@ -37,6 +38,10 @@ def register_configure(app: Sanic) -> str:
     if app_mode == "dev" or app_mode == "development":
         # print("Configure Mode: Dev")
         app.update_config(DevConfig)
+    elif app_mode == "test" or \
+        app_mode == "t" or \
+        app_mode == "tesing":
+        app.update_config(TestConfig)
     else:
         # print("Configure Mode: Pro")
         app.update_config(ProConfig)

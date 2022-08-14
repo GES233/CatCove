@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="cmn-Hans" data-theme="dark">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% if title %}
+        <title>{{title}} - CatCove</title>
+        {% elif role %} {# e.g. CatCove :: Login #}
+        <title>CatCove :: {{role}}</title>
+        {% else %}
+        <title>CatCove</title>
+        {% endif %}
+        {% block costume_style %}{% endblock %}
+        <link rel="stylesheet" href="/static/css/pico.min.css">
+    </head>
+    <body>
+        <nav class="container-fluid">
+        <ul>
+            <li><a id="slogan" href="/">
+                <kbd>CatCove</kbd>
+            </a></li>
+            <li> | </li>
+            {% if user %}
+            <li><small><a href="/explore">发现</a></small></li>
+            <li><small><a href="/mark">书签</a></small></li>
+            {% endif %}
+            <li><small><a href="/about">关于</a></small></li>
+        </ul>
+        <ul>
+            <li>
+            <div class="user-status">
+                {% if user %}
+                <details role="list" dir="rtl">
+                    <summary aria-haspopup="listbox" role="link">{{ user.name }}</summary>
+                    <ul>
+                        <li><a href="#me">个人主页</a></li>
+                    </ul>
+                </details>
+                {% else %}
+                <details role="list" dir="rtl"><!-- CSS need, if wanna a HTML5 env, remove it. -->
+                    <summary aria-haspopup="listbox" role="link">申必人</summary>
+                    <ul>
+                        <li><a href="/login">登录</a></li>
+                        <li><a href="/signup">注册</a></li>
+                    </ul>
+                </details>
+                {% endif %}
+            </div>
+            </li>
+        </ul>
+        </nav>
+        {% block main %}{% endblock %}
+        <footer class="container">
+            <ul>
+                <li>
+                    <small>Built with <a href="https:/sanic.dev">Sanic</a> and <a href="https://picocss.com/">Pico.css</a>.</small>
+                </li>
+                <li>
+                    <small>Powered by <a href="https://github.com/GES233/CatCove">CatCove</a>.</small>
+                </li>
+                <!--<li>
+                    <small>Statistics:</small>
+                    <ul>
+                        <li>
+                            <small>Item: Content</small>
+                        </li>
+                    </ul>
+                </li>-->
+            </ul>
+        </footer>
+    </body>
+</html>

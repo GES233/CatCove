@@ -8,22 +8,66 @@ from .test import TestConfig
 from .pro import ProConfig
 
 
-def padding_instance(prj_path) -> str:
+def padding_instance(app: Sanic, **other_settings) -> None:
+    # set path.
+    PRJ_PATH = Path(__file__).cwd()
+
+    instance_path = Path(PRJ_PATH / "instance")
+    config_yaml = Path(instance_path/"config.yml")
+    
+    
+    # Folder.
+    if not instance_path.is_dir():
+        # Create a new folder.
+        instance_path.mkdir()
+
+        # Create_Key file.
+        os.popen(f"cd {instance_path} && \
+            openssl ecparam -genkey -noout -name prime256v1 -out eckey.pem -text && \
+            openssl ec -in eckey.pem -pubout -out ecpubkey.pem")
+
+    # ====
+
     from mako.template import Template
     
-    template = Template(filename=f"{prj_path}/catcove/settings/config.yaml.mako")
+    template = Template(filename=f"{PRJ_PATH}/catcove/settings/config.yaml.mako")
     
     # SECRET: $ openssl rand -base64 32
     str_key = (os.popen("openssl rand -base64 32").readline().strip("\n"))
-    return template.render(
+    instance_content = template.render(
         openssl_key=str_key,
-        instance_path=f"{prj_path}/instance")
+        instance_path=instance_path,
+        **other_settings)
+    
+    # Config YAML file.
+    if not config_yaml.exists():
+        config_yaml.touch(exist_ok=True)
+        ...
+        config_yaml.write_text(instance_content, encoding="utf-8")
+        
+    with open(config_yaml) as f:
+        instance_config = yaml.load(f, Loader=yaml.FullLoader)
+    
+    app.update_config(instance_config)
 
+
+def set_database_uri(
+    dialect: str,
+    username: str, password: str,
+    host: str, port: str,
+    path: str
+) -> str:
+    if dialect == "sqlite":
+        driver = "aiosqlite"
+        return f"{dialect}+{driver}:///{path}"
+    elif dialect == "mysql" or dialect == "mariadb":
+        driver = "aiopymysql"
+    elif dialect == "postgresql":
+        driver = "asyncpg"
+    return f"{dialect}+{driver}://{username}:{password}@{host}:{port}/{path}"
 
 
 def register_configure(app: Sanic) -> str:
-    # set path.
-    PRJ_PATH = Path(__file__).cwd()
     
     # Set mode from enviorment firstly.
     # **This Setting IS NOT used for running.**
@@ -47,28 +91,5 @@ def register_configure(app: Sanic) -> str:
         app.update_config(ProConfig)
     
     # About instance file
-    if app.config["INSTANCE"] == True:
-        instance_path = Path(PRJ_PATH / "instance/")
-        config_yaml = Path(instance_path/"config.yml")
-        
-        
-        # Folder.
-        if not instance_path.is_dir():
-            # Create a new folder.
-            instance_path.mkdir()
-
-            # Create_Key file.
-            os.popen(f"cd {instance_path} && \
-                openssl ecparam -genkey -noout -name prime256v1 -out eckey.pem -text && \
-                openssl ec -in eckey.pem -pubout -out ecpubkey.pem")
-        
-        # Config YAML file.
-        if not config_yaml.exists():
-            config_yaml.touch(exist_ok=True)
-            ...
-            config_yaml.write_text(padding_instance(PRJ_PATH), encoding="utf-8")
-        
-        with open(config_yaml) as f:
-            instance_config = yaml.load(f, Loader=yaml.FullLoader)
-        
-        app.update_config(instance_config)
+    if  True:#app.config["INSTANCE"] ==
+        padding_instance(app)

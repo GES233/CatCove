@@ -27,6 +27,8 @@ class UserLoginView(HTTPMethodView):
 
     async def post(self, request: Request):
         # Submit -> POST
+        status_code = request.args.get("from")
+        if status_code == "sg": self.get(self.form)
 
         # Initial work.
         form_data = request.form

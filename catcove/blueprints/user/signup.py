@@ -63,4 +63,5 @@ class SignUpView(HTTPMethodView):
         if auto_login:
             return add_login_cookie(redirect("/"), user)
         else:
-            return redirect("/login")
+            # NOT GET methos.
+            return redirect("/login?from=sg")

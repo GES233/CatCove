@@ -42,7 +42,7 @@ def register_service(app: Sanic) -> None:
             FileSystemLoader
         )
 
-        template_path = PurePath( Path(__file__).cwd() / "templates")
+        template_path = PurePath( Path(__file__).cwd() / "catcove/templates")
 
         app.ctx.template_env = Environment(
             loader=FileSystemLoader(template_path),
@@ -63,19 +63,20 @@ def load_static(app: Sanic) -> None:
     from pathlib import Path, PurePath
 
     app_path = Path(__file__).cwd()
+    static_path = PurePath(app_path / "catcove/static")
 
-    favicon_path = PurePath( app_path / "static/img/favicon.ico")
-    robots_path = PurePath( app_path / "static/robots.txt")
-    css_path = PurePath( app_path / "static/css/")
-    js_path = PurePath( app_path / "static/js/")
-    static_img_path = PurePath( app_path / "static/img/")
+    favicon_path = PurePath( static_path / "img/favicon.ico")
+    robots_path = PurePath( static_path / "robots.txt")
+    css_path = PurePath( static_path / "css/")
+    js_path = PurePath( static_path / "js/")
+    img_path = PurePath( static_path / "img/")
 
 
     app.static("/favicon.ico", favicon_path)
     app.static("/robots.txt", robots_path)
     app.static("/static/css", css_path)
     app.static("/static/js", js_path)
-    app.static("/static/img", static_img_path)
+    app.static("/static/img", img_path)
 
 
 def custom_error(app: Sanic) -> None:

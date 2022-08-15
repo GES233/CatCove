@@ -23,3 +23,8 @@ def register_dependencies(app: Sanic) -> None:
         if hasattr(request.ctx, "session_ctx_token"):
             _base_model_session_ctx.reset(request.ctx.session_ctx_token)
             await request.ctx.session.close()
+    
+    # Redis
+    # ...
+
+    # ...

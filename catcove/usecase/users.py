@@ -1,0 +1,188 @@
+from sqlalchemy.sql import select, update, or_
+
+from ..entities.tables.users import Users
+from sqlalchemy.orm import sessionmaker
+
+class UserService:
+    """ Usecase related to user. """
+    def __init__(
+        self,
+        status: dict,
+        db_session: sessionmaker,
+        user: Users | None = None,
+        # User with others.
+    ) -> None:
+        """ Usage:
+            a = UserService(
+                config=None,
+                db_session=request.ctx.session,
+                user=Users(id=2)
+            )
+            a.get_user()
+            # a.user = Users(id=2, nickname="2", ...)
+        """
+        if status:
+            self.service_status = status
+        else:
+            self.service_status = {
+                "config": {},
+                "errors": []
+            }
+        self.db_session = db_session
+        if user:
+            self.user: Users = user
+        else: self.user = Users()
+    
+    def __del__(self) -> None:
+        """ Release all. """
+        self.config = None
+        self.user = None
+        self.db_session = None
+    
+    def reset_status(self):
+        self.service_status = {
+            "config": {},
+            "errors": []
+        }
+
+    async def get_user(self, id: int | None = None) -> Users | None:
+
+        query_id = id if id else self.user.id
+
+        async with self.db_session.begin():
+            sql = select(Users).where(
+                Users.id == query_id
+            )
+            users = await self.db_session.execute(sql)
+            self.user = users.scalars().first()
+        
+        return self.user
+    
+    @property
+    def user(self): return self.user
+
+    @property
+    def service_status(self): return self.service_status
+
+    async def check_user_token(self, token: dict) -> bool:
+       
+       # Check expire firstly.
+
+        async with self.db_session.begin():
+            sql = select(Users).where(Users.id==token["id"])
+            users = await self.db_session.execute(sql)
+            user: Users = users.scalars().first()
+            self.db_session.expunge(user)
+        
+        if not user: return False
+
+        if token["status"] == user.status and \
+            ((user.is_spectator == True and token["role"] == "spectator") or \
+                (user.is_spectator == False and token["role"] == "normal")) and \
+                (user.nickname == token["nickname"]):
+            return True
+        else: return False
+    
+    def get_user_token(self) -> dict:
+        """ Get user token from database.
+            
+            Usage:
+            When update user in database.
+        """
+        return {
+            "id": self.user.id,
+            "nickname": self.user.nickname,
+            "status": self.user.status,
+            "role": "spectator" if self.user.is_spectator == True else "normal"
+        }
+
+    async def check_common_user(self, nickname) -> bool:
+
+        async with self.db_session.begin():
+            sql = select(Users).where(
+                or_(
+                    Users.nickname == nickname,
+                    Users.email == nickname,
+                    Users.id == nickname
+                )
+            )
+            users = await self.db_session.execute(sql)
+            user: Users | None = users.scalars().first()
+        if user:
+            self.user = user
+            return True
+        else: return False
+
+    async def create_user(self, password) -> Users:
+        async with self.db_session.begin():
+            newbie = Users(
+                nickname=self.user.nickname,
+                email=self.user.email,
+            )
+            newbie.encrypt_passwd(password)
+            self.db_session.add(newbie)
+            await self.db_session.flush()
+            self.db_session.expunge(newbie)
+        self.user = newbie
+        return self.user
+    
+    async def change_user_status(self, status) -> bool:
+        async with self.db_session.begin():
+            '''
+            sql = update(Users).\
+                where(Users.id == self.user.id).\
+                values(status=status)
+            await self.db_session.execute(sql)
+            '''
+            result = await self.db_session.execute(select(Users).where(id=self.user.id))
+            now_user: Users = result.scalars().first()
+
+            # Return None if not existed.
+            if not now_user: return False
+            now_user.status = status
+
+            # Update.
+            await self.db_session.flush()
+            self.db_session.expunge(now_user)
+
+        self.user = now_user
+        return True
+    
+    async def change_user_profile(self, **profile) -> bool:
+        """ Change user's profile.
+
+            There're 2 ways to implementate this:
+            
+            - update as a `Users` model
+            - update to the database
+
+            I choose the second one.
+        """
+        # No person exist.
+        if not isinstance(self.user) or not self.user.id: return False
+
+        data = {k: v for k, v in profile.items() if v is not None}
+        async with self.db_session.begin():
+            sql = update(Users).where(Users.id==self.user.id).\
+                values(data)
+            await self.db_session.execute(sql)
+        
+        return True
+    
+    async def update_password(self, password) -> bool:
+        """ Update user's password. """
+        # No person in instance.
+        if not isinstance(self.user) or not self.user.id: return False
+        async with self.db_session.begin():
+            result = await self.db_session.\
+                execute(select(Users).where(id=self.user.id))
+            user = result.scalars().first()
+
+            # Not in database.
+            if not user: return False
+
+            user.encrypt_passwd(password)
+            await self.db_session.flush()
+
+        return True
+

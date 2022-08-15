@@ -85,8 +85,8 @@ def register_routers(app: Sanic):
     app.blueprint(api)
 
     # Views
-    from .blueprints import views
-    app.blueprint(views)
+    # from .blueprints import views
+    # app.blueprint(views)
 
 
 def custom_error(app: Sanic) -> None:

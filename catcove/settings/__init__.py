@@ -26,25 +26,27 @@ def padding_instance(app: Sanic, **other_settings) -> None:
             openssl ecparam -genkey -noout -name prime256v1 -out eckey.pem -text && \
             openssl ec -in eckey.pem -pubout -out ecpubkey.pem")
 
-    # ====
-
-    from mako.template import Template
     
-    template = Template(filename=f"{PRJ_PATH}/catcove/settings/config.yaml.mako")
-    
-    # SECRET: $ openssl rand -base64 32
-    str_key = (os.popen("openssl rand -base64 32").readline().strip("\n"))
-    instance_content = template.render(
-        openssl_key=str_key,
-        instance_path=instance_path,
-        **other_settings)
     
     # Config YAML file.
     if not config_yaml.exists():
+        from mako.template import Template
+    
+        template = Template(filename=f"{PRJ_PATH}/catcove/settings/config.yaml.mako")
+    
+        # SECRET: $ openssl rand -base64 32
+        str_key = (os.popen("openssl rand -base64 32").readline().strip("\n"))
+        instance_content = template.render(
+            openssl_key=str_key,
+            instance_path=instance_path,
+            **other_settings)
+
         config_yaml.touch(exist_ok=True)
         ...
         config_yaml.write_text(instance_content, encoding="utf-8")
         
+    # Read from it.
+    
     with open(config_yaml) as f:
         instance_config = yaml.load(f, Loader=yaml.FullLoader)
     
@@ -80,16 +82,17 @@ def register_configure(app: Sanic) -> str:
     # print(app_mode)
 
     if app_mode == "dev" or app_mode == "development":
-        # print("Configure Mode: Dev")
         app.update_config(DevConfig)
     elif app_mode == "test" or \
-        app_mode == "t" or \
         app_mode == "tesing":
+        app.update_config(DevConfig)
         app.update_config(TestConfig)
     else:
         # print("Configure Mode: Pro")
         app.update_config(ProConfig)
     
     # About instance file
-    if  True:#app.config["INSTANCE"] ==
+    if app.config["INSTANCE"] == True:
         padding_instance(app)
+    
+    print(app.config)

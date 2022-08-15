@@ -1,4 +1,5 @@
 from sanic import Sanic
+from sanic.response import text
 
 def register_routers(app: Sanic):
     # API
@@ -9,3 +10,5 @@ def register_routers(app: Sanic):
     # from .blueprints import views
     # app.blueprint(views)
     ...
+    @app.route("/")
+    async def index(request): return text("Null")

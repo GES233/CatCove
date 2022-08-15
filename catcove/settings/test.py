@@ -1,5 +1,3 @@
-from .dev import DevConfig
-
-class TestConfig(DevConfig):
+class TestConfig:
     DEBUG: bool = False
     INSTANCE: bool = True

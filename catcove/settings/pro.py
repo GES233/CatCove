@@ -2,6 +2,7 @@ class ProConfig:
     # mode
     DEBUG: bool = False
     INSTANCE: bool = True
+    ACCESS_LOG: bool = False
     
     # secret related
     SECRET_KEY: str = "Q5Vl39OD8CQ93/pgY3k1wJrPpbnaP5EIYvxzruRAnxo="

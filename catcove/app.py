@@ -5,9 +5,9 @@ from .settings import register_configure
 from .dependencies import (
     register_service,
     load_static,
+    register_routers,
     custom_error
 )
-from .routers import register_routers
 
 
 def create_app() -> Sanic:

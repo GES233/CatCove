@@ -79,6 +79,16 @@ def load_static(app: Sanic) -> None:
     app.static("/static/img", img_path)
 
 
+def register_routers(app: Sanic):
+    # API
+    from .blueprints.api import api
+    app.blueprint(api)
+
+    # Views
+    from .blueprints import views
+    app.blueprint(views)
+
+
 def custom_error(app: Sanic) -> None:
     # Custom errorhander.
     from .errorhanders import CostumErrorHander

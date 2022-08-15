@@ -1,6 +1,6 @@
 from sanic import Blueprint
 
-index_bp = Blueprint("index", version=0.1)
+index_bp = Blueprint("api_index", version=0.1)
 
 @index_bp.route("/")
 async def index(request):

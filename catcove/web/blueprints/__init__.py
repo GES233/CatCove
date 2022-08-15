@@ -2,9 +2,9 @@ from sanic import Sanic
 
 def register_routers(app: Sanic):
     # API
-    from .api import api
-    app.blueprint(api)
+    from .api import api_bp
+    app.blueprint(api_bp)
 
     # Views
-    from .views import views
+    from .web import views
     app.blueprint(views)

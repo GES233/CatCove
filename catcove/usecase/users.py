@@ -1,6 +1,7 @@
 from sqlalchemy.sql import select, update, or_
 
 from ..entities.tables.users import Users
+from ..entities.schemas.auth import UserTokenPayload
 from sqlalchemy.orm import sessionmaker
 
 class UserService:
@@ -89,12 +90,11 @@ class UserService:
             Usage:
             When update user in database.
         """
-        return {
-            "id": self.user.id,
-            "nickname": self.user.nickname,
-            "status": self.user.status,
-            "role": "spectator" if self.user.is_spectator == True else "normal"
-        }
+        return UserTokenPayload(
+            id = self.user.id, nickname = self.user.nickname,
+            status = self.user.status, role = "spectator" if \
+                self.user.is_spectator == True else "normal"
+        ).dict()
 
     async def check_common_user(self, nickname) -> bool:
 

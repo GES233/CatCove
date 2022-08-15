@@ -1,7 +1,7 @@
 from sanic.errorpages import JSONRenderer
 from sanic.response import HTTPResponse
 
-from ...models.schemas.exceptions import SanicJSONErrorModel
+from ....models.schemas.exceptions import SanicJSONErrorModel
 from ...blueprints.api.response import model2json
 
 

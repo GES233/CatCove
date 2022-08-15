@@ -1,13 +1,12 @@
 from sanic import Sanic
 from sanic.exceptions import SanicException
 
-from .settings import register_configure
-from .dependencies import (
-    register_service,
-    load_static,
-    register_routers,
-    custom_error
-)
+from ..settings import register_configure
+from ..dependencies import register_dependencies
+from ..services import register_services
+from .errorhanders import custom_error
+from .blueprints import register_routers
+from .static import load_static
 
 
 def create_app() -> Sanic:
@@ -16,7 +15,9 @@ def create_app() -> Sanic:
 
     register_configure(app)
 
-    register_service(app)
+    register_dependencies(app)
+
+    register_services(app)
 
     custom_error(app)
 

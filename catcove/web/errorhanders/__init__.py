@@ -1,4 +1,4 @@
-from sanic import Request
+from sanic import Request, Sanic
 from sanic.handlers import ErrorHandler
 from sanic.errorpages import exception_response
 import re
@@ -30,3 +30,10 @@ class CostumErrorHander(ErrorHandler):
                 fallback=fallback,
                 renderer=HTMLRendererWithStyle
             )
+
+
+def custom_error(app: Sanic) -> None:
+    # Custom errorhander.
+    from ..errorhanders import CostumErrorHander
+    app.error_handler = CostumErrorHander()
+

@@ -9,7 +9,7 @@ app_path = Path( Path(__file__).cwd() / "catcove" )
 sys.path.append(app_path)
 # Load setting from app
 
-from catcove.app import create_config_app
+from catcove.web.app import create_config_app
 app = create_config_app()
 
 engine = create_async_engine(

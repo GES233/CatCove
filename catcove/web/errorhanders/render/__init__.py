@@ -1,7 +1,7 @@
-from sanic.errorpages import HTMLRenderer, escape
+from sanic.errorpages import HTMLRenderer
 from sanic.response import HTTPResponse, html
 
-from ...services.render import render_template
+from ....services.render import render_template
 
 
 class HTMLRendererWithStyle(HTMLRenderer):

@@ -11,10 +11,10 @@ sys.path.append(prj_path)
 try:
     try:
         # From the Application.
-        from ...db import engine
+        from ...dependencies.db import engine
     except ImportError:
         # Absolutely import
-        from db import engine
+        from dependencies.db import engine
 except ModuleNotFoundError:
     raise Exception("Please running server from app.py!")
 

@@ -23,7 +23,7 @@ import os, sys
 app_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "catcove"))
 sys.path.append(app_path)
 # Load setting from app
-from catcove.app import create_config_app
+from catcove.web.app import create_config_app
 app = create_config_app()
 
 config.set_main_option("sqlalchemy.url", app.config.SQLALCHEMY_DATABASE_URL)

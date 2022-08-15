@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from pydantic import BaseModel
-from ...models.schemas.response.users import Status
-from ...models.tables.users import Users
+from ...entities.schemas.response.users import Status
+from ...entities.tables.users import Users
 
 class UserSecurityPayload(BaseModel):
     id: int

@@ -17,6 +17,12 @@ from ..models.tables.users import Users
 async def login_authentication_logic(
     request_model: UserLoginModel,
     db_session: async_session) -> Users | None | bool:
+    """ Return:
+        
+        - None: no person existed.
+        - False: Password error.
+        - User: Return user.
+    """
 
     # Simple Read.
     

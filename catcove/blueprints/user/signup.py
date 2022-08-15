@@ -59,9 +59,9 @@ class SignUpView(HTTPMethodView):
         user: Users = await insert_user(model, request.ctx.session)
 
         # Add Cookie and redirect.
-        auto_login: bool = temp_form.auto_login
-        if auto_login == True:  # Not work yet.
+        auto_login = temp_form.auto_login
+        if auto_login == "on":  # Not work yet.
             return add_login_cookie(redirect("/"), user)
         else:
-            # NOT GET methos.
+            # NOT GET method.
             return redirect("/login?from=sg")

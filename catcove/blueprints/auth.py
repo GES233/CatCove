@@ -47,24 +47,19 @@ class UserLoginView(HTTPMethodView):
         
         # Check.
         user = await login_authentication_logic(model, request.ctx.session)
+
         if user is None:
-            # 查无此人
             return self.login_render(user_not_exist_front(self.form))
-        elif user == False:
-            # Password error.
+        elif isinstance(user, bool):
             return self.login_render(password_not_match_front(self.form))
         else:
-            # Set-cookie.
-            ...
             return add_login_cookie(redirect("/"), user)
     
     def login_render(self, form) -> HTTPResponse:
-        return html(
-            body = render_template(
+        return html(render_template(
             'auth/login.html',
             role="Login",
-            form=form)
-        )
+            form=form))
 
 
 async def log_out(request):

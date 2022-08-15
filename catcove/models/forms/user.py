@@ -60,7 +60,7 @@ class SignUpForm(Form):
     auto_login = BooleanField(
         render_kw={
             "role": "switch",
-            "value": "n"
+            "checked": "checked"
         }
     )
 

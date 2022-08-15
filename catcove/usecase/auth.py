@@ -1,4 +1,6 @@
 from Crypto.PublicKey import ECC
+from sanic.request import Request
+from sanic.response import HTTPResponse
 
 
 class AuthService:
@@ -60,3 +62,15 @@ class AuthService:
         if not self.payload: return False
         self.raw = self.payload.__str__()
         return True
+    
+    def set_cookie(self, response: HTTPResponse) -> HTTPResponse:
+        response.cookies["UserMeta"] = self.cookie
+        response.cookies["UserMeta"]["httpOnly"] = True
+        ...
+    
+    def del_cookie(self, request: Request, response: HTTPResponse)\
+        -> HTTPResponse:
+        if request.cookies.get["UserMeta"]:
+            ...
+        
+        return response

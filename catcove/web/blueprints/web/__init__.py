@@ -8,7 +8,12 @@ async def index(request):
     from ....services.render import render_template
     return html(render_template("index.html"))
 
+from .auth import auth_bp
+from .user import user_bp
+
 """ Render with Jinja2. """
 views = Blueprint.group(
     index_bp,
+    auth_bp,
+    user_bp
 )

@@ -8,8 +8,8 @@ class UserService:
     """ Usecase related to user. """
     def __init__(
         self,
-        status: dict,
         db_session: sessionmaker,
+        status: dict | None = None,
         user: Users | None = None,
         # User with others.
     ) -> None:

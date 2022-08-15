@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block costume_style %}
+<style>
+    @import url("/static/css/form_interface.css");
+</style>
+{% endblock %}
+{% block main %}
+<main class="container">
+    <article class="grid">
+        <div>
+            <hgroup>
+                <h1>注册</h1>
+                <h2></h2>
+            </hgroup>
+            <form action="" method="post">
+                <!--
+                <input type="text" name="nickname" placeholder="昵称" aria-label="昵称" autocomplete="username" required>
+                <input type="text" name="email" placeholder="邮件地址" aria-label="邮件地址" autocomplete="email" required>-->
+                {{ form.nickname }}
+                {{ form.email }}
+                <input type="text" name="invite-code" placeholder="邀请码（暂时不限制注册）" disabled>
+                <!--
+                <input type="password" name="password" placeholder="密码" aria-label="密码" required>
+                <input type="password" name="confirm" placeholder="确认密码" aria-label="确认密码" required>-->
+                {{ form.password }}
+                {{ form.confirm }}
+                <fieldset>
+                    <label for="auto-login">
+                      <!--<input type="checkbox" role="switch" id="auto-login" name="auto-login">-->
+                      {{ form.auto_login }}
+                      <span style="font-size: small;" data-tooltip="注册完成后直接进入首页">跳过登录</span>
+                    </label>
+                </fieldset>
+                <button type="submit" class="contrast" onclick="">注册</button>
+            </form>
+        </div>
+        <div></div>
+    </article>
+</main>
+{% endblock %}

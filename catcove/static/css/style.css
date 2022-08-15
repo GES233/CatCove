@@ -1,0 +1,16 @@
+/* CatCove */
+
+/* Color theme */
+
+:root{
+    --primary: #8e24aa;
+}
+
+a#tag {
+    color: #3b8bba;
+    text-decoration: none;
+}
+
+a#tag:visited {
+    color: #265778;
+}

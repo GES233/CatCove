@@ -1,6 +1,4 @@
-from sanic import Sanic, Blueprint
-
-demo = Blueprint("demo_index")
+from sanic import Sanic
 
 def register_routers(app: Sanic):
     # API

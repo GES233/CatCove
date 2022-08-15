@@ -5,7 +5,7 @@ from sanic import Request
 from sanic.response import HTTPResponse, redirect, text
 import base64
 
-from ...entities.tables.users import Users
+from ...models.tables.users import Users
 
 COOKIE_MAX_AGE = 3600 * 24 * 45
 

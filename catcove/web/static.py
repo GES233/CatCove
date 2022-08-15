@@ -4,8 +4,6 @@ from pathlib import Path, PurePath
 
 def load_static(app: Sanic) -> None:
 
-    from pathlib import Path, PurePath
-
     prj_path = Path(__file__).cwd()
     static_path = PurePath(prj_path / "catcove/static")
 

@@ -31,4 +31,4 @@ def init_db():
     try:
         ...
     except ImportError:
-        raise SanicException("Do not from run this commands.py.")
+        raise SanicException("Do not run this from commands.py.")

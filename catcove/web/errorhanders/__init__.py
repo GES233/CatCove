@@ -12,7 +12,7 @@ class CostumErrorHander(ErrorHandler):
         self.log(request, exception)
         fallback = request.app.config.FALLBACK_ERROR_FORMAT
         url = request.path
-        '''if re.match(r"/api", url):  # from api
+        if re.match(r"/api", url):  # from api
             return exception_response(
                 request,
                 exception,
@@ -21,8 +21,7 @@ class CostumErrorHander(ErrorHandler):
                 fallback=fallback,
                 renderer=CustomJSONRenderer
             )
-        else:'''
-        if True:
+        else:
             return exception_response(
                 request,
                 exception,

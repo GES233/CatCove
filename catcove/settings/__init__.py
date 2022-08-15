@@ -94,5 +94,3 @@ def register_configure(app: Sanic) -> str:
     # About instance file
     if app.config["INSTANCE"] == True:
         padding_instance(app)
-    
-    print(app.config)

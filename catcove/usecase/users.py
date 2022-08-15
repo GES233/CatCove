@@ -19,7 +19,7 @@ class UserService:
                 user=Users(id=2)
             )
             a.get_user()
-            # a.user = Users(id=2, nickname="2", ...)
+            a.user = Users(id=2, nickname="2", ...)
         """
         if status:
             self.service_status = status
@@ -123,6 +123,7 @@ class UserService:
             self.db_session.add(newbie)
             await self.db_session.flush()
             self.db_session.expunge(newbie)
+        
         self.user = newbie
         return self.user
     

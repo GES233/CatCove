@@ -85,6 +85,7 @@ def register_configure(app: Sanic) -> str:
     elif app_mode == "test" or \
         app_mode == "t" or \
         app_mode == "tesing":
+        app.update_config(DevConfig)  # Heritage seems not work.
         app.update_config(TestConfig)
     else:
         # print("Configure Mode: Pro")

@@ -6,6 +6,14 @@ from . import *
 from .tags import tag_maintainers
 
 
+following_table = Table(
+    "following_table",
+    Base.metadata,
+    Column("follower_id", ForeignKey("users.id")),
+    Column("followed_id", ForeignKey("users.id"))
+)
+
+
 class Users(Base):
     __tablename__ = "users"
     id = Column(
@@ -46,16 +54,22 @@ class Users(Base):
         +-------+                  +---------+
     """
     userposts = relationship("UserPosts", back_populates="owner")
-    posts = relationship("Posts", back_populates="owner")
+    posts = relationship("PostsUnderThread", back_populates="owner")
     threads = relationship("Threads", back_populates="owner")
     # comments = relationship("Comments")  # I don't add here.
 
     """ Fields:
 
         +-------+                        +---------+
-        | Users |zero/namy <--> zero/many|  Filed  |
+        | Users |zero/namy <--> zero/many|  Field  |
         +-------+                        +---------+
     """
+    # Followers Following sb. ->
+    # followers -> folowing
+    followers = relationship("Users", secondary=following_table,
+        primaryjoin=(following_table.c.follower_id==id), back_populates="following")
+    following = relationship("Users", secondary=following_table,
+        primaryjoin=(following_table.c.followed_id==id), back_populates="followers")
     tags = relationship("Tags", secondary=tag_maintainers, back_populates="maintainers")
 
     def encrypt_passwd(self, password: str) -> None:
@@ -66,4 +80,4 @@ class Users(Base):
         return True if checkpw(password.encode("utf-8"), self.password) else False
 
     def __repr__(self) -> str:
-        return 'User %s (uid:%d)' %(self.nickname, self.id)
+        return "<User %s (uid:%s)>" %(self.nickname, self.id)

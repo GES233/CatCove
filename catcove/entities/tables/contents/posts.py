@@ -18,13 +18,6 @@ class Posts(ContentMixin):
 
     content = Column(Text)
 
-    @declared_attr
-    def __repr__(self) -> str:
-        return '<Post %s from %s at %s>' % (
-            self.id,
-            self.owner_id,
-            self.create_time
-        )
 
 
 class PostsUnderThread(Posts):  # Remove heritage.
@@ -38,6 +31,14 @@ class PostsUnderThread(Posts):  # Remove heritage.
         comment="loc(location), i.e. index in thread."
     )
 
+    def __repr__(self) -> str:
+        return '<Post %s from %s at %s under %s>' % (
+            self.id,
+            self.owner,
+            self.create_time,
+            self.thread
+        )
+
 
 class UserPosts(Posts):
     __tablename__ = "userposts"
@@ -45,3 +46,10 @@ class UserPosts(Posts):
     owner = relationship("Users", back_populates="userposts")
 
     tags = relationship("Tags", secondary=userposts_tag_association, back_populates="userposts_related")
+
+    def __repr__(self) -> str:
+        return '<Post %s from %s at %s>' % (
+            self.id,
+            self.owner,
+            self.create_time
+        )

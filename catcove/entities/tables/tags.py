@@ -7,7 +7,7 @@ from . import *
 tag_maintainers = Table(
     # The user who can edit the tag's info.
     "tag_maintainers",
-    metadata,
+    Base.metadata,
     Column(
         "user_id",
         ForeignKey("users.id")
@@ -20,7 +20,7 @@ tag_maintainers = Table(
 
 threads_tag_association = Table(
     "threads_tag_association",
-    metadata,
+    Base.metadata,
     Column(
         "thread_id",
         ForeignKey("threads.id")
@@ -33,7 +33,7 @@ threads_tag_association = Table(
 
 userposts_tag_association = Table(
     "userposts_tag_association",
-    metadata,
+    Base.metadata,
     Column(
         "userposts_id",
         ForeignKey("userposts.id")
@@ -69,4 +69,7 @@ class Tags(Base):
 
     threads_related = relationship("Threads", secondary=threads_tag_association, back_populates="tags")
     userposts_related = relationship("UserPosts", secondary=userposts_tag_association, back_populates="tags")
+
+    def __repr__(self) -> str:
+        return "<Tag %s : %s>" % (self.id, self.title)
 

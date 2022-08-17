@@ -16,7 +16,7 @@ metadata = MetaData()
 
 Base = declarative_base(metadata)
 
-from .users import Users
-from .contents.posts import UserPosts, Posts, PostsUnderThread
+from .users import Users, following_table
+from .contents.posts import UserPosts, PostsUnderThread
 from .contents.threads import Threads
 from .tags import Tags, tag_maintainers, threads_tag_association, userposts_tag_association

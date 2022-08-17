@@ -20,4 +20,4 @@ class Threads(ContentMixin):
     tags = relationship("Tags", secondary=threads_tag_association, back_populates="threads_related")
 
     def __repr__(self) -> str:
-        return f"<Thread {self.id} by {self.org_po}>"
+        return f"<Thread {self.id} by {self.owner}>"

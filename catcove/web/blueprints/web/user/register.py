@@ -12,7 +12,7 @@ class RegisterView(HTTPMethodView):
 
     def login_render(self, form) -> HTTPResponse:
         return html(render_template(
-            'auth/signup.html',
+            'signup.html',
             role="SignUp",
             form=form))
 

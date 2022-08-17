@@ -1,19 +1,13 @@
-from datetime import datetime
 from sqlalchemy.orm import declarative_mixin, declared_attr
 
 from .. import *
 
-@declarative_mixin
-class CommentsBase(Base):
-    __abstract__ = True
+from . import ContentMixin
 
-    id = Column(
-        Integer,
-        primary_key=True,
-        index=True,
-        unique=True
-    )
-    
+@declarative_mixin
+class CommentsBase(ContentMixin):
+    __abstract__ = True
+  
     @declared_attr
     def owner_id(self):
         return Column(
@@ -47,13 +41,6 @@ class CommentsBase(Base):
     # Update: だめ
     # ====
     # Delete: status = "delete"
-
-    # status: `normal`, `hidden`, `deleted`.
-    status = Column(String(16), default="normal")
-
-    create_time = Column(DateTime, default=datetime.utcnow())
-
-    content = Column(Text)
 
     @declared_attr
     def __repr__(self) -> str:

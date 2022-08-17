@@ -3,7 +3,7 @@ from bcrypt import gensalt, hashpw, checkpw
 
 from . import *
 
-from .contents.tags import tag_maintainers
+from .tags import tag_maintainers
 
 
 class Users(Base):
@@ -41,16 +41,22 @@ class Users(Base):
 
     """ Contents:
         
-        +-------+                 +---------+
-        | Users |one --> zero/many| Content |
-        +-------+                 +---------+
+        +-------+                  +---------+
+        | Users |one <--> zero/many| Content |
+        +-------+                  +---------+
     """
     userposts = relationship("UserPosts", back_populates="owner")
     posts = relationship("Posts", back_populates="owner")
     threads = relationship("Threads", back_populates="owner")
-    
-    tags = relationship("Tags", secondary=tag_maintainers, back_populates="maintainers")
     # comments = relationship("Comments")  # I don't add here.
+
+    """ Fields:
+
+        +-------+                        +---------+
+        | Users |zero/namy <--> zero/many|  Filed  |
+        +-------+                        +---------+
+    """
+    tags = relationship("Tags", secondary=tag_maintainers, back_populates="maintainers")
 
     def encrypt_passwd(self, password: str) -> None:
         salt = gensalt()

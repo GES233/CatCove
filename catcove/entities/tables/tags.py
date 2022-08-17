@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy.orm import declarative_mixin, declared_attr
 
-from .. import *
+from . import *
 
 
 tag_maintainers = Table(

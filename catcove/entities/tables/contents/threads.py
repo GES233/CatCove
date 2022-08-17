@@ -1,16 +1,10 @@
-from datetime import datetime
-
 from .. import *
 
-from .tags import threads_tag_association
+from . import ContentMixin
+from ..tags import threads_tag_association
 
-class Threads(Base):
+class Threads(ContentMixin):
     __tablename__ = "threads"
-    id = Column(  # id of threads.
-        Integer,
-        primary_key=True,
-        index=True,
-        unique=True)
     org_po = Column(  # OP or PO?
         Integer,
         ForeignKey("users.id")
@@ -19,11 +13,6 @@ class Threads(Base):
         String(256),
         index=True
     )
-    # `normal`, `block`, `deleted`, `hidden`
-    status = Column(
-        String(16)
-    )
-    create_time = Column(DateTime, default=datetime.utcnow())
     # parent = Column(Integer, ForeignKey("tag.id"))
 
     owner = relationship("Users", back_populates="threads")

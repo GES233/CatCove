@@ -3,29 +3,18 @@ from sqlalchemy.orm import declarative_mixin, declared_attr
 
 from .. import *
 
-from .tags import userposts_tag_association
+from . import ContentMixin
+from ..tags import userposts_tag_association
 
 @declarative_mixin
-class Posts(Base):
+class Posts(ContentMixin):
     __abstract__ = True
 
-    id = Column(
-        Integer,
-        primary_key=True,
-        index=True,
-        unique=True
-    )
-    
     @declared_attr
     def owner_id(self):
         return Column(
             Integer,
             ForeignKey("users.id"))
-    
-    # status: `normal`, `hidden`, `deleted`.
-    status = Column(String(16), default="normal")
-
-    create_time = Column(DateTime, default=datetime.utcnow())
 
     content = Column(Text)
 

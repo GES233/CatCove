@@ -2,10 +2,10 @@ from functools import wraps
 from sanic.response import redirect
 from sanic.request import Request
 
-from . import (
-    token_auth,
-    cookie_auth
-)
+
+def token_auth() -> None: pass
+def cookie_auth() -> None: pass
+
 
 def resp_unauth_api(): return ...
 

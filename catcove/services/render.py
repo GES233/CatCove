@@ -1,7 +1,7 @@
 from typing import Dict, Optional
 from sanic import Sanic
 from sanic.response import HTTPResponse, json
-from ..entities.schemas.api import OriginContentModel
+from pydantic import BaseModel
 from jinja2.environment import Template
 
 
@@ -16,7 +16,7 @@ def render_template(template_name: str, **kwargs) -> str:
 def render_api_resp(
     body_code: int,
     body_info: str,
-    body_org: OriginContentModel,
+    body_org: BaseModel,
     status: int = 200,
     headers: Optional[Dict[str, str]] = None
 ) -> HTTPResponse:

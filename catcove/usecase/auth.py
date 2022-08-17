@@ -30,6 +30,15 @@ class AuthService:
         
         self.raw: str = ""
         self.payload: dict = {}
+        # payload["id"]: int
+        # payload["nickname"]: str
+        # >> Update when change.
+        # payload["status"]: str | Enum\
+        # >> Update when change.
+        # payload["role"]: str | Enum
+        # >> Update when change.
+        # payload["timezone"]: int | (-12, 12)
+        # payload["exp"]: timestamp
         self.exp: datetime = datetime.utcnow()
     
     def encrypt(self, request: Request) -> bool:
@@ -72,6 +81,7 @@ class AuthService:
         response.cookies["UserMeta"] = self.cookie
         response.cookies["UserMeta"]["path"] = "/"
         response.cookies["UserMeta"]["httponly"] = True
+        response.cookies["UserMeta"]["expire"] = self.exp
     
     def del_cookie(self, request: Request, response: HTTPResponse)\
         -> HTTPResponse:

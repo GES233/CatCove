@@ -3,6 +3,8 @@ from bcrypt import gensalt, hashpw, checkpw
 
 from . import *
 
+from .contents.tags import tag_maintainers
+
 
 class Users(Base):
     __tablename__ = "users"
@@ -44,7 +46,10 @@ class Users(Base):
         +-------+                 +---------+
     """
     userposts = relationship("UserPosts", back_populates="owner")
-    # posts = relationship("Posts")
+    posts = relationship("Posts", back_populates="owner")
+    threads = relationship("Threads", back_populates="owner")
+    
+    tags = relationship("Tags", secondary=tag_maintainers, back_populates="maintainers")
     # comments = relationship("Comments")  # I don't add here.
 
     def encrypt_passwd(self, password: str) -> None:

@@ -14,8 +14,7 @@ def padding_instance(app: Sanic, **other_settings) -> None:
 
     instance_path = Path(PRJ_PATH / "instance")
     config_yaml = Path(instance_path/"config.yml")
-    
-    
+
     # Folder.
     if not instance_path.is_dir():
         # Create a new folder.
@@ -25,8 +24,6 @@ def padding_instance(app: Sanic, **other_settings) -> None:
         os.popen(f"cd {instance_path} && \
             openssl ecparam -genkey -noout -name prime256v1 -out eckey.pem -text && \
             openssl ec -in eckey.pem -pubout -out ecpubkey.pem")
-
-    
     
     # Config YAML file.
     if not config_yaml.exists():
@@ -69,7 +66,7 @@ def set_database_uri(
     return f"{dialect}+{driver}://{username}:{password}@{host}:{port}/{path}"
 
 
-def register_configure(app: Sanic) -> str:
+def register_configure(app: Sanic) -> None:
     
     # Set mode from enviorment firstly.
     # **This Setting IS NOT used for running.**
@@ -78,19 +75,18 @@ def register_configure(app: Sanic) -> str:
         app_mode = "pro"
         # It will be production if not set to development.
     else: app_mode = app.config.ENV
-    
-    # print(app_mode)
 
+    # Use the default config firstly.
     if app_mode == "dev" or app_mode == "development":
         app.update_config(DevConfig)
     elif app_mode == "test" or \
         app_mode == "tesing":
         app.update_config(DevConfig)
+        # The Sanic app seams not can read from parent class.
         app.update_config(TestConfig)
     else:
-        # print("Configure Mode: Pro")
         app.update_config(ProConfig)
     
-    # About instance file
+    # Using instance if `INSTANCE` is True.
     if app.config["INSTANCE"] == True:
         padding_instance(app)

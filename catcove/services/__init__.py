@@ -26,7 +26,6 @@ def register_services(app: Sanic) -> None:
         )
 
         # Globlas functions:
-
         # app.ctx.template_env.globals["..."] = ...
 
         # - user check with cookie.

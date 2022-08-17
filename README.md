@@ -16,6 +16,7 @@
   - Jinja2
   - WTForms
   - PyYAML
+  - click
 - Pico.css
 - SimpleMDE/raw-text (Optional)
 
@@ -34,6 +35,8 @@ python server.py
 - [x] 前端美化框架（`Pico.css`）
   - [ ] 再美化（
 - [ ] 自动在安装时完成运行添加示例（基于Mako+click）
+  - [x] 添加实例
+  - [ ] 命令行
 - [x] 简单的API
   - [ ] 基于JWT的鉴权
   - [ ] 添加code与response
@@ -44,3 +47,5 @@ python server.py
   - [ ] 头像
   - [ ] 动态（基于UserPosts）
 - [ ] 简单分类的话题/节点结构
+  - [x] `tag` 分类
+  - [ ] 后期转 `topic`

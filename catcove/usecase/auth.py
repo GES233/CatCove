@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+from jwt import PyJWT
 from Crypto.PublicKey import ECC
 from sanic.request import Request
 from sanic.response import HTTPResponse
@@ -28,18 +30,21 @@ class AuthService:
         
         self.raw: str = ""
         self.payload: dict = {}
+        self.exp: datetime = datetime.utcnow()
     
-    def encrypt(self) -> bool:
+    def encrypt(self, request: Request) -> bool:
+        """ From payload/raw to token/cookie. """
+        if not (self.raw or self.payload): return False
+        self.token = ...
+        self.cookie = ...
+        return True
+    
+    def decrypt(self, request: Request) -> bool:
+        """ From token/cookie to payload. """
         if self.token:
             self.raw = self.token
         elif self.cookie:
             self.raw = self.cookie
-        return True
-    
-    def decrypt(self) -> bool:
-        if not self.raw: return False
-        self.token = ...
-        self.cookie = ...
         return True
     
     def str_to_dict(self) -> bool:
@@ -65,12 +70,13 @@ class AuthService:
     
     def set_cookie(self, response: HTTPResponse) -> HTTPResponse:
         response.cookies["UserMeta"] = self.cookie
-        response.cookies["UserMeta"]["httpOnly"] = True
-        ...
+        response.cookies["UserMeta"]["path"] = "/"
+        response.cookies["UserMeta"]["httponly"] = True
     
     def del_cookie(self, request: Request, response: HTTPResponse)\
         -> HTTPResponse:
         if request.cookies.get["UserMeta"]:
-            ...
+            response.cookies["UserMeta"] = ""
+            response.cookies["UserMeta"]["max-age"] = 0
         
         return response

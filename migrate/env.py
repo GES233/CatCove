@@ -32,7 +32,7 @@ config.set_main_option("sqlalchemy.url", app.config.SQLALCHEMY_DATABASE_URL)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from catcove.models.tables import Base
+from catcove.entities.tables import Base
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

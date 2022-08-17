@@ -4,14 +4,17 @@ from Crypto.PublicKey import ECC
 from sanic.request import Request
 from sanic.response import HTTPResponse
 
+from . import ServiceBase
 
-class AuthService:
+class AuthService(ServiceBase):
+    """ Service about auth. """
     def __init__(
         self,
+        status: dict | None = None,
         token: str | None = None,
         cookie: str | None = None,
-        status: dict | None = None
     ) -> None:
+        super().__init__(status)
         if token:
             self.token = token
             self.cookie = None
@@ -20,14 +23,6 @@ class AuthService:
             self.cookie = cookie
         else: self.token = self.cookie = None
 
-        if status:
-            self.service_status = status
-        else:
-            self.service_status = {
-                "config": {},
-                "errors": []
-            }
-        
         self.raw: str = ""
         self.payload: dict = {}
         # payload["id"]: int
@@ -57,6 +52,7 @@ class AuthService:
         return True
     
     def str_to_dict(self) -> bool:
+        """ raw -> payload """
         if not self.raw:
             # Not encrypted.
             ...
@@ -73,6 +69,7 @@ class AuthService:
         return True
     
     def dict_to_str(self) -> bool:
+        """ payload -> raw """
         if not self.payload: return False
         self.raw = self.payload.__str__()
         return True
@@ -82,6 +79,8 @@ class AuthService:
         response.cookies["UserMeta"]["path"] = "/"
         response.cookies["UserMeta"]["httponly"] = True
         response.cookies["UserMeta"]["expire"] = self.exp
+
+        return response
     
     def del_cookie(self, request: Request, response: HTTPResponse)\
         -> HTTPResponse:
@@ -90,3 +89,7 @@ class AuthService:
             response.cookies["UserMeta"]["max-age"] = 0
         
         return response
+    
+    def set_key(self) -> str:
+        """ Hard to be import services.render.render_api_resp. """
+        return self.token

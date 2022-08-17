@@ -1,10 +1,12 @@
 from sqlalchemy.sql import select, update, or_
-
-from ..entities.tables.users import Users
-from ..entities.schemas.auth import UserTokenPayload
 from sqlalchemy.orm import sessionmaker
 
-class UserService:
+from . import ServiceBase
+from ..entities.tables.users import Users
+from ..entities.schemas.auth import UserTokenPayload
+
+
+class UserService(ServiceBase):
     """ Usecase related to user. """
     def __init__(
         self,
@@ -22,29 +24,11 @@ class UserService:
             a.get_user()
             a.user = Users(id=2, nickname="2", ...)
         """
-        if status:
-            self.service_status = status
-        else:
-            self.service_status = {
-                "config": {},
-                "errors": []
-            }
+        super().__init__(status)
         self.db_session = db_session
         if user:
             self.user: Users = user
         else: self.user = Users()
-    
-    def __del__(self) -> None:
-        """ Release all. """
-        self.config = None
-        self.user = None
-        self.db_session = None
-    
-    def reset_status(self):
-        self.service_status = {
-            "config": {},
-            "errors": []
-        }
 
     async def get_user(self, id: int | None = None) -> Users | None:
 
@@ -62,8 +46,6 @@ class UserService:
     @property
     def user(self): return self.user
 
-    @property
-    def service_status(self): return self.service_status
 
     async def check_user_token(self, token: dict) -> bool:
        
@@ -114,6 +96,7 @@ class UserService:
         else: return False
 
     async def create_user(self, password) -> Users:
+
         async with self.db_session.begin():
             newbie = Users(
                 nickname=self.user.nickname,
@@ -186,4 +169,12 @@ class UserService:
             await self.db_session.flush()
 
         return True
+    
+    def get_user_post_permission(self) -> bool:
+        """ Permission for all websites, every request which 
+            its method is `POST`.
+        """
+        return False if self.user.status == "freeze" \
+            or self.user.status == "blocked"  \
+            or self.user.status == "delete" else True
 

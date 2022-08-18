@@ -11,7 +11,7 @@ class ProConfig:
     
     # database
     # sqlalchemy
-    SQLALCHEMY_DATABASE_URL: str = ""
+    SQLALCHEMY_DATABASE_URI: str = ""
     SQLALCHEMY_DATABASE_ENCODING: str = "utf8"
     SQLALCHEMY_DATABASE_ECHO: bool = False
     

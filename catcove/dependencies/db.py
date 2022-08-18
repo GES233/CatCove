@@ -13,7 +13,7 @@ from catcove.web.app import create_config_app
 app = create_config_app()
 
 engine = create_async_engine(
-    url=app.config.SQLALCHEMY_DATABASE_URL,
+    url=app.config.SQLALCHEMY_DATABASE_URI,
     encoding=app.config.SQLALCHEMY_DATABASE_ENCODING,
     echo=app.config.SQLALCHEMY_DATABASE_ECHO,
     future=True

@@ -7,11 +7,14 @@ os.environ["APP_ENV"] = "dev"
 app = create_app()
 if app.config["ENV"] == "dev":
     print("App configure mode: dev.")
+    print("Configures:")
+    print(app.config)
+    print("--------")
     print("Routers:")
     pprint(app.router.routes_all)
-    print("--------")
-    print("Context:")
-    pprint(app.ctx)
+    # print("--------")
+    # print("Context:")
+    # pprint(app.ctx)
     print("========")
 
 app.run(

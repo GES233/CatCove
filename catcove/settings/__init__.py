@@ -24,30 +24,37 @@ def padding_instance(app: Sanic, **other_settings) -> None:
         os.popen(f"cd {instance_path} && \
             openssl ecparam -genkey -noout -name prime256v1 -out eckey.pem -text && \
             openssl ec -in eckey.pem -pubout -out ecpubkey.pem")
+
+    ecc_prk = Path(instance_path/"eckey.pem")
+    ecc_puk = Path(instance_path/"ecpubkey.pem")
     
     # Config YAML file.
     if not config_yaml.exists():
         from mako.template import Template
     
-        template = Template(filename=f"{PRJ_PATH}/catcove/settings/config.yaml.mako")
+        template = Template(filename=f"{PRJ_PATH}/catcove/settings/config.yml.mako")
     
         # SECRET: $ openssl rand -base64 32
         str_key = (os.popen("openssl rand -base64 32").readline().strip("\n"))
-        instance_content = template.render(
-            openssl_key=str_key,
-            instance_path=instance_path,
-            **other_settings)
 
         config_yaml.touch(exist_ok=True)
-        ...
-        config_yaml.write_text(instance_content, encoding="utf-8")
+        instance_content = template.render(
+            openssl_key=str_key,
+            ecc_prk_path=ecc_prk,
+            ecc_puk_path=ecc_puk,
+            **other_settings)
+        config_yaml.write_text(instance_content.replace("\r\n", "\n"), encoding="latin1")
+    
+    update_instance(app, config_yaml)
         
+
+def update_instance(app: Sanic, config_yaml: Path) -> None:
     # Read from it.
     
     with open(config_yaml) as f:
         instance_config = yaml.load(f, Loader=yaml.FullLoader)
     
-    app.update_config(instance_config)
+    app.update_config(instance_config) if instance_config else ...
 
 
 def set_database_uri(

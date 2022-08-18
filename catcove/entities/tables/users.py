@@ -9,8 +9,8 @@ from .tags import tag_maintainers
 following_table = Table(
     "following_table",
     Base.metadata,
-    Column("follower_id", ForeignKey("users.id")),
-    Column("followed_id", ForeignKey("users.id"))
+    Column("follower_id", ForeignKey("users.id"), nullable=False),
+    Column("followed_id", ForeignKey("users.id"), nullable=False)
 )
 
 
@@ -29,6 +29,7 @@ class Users(Base):
     nickname = Column(
         String(128),
         unique=True,
+        nullable=False,
         index=True
     )
     username = Column(

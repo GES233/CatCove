@@ -10,11 +10,13 @@ tag_maintainers = Table(
     Base.metadata,
     Column(
         "user_id",
-        ForeignKey("users.id")
+        ForeignKey("users.id"),
+        nullable=False
     ),
     Column(
         "tag_id",
-        ForeignKey("tags.id")
+        ForeignKey("tags.id"),
+        nullable=False
     )
 )
 
@@ -23,11 +25,13 @@ threads_tag_association = Table(
     Base.metadata,
     Column(
         "thread_id",
-        ForeignKey("threads.id")
+        ForeignKey("threads.id"),
+        nullable=False
     ),
     Column(
         "tag_id",
-        ForeignKey("tags.id")
+        ForeignKey("tags.id"),
+        nullable=False
     )
 )
 
@@ -36,11 +40,13 @@ userposts_tag_association = Table(
     Base.metadata,
     Column(
         "userposts_id",
-        ForeignKey("userposts.id")
+        ForeignKey("userposts.id"),
+        nullable=False
     ),
     Column(
         "tag_id",
-        ForeignKey("tags.id")
+        ForeignKey("tags.id"),
+        nullable=False
     )
 )
 
@@ -57,13 +63,13 @@ class Tags(Base):
     )
     
     # status: `normal`, `hidden`, `deleted`.
-    status = Column(String(16), default="normal")
+    status = Column(String(16), default="normal", nullable=False)
 
     create_time = Column(DateTime, default=datetime.utcnow())
 
-    title = Column(String(32), index=True, unique=True)
-    description = Column(String(256), index=True)
-    content = Column(Text)
+    title = Column(String(32), index=True, unique=True, nullable=False)
+    description = Column(String(256), index=True, nullable=True)
+    content = Column(Text, nullable=True)
 
     maintainers = relationship("Users", secondary=tag_maintainers, back_populates="tags")
 

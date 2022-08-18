@@ -1,8 +1,10 @@
 
 class ServiceBase:
-    def __init__(self, status) -> None:
-        self.service_status = status if status \
-            else {
+    def __init__(self, status: None = None) -> None:
+        if status:
+            self.service_status = status
+        else:
+            {
                 "config": {},
                 "errors": []
             }

@@ -45,7 +45,7 @@ python server.py
   - [ ] Cookie 以及 Token 的加密解密
     - [ ] Base64
     - [ ] 非对称加密
-- [ ] API端按照协议渲染自定义错误
+- [x] API端按照协议渲染自定义错误
   - `{"code": code, "info": info, "org": {...}}`
 - [ ] 网页渲染端能够根据 Cookie 的内容返回用户信息
 - [ ] 进一步的完成「干净化」

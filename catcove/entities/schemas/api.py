@@ -6,3 +6,8 @@ from pydantic import BaseModel
 class OriginContentModel(BaseModel):
     content_type: str
     data: Any
+
+class BaseAPI(BaseModel):
+    code: int
+    info: str
+    org: OriginContentModel

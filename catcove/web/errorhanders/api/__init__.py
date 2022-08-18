@@ -1,9 +1,10 @@
 from sanic.errorpages import JSONRenderer
-from sanic.response import HTTPResponse
+from sanic.response import HTTPResponse, json
+
+from ....usecase.api import APIServise
 
 from ....entities.schemas.api import OriginContentModel
-from ....services.render import render_api_resp
-from ...blueprints.api.helper.code import SERVER_ERROR
+from ...blueprints.api.helper import code
 
 class CustomJSONRenderer(JSONRenderer):
     def render(self) -> HTTPResponse:
@@ -11,29 +12,35 @@ class CustomJSONRenderer(JSONRenderer):
     
     def minimal(self) -> HTTPResponse:
         output = self._generate_output(full=False)
-        return render_api_resp(
-            body_code=SERVER_ERROR,
-            body_info=output["message"],
-            body_org=OriginContentModel(
-                content_type="error",
-                data={
-                    "description": output["description"]
-                }
-            ),
-            status=self.status)
+        api = APIServise()
+        return json(api.base_resp(
+            code=code.SERVER_ERROR,
+            info=output["message"],
+            type="ERROR",
+            data={
+                "description": output["description"]
+            }
+            ).json(),
+            status=self.status,
+            dumps=lambda x: x)
     
     def full(self) -> HTTPResponse:
         output = self._generate_output(full=True)
-        return render_api_resp(
-            body_code=SERVER_ERROR,
-            body_info=output["message"],
-            body_org=OriginContentModel(
-                content_type="error detail",
-                data={
+        api = APIServise()
+
+        # Some login to set code and info.
+        ...
+
+        return json(api.base_resp(
+            code=code.SERVER_ERROR,
+            info=output["message"],
+            type="ERROR",
+            data={
                     "description": output["description"],
                     "path": output["path"],
                     "args": output["args"],
                     "exceptions": output["exceptions"]
                 }
-            ),
-            status=self.status)
+            ).json(),
+            status=self.status,
+            dumps=lambda x: x)

@@ -19,8 +19,6 @@ auth_bp = Blueprint("auth")
 
 class UserLoginView(HTTPMethodView):
 
-    form = LoginForm()
-
     def login_render(self, form) -> HTTPResponse:
         return html(render_template(
             'auth/login.html',
@@ -29,7 +27,7 @@ class UserLoginView(HTTPMethodView):
 
     async def get(self, request: Request):
         # Render
-        return self.login_render(self.form)
+        return self.login_render(LoginForm())
 
     async def post(self, request: Request):
         # Submit -> POST
@@ -44,17 +42,19 @@ class UserLoginView(HTTPMethodView):
             return self.login_render(model)
 
         cookie = AuthService()
-        user = UserService(request.ctx.db_session)
+        user_ser = UserService(request.ctx.db_session)
         
-        user_exist = await user.check_common_user(model.nickname)
+        user_exist = await user_ser.check_common_user(model.nickname)
         if user_exist != True:
-            return self.login_render(user_not_exist(self.form))
+            return self.login_render(
+                user_not_exist(LoginForm()))
         else:
-            password_match = user.user.check_passwd(model.password)
+            password_match = user_ser.user.check_passwd(model.password)
             if password_match == False:
-                return self.login_render(password_not_match(self.form))
+                return self.login_render(
+                    password_not_match(LoginForm()))
         
-        cookie.payload = user.get_user_token()
+        cookie.payload = user_ser.get_user_token()
         _ = cookie.dict_to_str()
         if _ == False:
             raise SanicException("Some error happend when generate token.")

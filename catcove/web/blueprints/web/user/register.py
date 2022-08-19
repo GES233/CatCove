@@ -50,7 +50,8 @@ class RegisterView(HTTPMethodView):
         
         common = await user_ser.check_common_user(nickname=model.nickname)
 
-        if common: return self.signup_render(common_user(self.form))
+        if common: return self.signup_render(
+            common_user(self.form))
 
         # Insert.
         newbie = await user_ser.create_user(

@@ -37,7 +37,7 @@ class LoginForm(Form):
     remember = BooleanField(
         render_kw={
             "role": "switch",
-            "value": "n"
+            "checked": "checked"
         }
     )
 

@@ -35,8 +35,7 @@ class UserLoginView(HTTPMethodView):
 
         model: UserLoginModel = validate_login_form(LoginForm(data={
             "nickname": form_data.get("nickname"),
-            "password": form_data.get("password"),
-            "remember": form_data.get("remember")
+            "password": form_data.get("password")
         }))
         if isinstance(model, LoginForm):
             return self.login_render(model)

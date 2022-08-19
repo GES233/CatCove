@@ -7,15 +7,14 @@ from catcove.entities.tables.users import Users
 from ..forms.user import (
     SignUpForm,
     check_signup_form,
-    common_user
+    common_nickname,
+    common_email
 )
 from .....usecase.users import UserService
 from .....entities.schemas.user.request import SignUpModel
 from .....services.render import render_template
 
 class RegisterView(HTTPMethodView):
-
-    form = SignUpForm()
 
     def signup_render(self, form) -> HTTPResponse:
         return html(render_template(
@@ -24,13 +23,13 @@ class RegisterView(HTTPMethodView):
             form=form))
 
     async def get(self, request: Request) -> HTTPResponse:
-        return self.signup_render(self.form)
+        return self.signup_render(SignUpForm())
 
     async def post(self, request: Request) -> HTTPResponse:
         # Check form firstly.
         form_data = request.form
         if not form_data:
-            return self.signup_render(self.form)
+            return self.signup_render(SignUpForm())
 
         temp_form = SignUpForm(data={
                 "nickname": form_data.get("nickname"),
@@ -48,23 +47,45 @@ class RegisterView(HTTPMethodView):
         # Query.
         user_ser = UserService(db_session=request.ctx.db_session)
         
-        common = await user_ser.check_common_user(nickname=model.nickname)
+        common = await user_ser.check_common_user(
+            nickname=model.nickname,
+            email=model.email
+            )
 
-        if common: return self.signup_render(
-            common_user(self.form))
+        if common:
+            common_user = user_ser.user
+            if model.nickname == common_user.nickname \
+                or model.nickname == common_user.email:
+                return self.signup_render(
+                    common_nickname(temp_form)
+                )
+            elif model.email == common_user.email:
+                return self.signup_render(
+                    common_email(temp_form)
+                )
+            else:
+                return self.signup_render(SignUpForm())
 
         # Insert.
-        newbie = await user_ser.create_user(
+        newbie: Users = await user_ser.create_user(
             model.nickname,
             model.email,
             model.password
         )
 
-        print(newbie)
+        # Set expired day if `model.auto_login` is True.
+        if model.auto_login == True:
+            ...
+        else:
+            ...
 
         # Add cookie.
-        # ...
+        ...
+
 
         # Redirect.
-        return redirect("/")
+        if model.auto_login == True:
+            return redirect("/")
+        else:
+            return redirect("/login")
     

@@ -40,7 +40,7 @@ class UserService(ServiceBase):
             )
             users = await self.db_session.execute(sql)
             user = users.scalars().first()
-            self.db_session.expunge(user)
+            self.db_session.expunge(user) if user else ...
         
         self.user = user
         return self.user
@@ -80,19 +80,19 @@ class UserService(ServiceBase):
                 self.user.is_spectator == True else "normal"
         ).dict()
 
-    async def check_common_user(self, nickname) -> bool:
+    async def check_common_user(self, nickname, email) -> bool:
 
         async with self.db_session.begin():
             sql = select(Users).where(
                 or_(
                     Users.nickname == nickname,
                     Users.email == nickname,
-                    Users.id == nickname
+                    Users.email == email
                 )
             )
             users = await self.db_session.execute(sql)
             user: Users | None = users.scalars().first()
-            self.db_session.expunge(user)
+            self.db_session.expunge(user) if user else ...
         if user:
             self.user = user
             return True

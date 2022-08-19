@@ -83,8 +83,17 @@ def check_signup_form(form: SignUpForm) -> SignUpModel | SignUpForm:
         return form
 
 
-def common_user(form: SignUpForm) -> SignUpForm:
+def common_nickname(form: SignUpForm) -> SignUpForm:
     form.nickname.render_kw["aria-invalid"] = "true"
     form.nickname.render_kw["placeholder"] = "与其他用户重名"
     form.nickname.render_kw["value"] = ""  # Delete
-    return 
+    form.email.render_kw["value"] = form.email.data
+    return form
+
+
+def common_email(form: SignUpForm) -> SignUpForm:
+    form.email.render_kw["aria-invalid"] = "true"
+    form.email.render_kw["placeholder"] = "邮件与其他用户冲突"
+    form.email.render_kw["value"] = ""  # Delete
+    form.nickname.render_kw["value"] = form.nickname.data
+    return form

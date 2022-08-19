@@ -69,7 +69,7 @@ class SignUpForm(Form):
 
 def check_signup_form(form: SignUpForm) -> SignUpModel | SignUpForm:
     if form.validate():
-        SignUpModel(**form.data)
+        return SignUpModel(**form.data)
     else:
         if form.confirm.errors:
             form.confirm.render_kw["aria-invalid"] = "true"

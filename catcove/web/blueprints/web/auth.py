@@ -35,19 +35,19 @@ class UserLoginView(HTTPMethodView):
         # Submit -> POST
         form_data = request.form
 
-        model = validate_login_form(self.form(data={
+        model: UserLoginModel = validate_login_form(LoginForm(data={
             "nickname": form_data.get("nickname"),
             "password": form_data.get("password"),
             "remember": form_data.get("remember")
         }))
-        if not isinstance(model, UserLoginModel):
+        if isinstance(model, LoginForm):
             return self.login_render(model)
 
         cookie = AuthService()
         user = UserService(request.ctx.db_session)
         
-        user_exist = user.check_common_user(model.nickname)
-        if user_exist == False:
+        user_exist = await user.check_common_user(model.nickname)
+        if user_exist != True:
             return self.login_render(user_not_exist(self.form))
         else:
             password_match = user.user.check_passwd(model.password)

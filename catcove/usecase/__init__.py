@@ -4,7 +4,7 @@ class ServiceBase:
         if status:
             self.service_status = status
         else:
-            {
+            self.service_status = {
                 "config": {},
                 "errors": []
             }
@@ -15,8 +15,3 @@ class ServiceBase:
             "errors": []
         }
 
-    @property
-    def service_status(self): return self.service_status
-
-    def __del__(self) -> None:
-        self.service_status = None

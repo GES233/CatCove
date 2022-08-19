@@ -68,9 +68,13 @@ class Users(Base):
     # Followers Following sb. ->
     # followers -> folowing
     followers = relationship("Users", secondary=following_table,
-        primaryjoin=(following_table.c.follower_id==id), back_populates="following")
+        primaryjoin=(id==following_table.c.follower_id),
+        secondaryjoin=(id==following_table.c.followed_id),
+        back_populates="following")
     following = relationship("Users", secondary=following_table,
-        primaryjoin=(following_table.c.followed_id==id), back_populates="followers")
+        primaryjoin=(id==following_table.c.followed_id),
+        secondaryjoin=(id==following_table.c.follower_id),
+        back_populates="followers")
     tags = relationship("Tags", secondary=tag_maintainers, back_populates="maintainers")
 
     def encrypt_passwd(self, password: str) -> None:

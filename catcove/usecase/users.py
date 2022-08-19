@@ -28,7 +28,7 @@ class UserService(ServiceBase):
         self.db_session = db_session
         if user:
             self.user: Users = user
-        else: self.user = Users()
+        else: self.user = None
 
     async def get_user(self, id: int | None = None) -> Users | None:
 
@@ -39,13 +39,11 @@ class UserService(ServiceBase):
                 Users.id == query_id
             )
             users = await self.db_session.execute(sql)
-            self.user = users.scalars().first()
+            user = users.scalars().first()
+            self.db_session.expunge(user)
         
+        self.user = user
         return self.user
-    
-    @property
-    def user(self): return self.user
-
 
     async def check_user_token(self, token: dict) -> bool:
        
@@ -57,14 +55,18 @@ class UserService(ServiceBase):
             user: Users = users.scalars().first()
             self.db_session.expunge(user)
         
-        if not user: return False
+        if not user:
+            self.service_status["errors"].append("User Not Exist")
+            return False
 
         if token["status"] == user.status and \
             ((user.is_spectator == True and token["role"] == "spectator") or \
                 (user.is_spectator == False and token["role"] == "normal")) and \
                 (user.nickname == token["nickname"]):
             return True
-        else: return False
+        else:
+            self.service_status["errors"].append("User Info Error")
+            return False
     
     def get_user_token(self) -> dict:
         """ Get user token from database.
@@ -90,17 +92,20 @@ class UserService(ServiceBase):
             )
             users = await self.db_session.execute(sql)
             user: Users | None = users.scalars().first()
+            self.db_session.expunge(user)
         if user:
             self.user = user
             return True
-        else: return False
+        else:
+            self.service_status["errors"].append("User Not Exist")
+            return False
 
-    async def create_user(self, password) -> Users:
+    async def create_user(self, nickname, email, password) -> Users:
 
         async with self.db_session.begin():
             newbie = Users(
-                nickname=self.user.nickname,
-                email=self.user.email,
+                nickname=nickname,
+                email=email,
             )
             newbie.encrypt_passwd(password)
             self.db_session.add(newbie)
@@ -122,7 +127,9 @@ class UserService(ServiceBase):
             now_user: Users = result.scalars().first()
 
             # Return None if not existed.
-            if not now_user: return False
+            if not now_user:
+                self.service_status["errors"].append("User Not Exist")
+                return False
             now_user.status = status
 
             # Update.
@@ -143,7 +150,9 @@ class UserService(ServiceBase):
             I choose the second one.
         """
         # No person exist.
-        if not isinstance(self.user) or not self.user.id: return False
+        if not isinstance(self.user) or not self.user.id:
+            self.service_status["errors"].append("User Not Load or Exist")
+            return False
 
         data = {k: v for k, v in profile.items() if v is not None}
         async with self.db_session.begin():
@@ -156,14 +165,18 @@ class UserService(ServiceBase):
     async def update_password(self, password) -> bool:
         """ Update user's password. """
         # No person in instance.
-        if not isinstance(self.user) or not self.user.id: return False
+        if not isinstance(self.user) or not self.user.id:
+            self.service_status["errors"].append("User Not Load or Exist")
+            return False
         async with self.db_session.begin():
             result = await self.db_session.\
                 execute(select(Users).where(id=self.user.id))
             user = result.scalars().first()
 
             # Not in database.
-            if not user: return False
+            if not user:
+                self.service_status["errors"].append("User Not Exist")
+                return False
 
             user.encrypt_passwd(password)
             await self.db_session.flush()

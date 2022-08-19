@@ -13,6 +13,7 @@ class AuthService(ServiceBase):
         status: dict | None = None,
         token: str | None = None,
         cookie: str | None = None,
+        exp: timedelta = timedelta(days=7)
     ) -> None:
         super().__init__(status)
         if token:
@@ -34,7 +35,7 @@ class AuthService(ServiceBase):
         # >> Update when change.
         # payload["timezone"]: int | (-12, 12)
         # payload["exp"]: timestamp
-        self.exp: datetime = datetime.utcnow()
+        self.exp: timedelta = exp
     
     def encrypt(self, request: Request) -> bool:
         """ From payload/raw to token/cookie. """

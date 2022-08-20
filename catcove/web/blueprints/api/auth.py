@@ -15,21 +15,19 @@ async def login(request: Request) -> HTTPResponse:
     nickname = data["nickname"]
     password = data["password"]
 
-    user = UserService()
+    user = UserService(request.ctx.db_session)
     token = AuthService()
 
-    db_user = await user.check_common_user(nickname)
+    db_user = await user.check_common_user(nickname, "")
     
     if db_user != True:
         # User not exist.
-        cause = user.service_status["error"]
 
         # Construct and return error.
         ...
     
     if user.user.check_passwd(password) != True:
         # Password error.
-        cause = user.service_status["error"]
 
         # Construct and return error.
         ...
@@ -41,8 +39,9 @@ async def login(request: Request) -> HTTPResponse:
     token.payload = token_payload
     _ = token.dict_to_str()
     if _ == False:
-        # Return error.
-        cause = token.service_status["error"]
+        # Payload not ready.
+
+        # Return error.(500)
         ...
     else:
         _ = token.encrypt()

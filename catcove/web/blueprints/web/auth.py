@@ -43,7 +43,7 @@ class UserLoginView(HTTPMethodView):
         cookie = AuthService()
         user_ser = UserService(request.ctx.db_session)
         
-        user_exist = await user_ser.check_common_user(model.nickname)
+        user_exist = await user_ser.check_common_user(model.nickname, "")
         if user_exist != True:
             return self.login_render(
                 user_not_exist(LoginForm()))

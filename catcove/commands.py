@@ -84,6 +84,7 @@ async def init_db_no_migrate():
         raise SanicException("Please set the configure of app.")
     
     async with async_session.begin() as conn:
+        # Can't run still.
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     
@@ -91,10 +92,10 @@ async def init_db_no_migrate():
 
 
 @manage.command("db")
-@click.option("--migrate", default=False, help="Use alembic to install the database.")
+@click.option("--migrate", default=True, help="Use alembic to install the database.")
 def db(migrate):
     
-    if migrate == True:
+    if migrate == False:
         # Use SQLAlchemy to initialize the database.
         asyncio.get_event_loop().run_until_complete(init_db_no_migrate())
     else:

@@ -1,6 +1,6 @@
 # CatCove
 
-基于话题的小论坛（目前进度10%）。
+基于话题的小~~论坛~~（目前进度6%）。
 
 ## Install
 
@@ -33,7 +33,9 @@ python server.py
 
 暂略。
 
-### 何时与 `master` 合并？
+### ROADMAP
+
+#### 何时与 `master` 合并？
 
 直到完成如下内容：
 
@@ -49,4 +51,13 @@ python server.py
   - `{"code": code, "info": info, "org": {...}}`
 - [ ] 网页渲染端能够根据 Cookie 的内容返回用户信息
   - [ ] Cookie/Token 的自动更新
-- [ ] ~~进一步的完成「干净化」~~
+
+完成了以上内容，算完成了25%。
+
+#### 之后的计划
+
+- [ ] 完善的测试代码
+- [ ] 消息机制的引入
+  - [ ] APSchedule
+  - [ ] 类似于 Flask 的 `flash()` （No-JS）
+  - [ ] ESS 的实现（需要JS）

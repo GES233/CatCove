@@ -41,6 +41,8 @@ class UserService(ServiceBase):
             users = await self.db_session.execute(sql)
             user = users.scalars().first()
             self.db_session.expunge(user) if user else ...
+
+            # Save userposts, following table etc.
         
         self.user = user
         return self.user
@@ -123,7 +125,8 @@ class UserService(ServiceBase):
                 values(status=status)
             await self.db_session.execute(sql)
             '''
-            result = await self.db_session.execute(select(Users).where(id=self.user.id))
+            result = await self.db_session.execute(select(Users).\
+                where(id==self.user.id))
             now_user: Users = result.scalars().first()
 
             # Return None if not existed.

@@ -1,3 +1,4 @@
+import os
 import asyncio
 import click
 from pathlib import Path
@@ -9,10 +10,11 @@ APP_PATH = Path( PROJECT_PATH / "catcove" )
 
 
 @click.group()
-def init():
+def manage():
+    """ Initialize the application. """
     pass
 
-@init.command()
+@manage.command("init")
 @click.option("--db", default=False, help="DataBase settings.")
 @click.option("--uri", default=None, help="Use URI to connect the DB.")
 def set_instance(db, uri) -> None:
@@ -88,7 +90,7 @@ async def init_db_no_migrate():
     click.secho("Database initialzed!", fg="blue")
 
 
-@init.command()
+@manage.command("db")
 @click.option("--migrate", default=False, help="Use alembic to install the database.")
 def db(migrate):
     
@@ -109,3 +111,31 @@ def db(migrate):
 def create_spectator(transformation):
     """ Add `spectator`(aka. admin). """
     ...
+
+
+@manage.command("run")
+@click.option("--dev", "mode", flag_value="dev", default=True)
+@click.option("--pro", "mode", flag_value="pro")
+def run(mode):
+    if mode == "dev":
+        os.environ["APP_ENV"] = "dev"
+
+        from .web.app import create_app
+        app = create_app()
+        app.run(
+            host="127.0.0.1",
+            # host="0.0.0.0",  # `route print`
+            port="6969",
+            dev=True
+        )
+    else:
+        from .web.app import create_app
+        app = create_app()
+        app.run(
+            host="0.0.0.0",  # `route print`
+            port="80",
+            debug=False,
+            auto_reload=False,
+            access_log=False,
+            fast=True
+        )

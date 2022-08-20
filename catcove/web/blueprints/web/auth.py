@@ -57,7 +57,7 @@ class UserLoginView(HTTPMethodView):
         _ = cookie.dict_to_str()
         if _ == False:
             raise SanicException("Some error happend when generate token.")
-        _ = cookie.encrypt()
+        _ = cookie.encrypt(request)
         if _ == False:
             raise SanicException("Some error happend when generate token.")
         

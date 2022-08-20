@@ -79,7 +79,7 @@ class AuthService(ServiceBase):
         response.cookies["UserMeta"] = self.cookie
         response.cookies["UserMeta"]["path"] = "/"
         response.cookies["UserMeta"]["httponly"] = True
-        response.cookies["UserMeta"]["expire"] = self.exp
+        response.cookies["UserMeta"]["expire"] = datetime.utcnow()+self.exp
 
         return response
     

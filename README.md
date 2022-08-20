@@ -41,7 +41,7 @@ python server.py
   - [x] 页面渲染（网页段）
   - [x] 数据库提交流程
   - [x] 表单提交以及前端的检查（`WTForms`）
-  - [ ] 后端的检查（`Pydantic`）
+  - [ ] 后端的检查（`Pydantic`）并且能够在 API 端返回错误
   - [ ] Cookie 以及 Token 的加密解密
     - [ ] Base64
     - [ ] 非对称加密

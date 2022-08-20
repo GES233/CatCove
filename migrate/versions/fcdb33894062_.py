@@ -1,8 +1,8 @@
-"""Add so many Tables.
+"""empty message
 
-Revision ID: cae446a9257c
+Revision ID: fcdb33894062
 Revises: 
-Create Date: 2022-08-18 11:40:19.688486
+Create Date: 2022-08-20 15:55:57.525736
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'cae446a9257c'
+revision = 'fcdb33894062'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -52,7 +52,8 @@ def upgrade() -> None:
     sa.Column('follower_id', sa.Integer(), nullable=False),
     sa.Column('followed_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['followed_id'], ['users.id'], ),
-    sa.ForeignKeyConstraint(['follower_id'], ['users.id'], )
+    sa.ForeignKeyConstraint(['follower_id'], ['users.id'], ),
+    sa.PrimaryKeyConstraint('follower_id', 'followed_id')
     )
     op.create_table('tag_maintainers',
     sa.Column('user_id', sa.Integer(), nullable=False),

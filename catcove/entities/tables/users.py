@@ -9,8 +9,8 @@ from .tags import tag_maintainers
 following_table = Table(
     "following_table",
     Base.metadata,
-    Column("follower_id", ForeignKey("users.id"), nullable=False),
-    Column("followed_id", ForeignKey("users.id"), nullable=False)
+    Column("follower_id", ForeignKey("users.id"), primary_key=True),
+    Column("followed_id", ForeignKey("users.id"), primary_key=True)
 )
 
 

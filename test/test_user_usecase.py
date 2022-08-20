@@ -1,0 +1,111 @@
+import pytest
+import asyncio
+from sqlalchemy import create_engine
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql import select, or_
+
+from catcove.usecase.users import UserService
+from catcove.entities.tables import Base
+
+engine = create_async_engine(
+    url="sqlite+aiosqlite:///tinycat_test.db",  # Use async.
+    encoding="utf-8",
+    echo=True,
+    future=True
+)
+
+sync_engine = create_engine(
+    url="sqlite:///tinycat_test.db",  # Use async.
+    encoding="utf-8",
+    echo=True,
+)
+
+db_session = sessionmaker(
+    bind=engine,
+    class_=AsyncSession,
+    expire_on_commit=True
+)
+
+
+def async_as_sync(func):
+    # use `async_as_sync(func())`.
+    return asyncio.get_event_loop().run_until_complete(func)
+
+
+class TestUserService:
+    """ Test user service without authentation and others. """
+    ser = UserService(db_session())
+
+    def test_create_user(self):
+        # Initialize first.
+        Base.metadata.drop_all(bind=sync_engine)
+        Base.metadata.create_all(bind=sync_engine)
+
+        # Check an un-exitsted user.
+        common_user = async_as_sync(
+            self.ser.check_common_user(
+                nickname = "12345",
+                email="12345@zz.top"
+            )
+        )
+
+        if common_user == False:
+            # Add user.
+            user = async_as_sync(self.ser.create_user("12345", "12345@zz.top", "123456"))
+            assert hasattr(user, "id")
+        else: assert False
+        
+        # Requery.
+        common_user = async_as_sync(
+            self.ser.check_common_user(
+                nickname = "None",
+                email="12345@zz.top"
+            )
+        )
+        assert hasattr(self.ser.user, "id")
+    
+    def test_check_user(self):
+        # Initialize first.
+        Base.metadata.drop_all(bind=sync_engine)
+        Base.metadata.create_all(bind=sync_engine)
+
+        # Create user.
+        _ = async_as_sync(self.ser.create_user("12345", "12345@zz.top", "123456"))
+
+        common_user = async_as_sync(
+            self.ser.check_common_user(
+                nickname = "12345",
+                email="12345@zz.top"
+            )
+        )
+        if common_user == False: assert False
+
+        # Check password.
+        login_accept = (
+            self.ser.user.check_passwd("123456")
+        )
+        login_reject = (
+            self.ser.user.check_passwd("12345")
+        )
+        assert login_accept == True
+        assert login_reject == False
+
+    def test_update_user(self):
+        # Initialize first.
+        Base.metadata.drop_all(bind=sync_engine)
+        Base.metadata.create_all(bind=sync_engine)
+
+        # Create user.
+        _ = async_as_sync(self.ser.create_user("12345", "12345@zz.top", "123456"))
+
+        # Change user status.
+        # Running when user queried before.
+        result = async_as_sync(self.ser.change_user_status("normal"))
+        # Some error occured here. `now_user` returned False.
+
+        if result == True:
+            # Requery.
+            _ = async_as_sync(self.ser.get_user(id=self.ser.user.id))
+            assert _.status == "normal"
+        else: assert False

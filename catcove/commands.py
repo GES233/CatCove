@@ -11,7 +11,7 @@ APP_PATH = Path( PROJECT_PATH / "catcove" )
 
 @click.group()
 def manage():
-    """ Initialize the application. """
+    """ Manage the application. """
     pass
 
 @manage.command("init")
@@ -94,7 +94,7 @@ async def init_db_no_migrate():
 @manage.command("db")
 @click.option("--migrate", default=True, help="Use alembic to install the database.")
 def db(migrate):
-    
+    """ Initlize the database. """
     if migrate == False:
         # Use SQLAlchemy to initialize the database.
         asyncio.get_event_loop().run_until_complete(init_db_no_migrate())
@@ -106,11 +106,11 @@ def db(migrate):
         command.upgrade(alembic_config, "head")
 
 
-@click.command("admin")
+@manage.command("admin")
 @click.option("--appointment", "transformation", flag_value="apt", help="There's no such implication whatsoever.")
 @click.option("--create", "transformation", flag_value="crt", help="catcave.create(new_admin()) =>: ATM <- BTM.")
 def create_spectator(transformation):
-    """ Add `spectator`(aka. admin). """
+    """ Add `spectator`(aka admin). """
     ...
 
 
@@ -118,6 +118,7 @@ def create_spectator(transformation):
 @click.option("--dev", "mode", flag_value="dev", default=True)
 @click.option("--pro", "mode", flag_value="pro")
 def run(mode):
+    """ Run the application. """
     if mode == "dev":
         os.environ["APP_ENV"] = "dev"
 

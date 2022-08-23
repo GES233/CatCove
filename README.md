@@ -1,6 +1,6 @@
 # CatCove
 
-基于话题的小~~论坛~~（目前进度6%）。
+基于话题的小~~论坛~~SNS（目前进度10%）。
 
 ## Install
 
@@ -18,6 +18,7 @@
   - WTForms
   - PyYAML
   - click
+  - email_validator
 - Pico.css
 - SimpleMDE/raw-text (Optional)
 

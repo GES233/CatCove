@@ -1,3 +1,4 @@
+from datetime import date
 import pytest
 import asyncio
 from sqlalchemy import create_engine
@@ -124,6 +125,37 @@ class TestUserService:
         Base.metadata.drop_all(bind=sync_engine)
         Base.metadata.create_all(bind=sync_engine)
 
-        # Create 2 user.
+        # Create user.
+        _ = async_as_sync(self.ser.create_user("12345", "12345@zz.top", "123456"))
+
+        # Modify info.
+        gender_update = async_as_sync(
+            self.ser.change_user_profile(gender="M")
+        )
+        birth_update = async_as_sync(
+            self.ser.change_user_profile(birth=date(
+                year=1989, month=6, day=4
+            ))
+        )
+        info_update = async_as_sync(
+            self.ser.change_user_profile(
+                info="My name's Q, and I love fish.",
+                username="Q"
+            )  # Multiple.
+        )
+        assert gender_update == True
+        assert birth_update == True
+        assert info_update == True
+    
+    def test_follow(self):
+        # Initialize first.
+        Base.metadata.drop_all(bind=sync_engine)
+        Base.metadata.create_all(bind=sync_engine)
+
+        # Create user.
         _ = async_as_sync(self.ser.create_user("12345", "12345@zz.top", "123456"))
         _ = async_as_sync(self.ser.create_user("2345", "1245@zz.top", "123456"))
+        _ = async_as_sync(self.ser.create_user("345", "145@zz.jmp", "123456"))
+
+        # ...
+        ...

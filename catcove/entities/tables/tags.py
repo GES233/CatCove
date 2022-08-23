@@ -75,20 +75,20 @@ class Tags(Base):
         "Users",
         secondary=tag_maintainers,
         back_populates="tags",
-        lazy="dynamic"
+        lazy="select"
     )
 
     threads_related = relationship(
         "Threads",
         secondary=threads_tag_association,
         back_populates="tags",
-        lazy="dynamic"
+        lazy="select"
     )
     userposts_related = relationship(
         "UserPosts",
         secondary=userposts_tag_association,
         back_populates="tags",
-        lazy="dynamic"
+        lazy="select"
     )
 
     def __repr__(self) -> str:

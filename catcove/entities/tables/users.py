@@ -11,6 +11,13 @@ following_table = Table(
     Base.metadata,
     Column("follower_id", ForeignKey("users.id"), primary_key=True),
     Column("followed_id", ForeignKey("users.id"), primary_key=True)
+    # +-------------+   +-------------+
+    # | follower_id |-->| followed_id |
+    # +-------------+   +-------------+
+    # Add Chinese comment:
+    # 关注者（粉丝）关注了【被】关注者（关注）
+    # User as a follower TO sb.
+    # User followed BY sb.
 )
 
 
@@ -54,9 +61,9 @@ class Users(Base):
         | Users |one <--> zero/many| Content |
         +-------+                  +---------+
     """
-    userposts = relationship("UserPosts", back_populates="owner", lazy="dynamic")
-    posts = relationship("PostsUnderThread", back_populates="owner", lazy="dynamic")
-    threads = relationship("Threads", back_populates="owner", lazy="dynamic")
+    userposts = relationship("UserPosts", back_populates="owner", lazy="select")
+    posts = relationship("PostsUnderThread", back_populates="owner", lazy="select")
+    threads = relationship("Threads", back_populates="owner", lazy="select")
     # comments = relationship("Comments")  # I don't add here.
 
     """ Fields:
@@ -71,16 +78,16 @@ class Users(Base):
         primaryjoin=(id==following_table.c.follower_id),
         secondaryjoin=(id==following_table.c.followed_id),
         back_populates="following",
-        lazy="dynamic")
+        lazy="select")
     following = relationship("Users", secondary=following_table,
         primaryjoin=(id==following_table.c.followed_id),
         secondaryjoin=(id==following_table.c.follower_id),
         back_populates="followers",
-        lazy="dynamic")
+        lazy="select")
     tags = relationship("Tags",
         secondary=tag_maintainers,
         back_populates="maintainers",
-        lazy="dynamic")
+        lazy="select")
 
     def encrypt_passwd(self, password: str) -> None:
         salt = gensalt()

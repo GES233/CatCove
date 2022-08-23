@@ -11,6 +11,7 @@
   - SQLAlchemy
   - alembic
   - Pydantic
+  - BCrypt
   - PyJWT
   - ujson
   - Jinja2

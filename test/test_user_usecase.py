@@ -88,8 +88,17 @@ class TestUserService:
         login_reject = (
             self.ser.user.check_passwd("12345")
         )
+
+        # Update password.
+        _ = async_as_sync(self.ser.update_password("12345"))
+
+        # Re-check.
+        login_reaccpect = (
+            self.ser.user.check_passwd("12345")
+        )
         assert login_accept == True
         assert login_reject == False
+        assert login_reaccpect == True
 
     def test_update_user(self):
         # Initialize first.
@@ -102,10 +111,19 @@ class TestUserService:
         # Change user status.
         # Running when user queried before.
         result = async_as_sync(self.ser.change_user_status("normal"))
-        # Some error occured here. `now_user` returned False.
+        # Error corrected.
 
         if result == True:
             # Requery.
             _ = async_as_sync(self.ser.get_user(id=self.ser.user.id))
             assert _.status == "normal"
         else: assert False
+    
+    def test_modify_info(self):
+        # Initialize first.
+        Base.metadata.drop_all(bind=sync_engine)
+        Base.metadata.create_all(bind=sync_engine)
+
+        # Create 2 user.
+        _ = async_as_sync(self.ser.create_user("12345", "12345@zz.top", "123456"))
+        _ = async_as_sync(self.ser.create_user("2345", "1245@zz.top", "123456"))

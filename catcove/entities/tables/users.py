@@ -54,9 +54,9 @@ class Users(Base):
         | Users |one <--> zero/many| Content |
         +-------+                  +---------+
     """
-    userposts = relationship("UserPosts", back_populates="owner")
-    posts = relationship("PostsUnderThread", back_populates="owner")
-    threads = relationship("Threads", back_populates="owner")
+    userposts = relationship("UserPosts", back_populates="owner", lazy="dynamic")
+    posts = relationship("PostsUnderThread", back_populates="owner", lazy="dynamic")
+    threads = relationship("Threads", back_populates="owner", lazy="dynamic")
     # comments = relationship("Comments")  # I don't add here.
 
     """ Fields:
@@ -70,12 +70,17 @@ class Users(Base):
     followers = relationship("Users", secondary=following_table,
         primaryjoin=(id==following_table.c.follower_id),
         secondaryjoin=(id==following_table.c.followed_id),
-        back_populates="following")
+        back_populates="following",
+        lazy="dynamic")
     following = relationship("Users", secondary=following_table,
         primaryjoin=(id==following_table.c.followed_id),
         secondaryjoin=(id==following_table.c.follower_id),
-        back_populates="followers")
-    tags = relationship("Tags", secondary=tag_maintainers, back_populates="maintainers")
+        back_populates="followers",
+        lazy="dynamic")
+    tags = relationship("Tags",
+        secondary=tag_maintainers,
+        back_populates="maintainers",
+        lazy="dynamic")
 
     def encrypt_passwd(self, password: str) -> None:
         salt = gensalt()

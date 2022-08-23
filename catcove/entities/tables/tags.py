@@ -71,10 +71,25 @@ class Tags(Base):
     description = Column(String(256), index=True, nullable=True)
     content = Column(Text, nullable=True)
 
-    maintainers = relationship("Users", secondary=tag_maintainers, back_populates="tags")
+    maintainers = relationship(
+        "Users",
+        secondary=tag_maintainers,
+        back_populates="tags",
+        lazy="dynamic"
+    )
 
-    threads_related = relationship("Threads", secondary=threads_tag_association, back_populates="tags")
-    userposts_related = relationship("UserPosts", secondary=userposts_tag_association, back_populates="tags")
+    threads_related = relationship(
+        "Threads",
+        secondary=threads_tag_association,
+        back_populates="tags",
+        lazy="dynamic"
+    )
+    userposts_related = relationship(
+        "UserPosts",
+        secondary=userposts_tag_association,
+        back_populates="tags",
+        lazy="dynamic"
+    )
 
     def __repr__(self) -> str:
         return "<Tag %s : %s>" % (self.id, self.title)

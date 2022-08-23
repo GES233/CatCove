@@ -126,7 +126,7 @@ class UserService(ServiceBase):
             await self.db_session.execute(sql)
             '''
             result = await self.db_session.execute(select(Users).\
-                where(id==self.user.id))
+                where(Users.id==self.user.id))
             now_user: Users = result.scalars().first()
 
             # Return None if not existed.
@@ -169,12 +169,12 @@ class UserService(ServiceBase):
     async def update_password(self, password) -> bool:
         """ Update user's password. """
         # No person in instance.
-        if not isinstance(self.user) or not self.user.id:
+        if not (isinstance(self.user, Users) and self.user.id):
             # self.service_status["errors"].append("User Not Load or Exist")
             return False
         async with self.db_session.begin():
             result = await self.db_session.\
-                execute(select(Users).where(id=self.user.id))
+                execute(select(Users).where(Users.id==self.user.id))
             user = result.scalars().first()
 
             # Not in database.
@@ -185,7 +185,10 @@ class UserService(ServiceBase):
             else:
                 user.encrypt_passwd(password)
                 await self.db_session.flush()
+                # Update password to `self.user`
+                self.db_session.expunge(user)
 
+        self.user = user
         return True
     
     def get_user_post_permission(self) -> bool:

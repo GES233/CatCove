@@ -32,16 +32,17 @@ class UserLoginView(HTTPMethodView):
     async def post(self, request: Request):
         # Submit -> POST
         form_data = request.form
-        # Case: from register
-        if form_data.get("email"):
-            return self.login_render(LoginForm())
-        elif not form_data.get("nickname") or \
-            not form_data.get("password"):
+        if form_data.get("email") or \
+            form_data.get("nickname") == "" or \
+            form_data.get("password") == "":
+            # Case: post from `/register`;`
+            # Case: not updated value.
             return self.login_render(LoginForm())
 
         model: UserLoginModel = validate_login_form(LoginForm(data={
             "nickname": form_data.get("nickname"),
-            "password": form_data.get("password")
+            "password": form_data.get("password"),
+            # Add remember_me here.
         }))
         if isinstance(model, LoginForm):
             return self.login_render(model)
@@ -60,15 +61,15 @@ class UserLoginView(HTTPMethodView):
                     password_not_match(LoginForm()))
         
         _ = cookie.gen_payload(user_ser.user)
-        # cookie.payload = user_ser.get_user_token()
         _ = cookie.dict_to_str()
         if _ == False:
             raise SanicException("Some error happend when generate token.")
-        _ = cookie.encrypt(request)
+        _ = cookie.encrypt()
         if _ == False:
             raise SanicException("Some error happend when generate token.")
         
         response = redirect("/")
+        # Add remember_me code here.
         return cookie.set_cookie(response)
 
 

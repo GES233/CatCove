@@ -26,7 +26,8 @@
 
 ```bash
 pip install requirements.txt
-python server.py
+python server.py init --migrate
+python server.py run --pro
 ```
 
 ## TODO
@@ -38,10 +39,10 @@ python server.py
   - [ ] ESS 的实现（需要JS）
 - [ ] HTML模板的调整
 - [x] 前端美化框架（`Pico.css`）
-  - [ ] 再美化（CSS reliable）
+  - [ ] 再美化
 - [x] 简单的API
   - [ ] 基于JWE的鉴权
-  - [x] 添加code与response（`Tiny`）
+  - [x] 添加code与response
   - [ ] 文档
 - [ ] `Markdown` 支持
   - [ ] 渲染

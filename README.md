@@ -63,3 +63,4 @@ python server.py
   - [ ] APSchedule
   - [ ] 类似于 Flask 的 `flash()` （No-JS）
   - [ ] ESS 的实现（需要JS）
+- [ ] HTML模板的调整

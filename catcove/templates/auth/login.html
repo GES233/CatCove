@@ -1,55 +1,55 @@
 {% extends "base.html" %}
 {% block costume_style %}
-<style>
-    @import url("/static/css/form_interface.css");
-</style>
-<script>
-    /*
-    function post_to_api() {
-        var nickname = document.getElementsByName("nickname")[0].value;
-        var password = document.getElementsByName("password")[0].value;
-        return {"nickname": nickname, "pasword": password}
-    }
-    function no_person_exist() {
-        // 用户不存在
-        var nickname = document.getElementsByName("nickname")[0];
-        nickname.setAttribute("aria-invalid", "true");
-        nickname.setAttribute("placeholder", "用户不存在！");
-    }
-    function password_error() {
-        // 密码错误
-        var password = document.getElementsByName("password")[0];
-        password.setAttribute("aria-invalid", "true");
-        password.setAttribute("placeholder", "一眼丁真，鉴定为假")
-    } */
-</script>
+        <style>
+            @import url("/static/css/form_interface.css");
+        </style>
+        <script>
+           /*
+            function post_to_api() {
+                var nickname = document.getElementsByName("nickname")[0].value;
+                var password = document.getElementsByName("password")[0].value;
+                return {"nickname": nickname, "pasword": password}
+            }
+            function no_person_exist() {
+                // 用户不存在
+                var nickname = document.getElementsByName("nickname")[0];
+                nickname.setAttribute("aria-invalid", "true");
+                nickname.setAttribute("placeholder", "用户不存在！");
+            }
+            function password_error() {
+                // 密码错误
+                var password = document.getElementsByName("password")[0];
+                password.setAttribute("aria-invalid", "true");
+                password.setAttribute("placeholder", "一眼丁真，鉴定为假")
+            } */
+        </script>
 {% endblock %}
 {% block main %}
-<main class="container">
-    <article class="grid">
-        <div>
-            <hgroup>
-                <h1>登录</h1>
-                <h2>无内鬼，上号！</h2>
-            </hgroup>
-            <form action="" method="post">
-                <!--
-                <input type="text" name="nickname" placeholder="昵称或邮件地址" aria-label="昵称或邮件地址" autocomplete="nickname" required>
-                <input type="password" name="password" placeholder="密码" aria-label="密码" autocomplete="current-password" required>
-                -->
-                {{ form.nickname }}
-                {{ form.password }}
-                <fieldset>
-                    <label for="remember">
-                      <!--<input type="checkbox" role="switch" id="remember" name="remember">-->
-                      {{ form.remember }}
-                      <span style="font-size: small;" data-tooltip="如果不是自己的电脑请不要设置这个！">记住我</span>
-                    </label>
-                </fieldset>
-                <button type="submit" class="contrast" onclick="" data-tooltip="忠！诚！">登录！</button>
-            </form>
-        </div>
-        <div></div>
-    </article>
-</main>
+        <main class="container">
+            <article class="grid">
+                <div>
+                    <hgroup>
+                        <h1>登录</h1>
+                        <h2>无内鬼，上号！</h2>
+                    </hgroup>
+                    <form action="" method="post">
+                        <!--
+                        <input type="text" name="nickname" placeholder="昵称或邮件地址" aria-label="昵称或邮件地址" autocomplete="nickname" required>
+                        <input type="password" name="password" placeholder="密码" aria-label="密码" autocomplete="current-password" required>
+                        -->
+                        {{ form.nickname }}
+                        {{ form.password }}
+                        <fieldset>
+                            <label for="remember">
+                              <!--<input type="checkbox" role="switch" id="remember" name="remember">-->
+                              {{ form.remember }}
+                              <span style="font-size: small;" data-tooltip="如果不是自己的电脑请不要设置这个！">记住我</span>
+                            </label>
+                        </fieldset>
+                        <button type="submit" class="contrast" onclick="" data-tooltip="忠！诚！">登录！</button>
+                    </form>
+                </div>
+                <div></div>
+            </article>
+        </main>
 {% endblock %}

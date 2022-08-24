@@ -1,3 +1,4 @@
+from datetime import timedelta
 import pytest
 import asyncio
 from sqlalchemy import create_engine
@@ -35,7 +36,7 @@ class TestAuthService(object):
     
     ser = AuthService()
 
-    def init_db():
+    def init_db(self):
         # Initilize
         Base.metadata.drop_all(bind=sync_engine)
         Base.metadata.create_all(bind=sync_engine)
@@ -47,9 +48,36 @@ class TestAuthService(object):
 
 
     def test_encrypt(self):
+        # Initialize.
+        user = self.init_db()
+
+        payload = self.ser.gen_payload(user, timedelta(days=7))
+        assert isinstance(payload, dict)
+        raw = self.ser.dict_to_str()
+        assert raw == True
+
+        # Cookie.
+        _ = self.ser.encrypt()
+        assert _ == True
+
+        # Token.
         ...
+
+        return self.ser.cookie, None
     
     def test_decrypt(self):
+        cookie, token = self.test_encrypt()
+        self.ser.cookie = cookie
+        self.ser.token = token
+
+        # Cookie.
+        _ = self.ser.decrypt()
+        assert _ == True
+        _ = self.ser.str_to_dict()
+        assert _ == True
+        assert isinstance(self.ser.payload["id"], int)
+
+        # Token.
         ...
     
     def test_cookie_set(self):

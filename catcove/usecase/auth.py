@@ -3,6 +3,7 @@ from jwt import PyJWT
 from Crypto.PublicKey import ECC
 from sanic.request import Request
 from sanic.response import HTTPResponse
+import base64
 
 from . import ServiceBase
 
@@ -20,6 +21,7 @@ class AuthService(ServiceBase):
         exp: timedelta = timedelta(days=7)
     ) -> None:
         super().__init__(status)
+        # Put cookie/token here, plz.
         if token:
             self.token = token
             self.cookie = None
@@ -42,23 +44,30 @@ class AuthService(ServiceBase):
         self.exp: timedelta = exp
     
     def gen_payload(self, user: Users, exp: timedelta) -> dict:
+        # May need return as bool.
         # Set exp first.
         exp: float = datetime.timestamp(datetime.utcnow() + exp)
-        return user2payload(user, exp)
+        self.payload = user2payload(user, exp)
+        return self.payload
 
-    def encrypt(self, request: Request) -> bool:
+    def encrypt(self) -> bool:
         """ From payload/raw to token/cookie. """
-        if not (self.raw or self.payload): return False
+        if not (self.raw or self.payload):
+            # Not have raw/payload.
+            return False
+        if not self.raw and self.payload:
+            _ = self.dict_to_str()
+            return False if _ == False else ...
+        self.cookie = base64.b64encode(self.raw.encode("utf-8")).decode("latin1")
         self.token = ...
-        self.cookie = ...
         return True
     
-    def decrypt(self, request: Request) -> bool:
+    def decrypt(self) -> bool:
         """ From token/cookie to payload. """
         if self.token:
             self.raw = self.token
         elif self.cookie:
-            self.raw = self.cookie
+            self.raw = base64.b64decode(self.cookie.encode("latin1")).decode("utf-8")
         return True
     
     def str_to_dict(self) -> bool:

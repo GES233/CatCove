@@ -1,4 +1,5 @@
 from datetime import timedelta
+from types import NoneType
 import pytest
 import asyncio
 from sqlalchemy import create_engine
@@ -81,4 +82,27 @@ class TestAuthService(object):
         ...
     
     def test_cookie_set(self):
-        ...
+        """ Honestly, put it to `test_page_access.py` is better. """
+        # Initialize.
+        user = self.init_db()
+
+        _ = self.ser.gen_payload(user, timedelta(days=7))
+        _ = self.ser.dict_to_str()
+        _ = self.ser.encrypt()
+
+        # Create a Sanic app.
+        from sanic import Sanic, text
+        app = Sanic("test")
+
+        @app.route("/")
+        async def index(request):
+            return self.ser.set_cookie(text("Cookie here"))
+        
+        app.run(workers=1)
+
+        # Request.
+        import requests
+
+        index_req = requests.get("http://127.0.0.1:8000")
+        cookie = index_req.cookies["UserMeta"]
+        assert isinstance(cookie, NoneType) == False

@@ -23,16 +23,16 @@ import os, sys
 app_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "catcove"))
 sys.path.append(app_path)
 # Load setting from app
-from catcove.app import create_config_app
+from catcove.web.app import create_config_app
 app = create_config_app()
 
-config.set_main_option("sqlalchemy.url", app.config.SQLALCHEMY_DATABASE_URL)
+config.set_main_option("sqlalchemy.url", app.config.SQLALCHEMY_DATABASE_URI)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from catcove.models.tables import Base
+from catcove.entities.tables import Base
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

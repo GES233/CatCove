@@ -16,7 +16,7 @@ class DevConfig:
     
     # database
     # sqlalchemy
-    SQLALCHEMY_DATABASE_URL: str = "sqlite+aiosqlite:///tinycat.db"
+    SQLALCHEMY_DATABASE_URI: str = "sqlite+aiosqlite:///tinycat.db"
     SQLALCHEMY_DATABASE_ENCODING: str = "utf8"
     SQLALCHEMY_DATABASE_ECHO: bool = True
     

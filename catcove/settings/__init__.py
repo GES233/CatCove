@@ -14,8 +14,7 @@ def padding_instance(app: Sanic, **other_settings) -> None:
 
     instance_path = Path(PRJ_PATH / "instance")
     config_yaml = Path(instance_path/"config.yml")
-    
-    
+
     # Folder.
     if not instance_path.is_dir():
         # Create a new folder.
@@ -26,29 +25,36 @@ def padding_instance(app: Sanic, **other_settings) -> None:
             openssl ecparam -genkey -noout -name prime256v1 -out eckey.pem -text && \
             openssl ec -in eckey.pem -pubout -out ecpubkey.pem")
 
-    # ====
-
-    from mako.template import Template
-    
-    template = Template(filename=f"{PRJ_PATH}/catcove/settings/config.yaml.mako")
-    
-    # SECRET: $ openssl rand -base64 32
-    str_key = (os.popen("openssl rand -base64 32").readline().strip("\n"))
-    instance_content = template.render(
-        openssl_key=str_key,
-        instance_path=instance_path,
-        **other_settings)
+    ecc_prk = Path(instance_path/"eckey.pem")
+    ecc_puk = Path(instance_path/"ecpubkey.pem")
     
     # Config YAML file.
     if not config_yaml.exists():
+        from mako.template import Template
+    
+        template = Template(filename=f"{PRJ_PATH}/catcove/settings/config.yml.mako")
+    
+        # SECRET: $ openssl rand -base64 32
+        str_key = (os.popen("openssl rand -base64 32").readline().strip("\n"))
+
         config_yaml.touch(exist_ok=True)
-        ...
-        config_yaml.write_text(instance_content, encoding="utf-8")
+        instance_content = template.render(
+            openssl_key=str_key,
+            ecc_prk_path=ecc_prk,
+            ecc_puk_path=ecc_puk,
+            **other_settings)
+        config_yaml.write_text(instance_content.replace("\r\n", "\n"), encoding="latin1")
+    
+    update_instance(app, config_yaml)
         
+
+def update_instance(app: Sanic, config_yaml: Path) -> None:
+    # Read from it.
+    
     with open(config_yaml) as f:
         instance_config = yaml.load(f, Loader=yaml.FullLoader)
     
-    app.update_config(instance_config)
+    app.update_config(instance_config) if instance_config else ...
 
 
 def set_database_uri(
@@ -67,7 +73,7 @@ def set_database_uri(
     return f"{dialect}+{driver}://{username}:{password}@{host}:{port}/{path}"
 
 
-def register_configure(app: Sanic) -> str:
+def register_configure(app: Sanic) -> None:
     
     # Set mode from enviorment firstly.
     # **This Setting IS NOT used for running.**
@@ -76,21 +82,17 @@ def register_configure(app: Sanic) -> str:
         app_mode = "pro"
         # It will be production if not set to development.
     else: app_mode = app.config.ENV
-    
-    # print(app_mode)
 
+    # Use the default config firstly.
     if app_mode == "dev" or app_mode == "development":
-        # print("Configure Mode: Dev")
         app.update_config(DevConfig)
     elif app_mode == "test" or \
-        app_mode == "t" or \
         app_mode == "tesing":
         app.update_config(DevConfig)  # Heritage seems not work.
         app.update_config(TestConfig)
     else:
-        # print("Configure Mode: Pro")
         app.update_config(ProConfig)
     
-    # About instance file
-    if  True:#app.config["INSTANCE"] ==
+    # Using instance if `INSTANCE` is True.
+    if app.config["INSTANCE"] == True:
         padding_instance(app)

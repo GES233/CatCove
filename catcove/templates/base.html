@@ -3,15 +3,17 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        {% if title %}
+        {%- if title -%}
         <title>{{title}} - CatCove</title>
         {% elif role %} {# e.g. CatCove :: Login #}
         <title>CatCove :: {{role}}</title>
         {% else %}
         <title>CatCove</title>
-        {% endif %}
-        {% block costume_style %}{% endblock %}
+        {%- endif -%}
+
         <link rel="stylesheet" href="/static/css/pico.min.css">
+        {% block costume_style %}
+        {% endblock %}
     </head>
     <body>
         <nav class="container-fluid">
@@ -20,16 +22,16 @@
                 <kbd>CatCove</kbd>
             </a></li>
             <li> | </li>
-            {% if user %}
+            {%- if user -%}
             <li><small><a href="/explore">发现</a></small></li>
             <li><small><a href="/mark">书签</a></small></li>
-            {% endif %}
+            {%- endif -%}
             <li><small><a href="/about">关于</a></small></li>
         </ul>
         <ul>
             <li>
             <div class="user-status">
-                {% if user %}
+                {%- if user -%}
                 <details role="list" dir="rtl">
                     <summary aria-haspopup="listbox" role="link">{{ user.name }}</summary>
                     <ul>
@@ -44,7 +46,7 @@
                         <li><a href="/signup">注册</a></li>
                     </ul>
                 </details>
-                {% endif %}
+                {%- endif -%}
             </div>
             </li>
         </ul>

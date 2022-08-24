@@ -1,6 +1,6 @@
 # CatCove
 
-基于话题的小论坛（目前进度10%）。
+基于话题的小~~论坛~~SNS（目前进度12%）。
 
 ## Install
 
@@ -11,11 +11,14 @@
   - SQLAlchemy
   - alembic
   - Pydantic
+  - BCrypt
   - PyJWT
   - ujson
   - Jinja2
   - WTForms
   - PyYAML
+  - click
+  - email_validator
 - Pico.css
 - SimpleMDE/raw-text (Optional)
 
@@ -28,18 +31,17 @@ python server.py
 
 ## TODO
 
-- [x] 数据库
-- [x] 重构——业务代码与API的解耦
-  - [x] 代码优化 (能力极限)
-  - [ ] 洋葱架构重写（`Tiny` branch）
+- [ ] 完善的测试代码
+- [ ] 消息机制的引入
+  - [ ] APSchedule
+  - [ ] 类似于 Flask 的 `flash()` （No-JS）
+  - [ ] ESS 的实现（需要JS）
+- [ ] HTML模板的调整
 - [x] 前端美化框架（`Pico.css`）
   - [ ] 再美化（CSS reliable）
-- [ ] 自动在安装时完成运行添加示例（基于Mako+click）
-  - [ ] 生成部分
-  - [ ] 指令部分
-- [ ] 简单的API
+- [x] 简单的API
   - [ ] 基于JWE的鉴权
-  - [ ] 添加code与response（`Tiny`）
+  - [x] 添加code与response（`Tiny`）
   - [ ] 文档
 - [ ] `Markdown` 支持
   - [ ] 渲染

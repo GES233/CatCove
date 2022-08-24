@@ -88,8 +88,7 @@ def register_configure(app: Sanic) -> None:
         app.update_config(DevConfig)
     elif app_mode == "test" or \
         app_mode == "tesing":
-        app.update_config(DevConfig)
-        # The Sanic app seams not can read from parent class.
+        app.update_config(DevConfig)  # Heritage seems not work.
         app.update_config(TestConfig)
     else:
         app.update_config(ProConfig)

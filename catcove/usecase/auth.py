@@ -41,13 +41,14 @@ class AuthService(ServiceBase):
         # >> Update when change.
         # payload["timezone"]: int | (-12, 12)
         # payload["exp"]: float
-        self.exp: timedelta = exp
+        self.exp: datetime = datetime.utcnow() + exp
     
-    def gen_payload(self, user: Users, exp: timedelta) -> dict:
+    def gen_payload(self, user: Users, exp: timedelta | None = None) -> dict:
         # May need return as bool.
         # Set exp first.
-        exp: float = datetime.timestamp(datetime.utcnow() + exp)
-        self.payload = user2payload(user, exp)
+        if exp:
+            self.exp = datetime.utcnow() + exp
+        self.payload = user2payload(user, datetime.timestamp(self.exp))
         return self.payload
 
     def encrypt(self) -> bool:
@@ -97,13 +98,13 @@ class AuthService(ServiceBase):
         response.cookies["UserMeta"] = self.cookie
         response.cookies["UserMeta"]["path"] = "/"
         response.cookies["UserMeta"]["httponly"] = True
-        response.cookies["UserMeta"]["expire"] = datetime.utcnow()+self.exp
+        response.cookies["UserMeta"]["expires"] = self.exp
 
         return response
     
     def del_cookie(self, request: Request, response: HTTPResponse)\
         -> HTTPResponse:
-        if request.cookies.get["UserMeta"]:
+        if request.cookies.get("UserMeta"):
             response.cookies["UserMeta"] = ""
             response.cookies["UserMeta"]["max-age"] = 0
         

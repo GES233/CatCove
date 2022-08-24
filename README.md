@@ -1,6 +1,6 @@
 # CatCove
 
-基于话题的小~~论坛~~SNS（目前进度10%）。
+基于话题的小~~论坛~~SNS（目前进度12%）。
 
 ## Install
 
@@ -41,13 +41,13 @@ python server.py
 
 直到完成如下内容：
 
-- [ ] 完整的注册/登录流程
+- [o] 完整的注册/登录流程
   - [x] 页面渲染（网页段）
   - [x] 数据库提交流程
   - [x] 表单提交以及前端的检查（`WTForms`）
   - [ ] 后端的检查（`Pydantic`）并且能够在 API 端返回错误
-  - [ ] Cookie 以及 Token 的加密解密
-    - [ ] Base64
+  - [o] Cookie 以及 Token 的加密解密
+    - [x] Base64
     - [ ] 非对称加密
 - [x] API端按照协议渲染自定义错误
   - `{"code": code, "info": info, "org": {...}}`

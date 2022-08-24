@@ -17,3 +17,5 @@ views = Blueprint.group(
     auth_bp,
     user_bp
 )
+# Add a middleware to parse the cookie.
+# And render the result.

@@ -53,7 +53,8 @@ class UserLoginView(HTTPMethodView):
                 return self.login_render(
                     password_not_match(LoginForm()))
         
-        cookie.payload = user_ser.get_user_token()
+        _ = cookie.gen_payload(user_ser.user)
+        # cookie.payload = user_ser.get_user_token()
         _ = cookie.dict_to_str()
         if _ == False:
             raise SanicException("Some error happend when generate token.")
@@ -64,4 +65,17 @@ class UserLoginView(HTTPMethodView):
         response = redirect("/")
         return cookie.set_cookie(response)
 
+
+async def logout(request: Request):
+    cookie = AuthService()
+    # set cookie here.
+    cookie.cookie = request.cookies.get("UserMeta")
+
+    if not cookie.cookie:
+        return redirect("https://www.bilibili.com")
+    
+    content = html(render_template("auth/logout.html", title="Hope your back"))
+    return cookie.del_cookie(request, content)
+
 auth_bp.add_route(UserLoginView.as_view(), "/login")
+auth_bp.add_route(logout, "/logout")

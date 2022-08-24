@@ -1,3 +1,4 @@
+from datetime import timedelta
 from sanic import Request
 from sanic.response import html, redirect, HTTPResponse
 from sanic.views import HTTPMethodView
@@ -11,6 +12,7 @@ from ..forms.user import (
     common_email
 )
 from .....usecase.users import UserService
+from .....usecase.auth import AuthService
 from .....entities.schemas.user.request import SignUpModel
 from .....services.render import render_template
 
@@ -73,19 +75,16 @@ class RegisterView(HTTPMethodView):
             model.password
         )
 
-        # Set expired day if `model.auto_login` is True.
-        if model.auto_login == True:
-            ...
-        else:
-            ...
-
-        # Add cookie.
-        ...
-
-
         # Redirect.
         if model.auto_login == True:
-            return redirect("/")
+            # Add cookie.
+            cookie = AuthService(exp=timedelta(days=14))
+            cookie.gen_payload(newbie)
+            _ = cookie.dict_to_str()
+            _ = cookie.encrypt()
+            # Return to index.
+            response = redirect("/")
+            return cookie.set_cookie(response)
         else:
             return redirect("/login")
     

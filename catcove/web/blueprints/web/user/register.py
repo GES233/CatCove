@@ -20,7 +20,7 @@ class RegisterView(HTTPMethodView):
 
     def signup_render(self, form) -> HTTPResponse:
         return html(render_template(
-            'signup.html',
+            'account/signup.html',
             role="SignUp",
             form=form))
 

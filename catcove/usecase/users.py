@@ -55,11 +55,11 @@ class UserService(ServiceBase):
         async with self.db_session.begin():
             sql = select(Users).where(Users.id==token["id"])
             users = await self.db_session.execute(sql)
+            if not users: return False
             user: Users = users.scalars().first()
             self.db_session.expunge(user)
         
         if not user:
-            self.service_status["errors"].append("User Not Exist")
             return False
 
         if token["status"] == user.status and \
@@ -68,7 +68,6 @@ class UserService(ServiceBase):
                 (user.nickname == token["nickname"]):
             return True
         else:
-            self.service_status["errors"].append("User Info Error")
             return False
     
     def get_user_token(self) -> dict:

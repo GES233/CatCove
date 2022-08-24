@@ -21,7 +21,7 @@ class UserLoginView(HTTPMethodView):
 
     def login_render(self, form) -> HTTPResponse:
         return html(render_template(
-            'auth/login.html',
+            'account/login.html',
             role="Login",
             form=form))
 
@@ -74,7 +74,7 @@ async def logout(request: Request):
     if not cookie.cookie:
         return redirect("https://www.bilibili.com")
     
-    content = html(render_template("auth/logout.html", title="Hope your back"))
+    content = html(render_template("account/logout.html", title="Hope your back"))
     return cookie.del_cookie(request, content)
 
 auth_bp.add_route(UserLoginView.as_view(), "/login")

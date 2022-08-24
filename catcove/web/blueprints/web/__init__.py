@@ -1,13 +1,6 @@
-from sanic import Blueprint
+from sanic import Blueprint, Request
 
-index_bp = Blueprint("index")
-
-@index_bp.route("/")
-async def index(request):
-    from sanic.response import html
-    from ....services.render import render_template
-    return html(render_template("index.html"))
-
+from .pages import index_bp
 from .auth import auth_bp
 from .user import user_bp
 
@@ -17,5 +10,25 @@ views = Blueprint.group(
     auth_bp,
     user_bp
 )
+
 # Add a middleware to parse the cookie.
 # And render the result.
+
+from ....usecase.auth import AuthService
+
+@views.middleware("request")
+async def fetch_cookie(request: Request):
+    if not request.cookies.get("UserMeta"):
+        # Do nothing.
+        request.ctx.current_user = None
+    else:
+        request.ctx.cookie_ser = AuthService(
+            cookie = request.cookies.get("UserMeta")
+        )
+        de_cookie = request.ctx.cookie_ser.decrypt()
+        de__cookie = request.ctx.cookie_ser.str_to_dict()
+        if de_cookie == True and de__cookie == True:
+            request.ctx.current_user = request.ctx.cookie_ser.payload
+        else:
+            request.ctx.current_user = None
+            request.ctx.cookie_ser = AuthService()

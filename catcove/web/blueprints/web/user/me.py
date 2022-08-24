@@ -13,23 +13,21 @@ from .....services.render import render_template
 
 me_bp = Blueprint("me")
 
-class UserProfileView(HTTPMethodView):
 
-    def common(self, request: Request):
-        self.user_ser = UserService(request.ctx.db_session)
-        self.auth_ser = AuthService()
-        
-        # Query current user.
-        self.auth_ser.cookie = request.cookies.get("UserMeta")
+# @place_a_decorator_here()
+async def get(request: Request):
+    user_ser = UserService(request.ctx.db_session)
+    auth_ser = request.ctx.cookie_ser
+    
+    # Query current user.
+    db_user = await user_ser.check_user_token(
+        request.ctx.current_user
+    )
+    if db_user == False:
+        # 401.
         ...
 
-    # @place_a_decorator_here()
-    async def get(self, request: Request):
-        self.common(request)
+    user_meta = user_ser.user
 
-        # Query data.
-
-    async def post(self, request: Request):
-        self.common(request)
-        # Update cookie, plz.
-        ...
+    # Return data and render.
+    ...

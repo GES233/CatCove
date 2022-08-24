@@ -28,7 +28,7 @@ class CustomJSONRenderer(JSONRenderer):
         output = self._generate_output(full=True)
         api = APIServise()
 
-        # Some login to set code and info.
+        # Some business code to set code and info.
         ...
 
         return json(api.base_resp(

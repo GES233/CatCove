@@ -19,7 +19,7 @@ pycparser==2.21
 pydantic==1.9.1
 PyJWT==2.4.0
 PyYAML==6.0
-sanic==22.6.0
+sanic==22.6.1
 sanic-routing==22.3.0
 SQLAlchemy==1.4.39
 typing_extensions==4.3.0

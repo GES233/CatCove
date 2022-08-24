@@ -3,7 +3,7 @@ from sanic import Request
 from sanic.response import html, redirect, HTTPResponse
 from sanic.views import HTTPMethodView
 
-from catcove.entities.tables.users import Users
+from .....entities.tables.users import Users
 
 from ..forms.user import (
     SignUpForm,

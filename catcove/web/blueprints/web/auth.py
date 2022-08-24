@@ -32,6 +32,12 @@ class UserLoginView(HTTPMethodView):
     async def post(self, request: Request):
         # Submit -> POST
         form_data = request.form
+        # Case: from register
+        if form_data.get("email"):
+            return self.login_render(LoginForm())
+        elif not form_data.get("nickname") or \
+            not form_data.get("password"):
+            return self.login_render(LoginForm())
 
         model: UserLoginModel = validate_login_form(LoginForm(data={
             "nickname": form_data.get("nickname"),
@@ -43,7 +49,7 @@ class UserLoginView(HTTPMethodView):
         cookie = AuthService()
         user_ser = UserService(request.ctx.db_session)
         
-        user_exist = await user_ser.check_common_user(model.nickname, "")
+        user_exist = await user_ser.check_common_user(model.nickname, None)
         if user_exist != True:
             return self.login_render(
                 user_not_exist(LoginForm()))

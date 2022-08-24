@@ -10,3 +10,19 @@ async def index(request: Request):
         "index.html",
         user=request.ctx.current_user
     ))
+
+
+@index_bp.route("/about")
+async def about(request: Request):
+    return html(render_template(
+        "about.html",
+        user=request.ctx.current_user
+    ))
+
+
+@index_bp.route("/help")
+async def about(request: Request):
+    return html(render_template(
+        "markdown-demo.html",
+        user=request.ctx.current_user
+    ))

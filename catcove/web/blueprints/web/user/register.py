@@ -86,5 +86,6 @@ class RegisterView(HTTPMethodView):
             response = redirect("/")
             return cookie.set_cookie(response)
         else:
+            # Move the request.
             return redirect("/login")
     

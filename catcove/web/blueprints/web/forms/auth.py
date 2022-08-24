@@ -63,5 +63,5 @@ def user_not_exist(form: LoginForm) -> LoginForm:
 
 def password_not_match(form: LoginForm) -> LoginForm:
     form.password.render_kw["aria-invalid"] = "true"
-    form.password.render_kw["placeholder"] = "一眼丁真，鉴定为假"
+    form.password.render_kw["placeholder"] = "密码错误"
     return form

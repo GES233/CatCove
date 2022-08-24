@@ -1,19 +1,15 @@
 from datetime import datetime, timedelta
 from pydantic import BaseModel
 from ...entities.tables.users import Users
-
-class UserSecurityPayload(BaseModel):
-    id: int
-    nickname: str
-    status: str
-    exp: float
+from ...entities.schemas.auth import UserTokenPayload
 
 
 def user2payload(user: Users, exp_time: float) -> dict:
-    dict = UserSecurityPayload(
+    dict = UserTokenPayload(
         id = user.id,
         nickname = user.nickname,
         status = user.status,
+        role = "spectator" if user.is_spectator == True else "normal",
         exp = exp_time,
     ).dict()
     """ 'UserMeta': 
@@ -21,9 +17,9 @@ def user2payload(user: Users, exp_time: float) -> dict:
             'id': 1,
             'nickname': '小地瓜123',
             'status': <Status.newbie: 'newbie'>,
-            'exp': datetime.datetime(2022, 8, 21, 6, 25, 20, 863794)}"""
+            'exp': timestamp}"""
     # set dict.status -> str:
-    dict["status"] = user.status
+    # dict["status"] = user.status
     return dict
 
 

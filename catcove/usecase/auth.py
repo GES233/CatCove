@@ -6,6 +6,10 @@ from sanic.response import HTTPResponse
 
 from . import ServiceBase
 
+from ..entities.tables.users import Users
+from ..entities.schemas.auth import UserTokenPayload
+from ..services.security.user import user2payload
+
 class AuthService(ServiceBase):
     """ Service about auth. """
     def __init__(
@@ -34,9 +38,14 @@ class AuthService(ServiceBase):
         # payload["role"]: str | Enum
         # >> Update when change.
         # payload["timezone"]: int | (-12, 12)
-        # payload["exp"]: timestamp
+        # payload["exp"]: float
         self.exp: timedelta = exp
     
+    def gen_payload(self, user: Users, exp: timedelta) -> dict:
+        # Set exp first.
+        exp: float = datetime.timestamp(datetime.utcnow() + exp)
+        return user2payload(user, exp)
+
     def encrypt(self, request: Request) -> bool:
         """ From payload/raw to token/cookie. """
         if not (self.raw or self.payload): return False

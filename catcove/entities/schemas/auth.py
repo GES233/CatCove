@@ -6,3 +6,4 @@ class UserTokenPayload(BaseModel):
     nickname: str
     status: str
     role: str
+    exp: float | None

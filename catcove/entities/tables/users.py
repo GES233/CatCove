@@ -4,6 +4,7 @@ from bcrypt import gensalt, hashpw, checkpw
 from . import *
 
 from .tags import tag_maintainers
+from .log.common_log import Logs
 
 
 following_table = Table(
@@ -88,6 +89,16 @@ class Users(Base):
         secondary=tag_maintainers,
         back_populates="maintainers",
         lazy="select")
+    log_operator = relationship(
+        "Log", secondary=Logs,
+        back_populates="operator",
+        lazy="select"
+    )
+    log_targer = relationship(
+        "Log", secondary=Logs,
+        back_populates="terget_user",
+        lazy="select"
+    )
 
     def encrypt_passwd(self, password: str) -> None:
         salt = gensalt()

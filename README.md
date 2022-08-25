@@ -1,7 +1,7 @@
 # CatCove
 ![img](https://img.shields.io/badge/license-WTFPL-blue)
 
-基于话题的、轻量的SNS（目前进度12%）。
+基于话题的、轻量的SNS（目前进度10%）。
 
 ## 项目背景
 

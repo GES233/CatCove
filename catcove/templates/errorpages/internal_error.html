@@ -3,10 +3,12 @@
 {% block main %}
         <main class="container">
             <article>
-                <h2>{{ title }}</h2>
-                <p>{{ error_text }}</p>
+                <hgroup>
+                    <h2>{{ title }}</h2>
+                    <h3>{{ error_text }}</h3>
+                </hgroup>
                 <hr>
-                <code>{{ error_body }}</code>
+                <main>{{ error_body }}</main>
             </article>
         </main>
 {% endblock %}

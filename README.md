@@ -57,7 +57,7 @@ python server.py run --pro
 ## TODO
 
 - [ ] 错误显示
-  - [ ] 网页端：`<` `>` 的转义（ -> `&lt;` `&gt;`）
+  - [x] 网页端：`<` `>` 的转义（ -> `&lt;` `&gt;`）
   - [ ] API(Validation error -> format)
 - [ ] 消息机制的引入
   - [ ] APSchedule

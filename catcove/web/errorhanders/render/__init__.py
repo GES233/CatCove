@@ -46,8 +46,8 @@ class HTMLRendererWithStyle(HTMLRenderer):
 
             traceback_html = self.TRACEBACK_BORDER.join(reversed(exceptions))
             appname = escape(self.request.app.name)
-            name = escape(self.exception.__class__.__name__)
-            value = escape(self.exception)
+            name = escape(self.exception.__class__.__name__).replace(">", "&gt;")
+            value = escape(self.exception).replace(">", "&gt;")
             path = escape(self.request.path)
             lines += [
                 f"<h4>Traceback of {appname} " "(most recent call last):</h4>",

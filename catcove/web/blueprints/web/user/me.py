@@ -11,11 +11,8 @@ from .....usecase.users import UserService
 from .....usecase.auth import AuthService
 from .....services.render import render_template
 
-me_bp = Blueprint("me")
 
-
-# @place_a_decorator_here()
-async def get(request: Request):
+async def profile(request: Request):
     user_ser = UserService(request.ctx.db_session)
     auth_ser = request.ctx.cookie_ser
     

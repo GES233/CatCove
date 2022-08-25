@@ -4,7 +4,7 @@ from traceback import extract_tb
 from sanic.errorpages import HTMLRenderer, escape
 from sanic.response import HTTPResponse, html
 
-from ....services.render import render_template
+from ....services.render import render_page_template
 
 
 class HTMLRendererWithStyle(HTMLRenderer):
@@ -67,7 +67,7 @@ class HTMLRendererWithStyle(HTMLRenderer):
     
     def minimal(self) -> HTTPResponse:
         return html(
-            render_template(
+            render_page_template(
                 "errorpages/internal_error.html",
                 title=self.title,
                 error_text=self.text,
@@ -79,7 +79,7 @@ class HTMLRendererWithStyle(HTMLRenderer):
     
     def full(self) -> HTTPResponse:
         return html(
-            render_template(
+            render_page_template(
                 "errorpages/internal_error.html",
                 title=self.title,
                 error_text=self.text,

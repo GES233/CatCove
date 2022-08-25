@@ -19,10 +19,10 @@ def register_services(app: Sanic) -> None:
             FileSystemLoader
         )
 
-        template_path = PurePath( Path(__file__).cwd() / "catcove/templates")
+        static_template_path = PurePath( Path(__file__).cwd() / "catcove/web/blueprints/web/templates")
 
-        app.ctx.template_env = Environment(
-            loader=FileSystemLoader(template_path)
+        app.ctx.static_template_env = Environment(
+            loader=FileSystemLoader(static_template_path)
         )
 
         # Globlas functions:

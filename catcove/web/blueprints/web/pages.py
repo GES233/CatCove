@@ -1,12 +1,12 @@
 from sanic import Blueprint, Request, html
-from ....services.render import render_template
+from ....services.render import render_page_template
 
 index_bp = Blueprint("index")
 
 @index_bp.route("/")
 async def index(request: Request):
     
-    return html(render_template(
+    return html(render_page_template(
         "index.html",
         user=request.ctx.current_user
     ))
@@ -14,7 +14,7 @@ async def index(request: Request):
 
 @index_bp.route("/about")
 async def about(request: Request):
-    return html(render_template(
+    return html(render_page_template(
         "about.html",
         role = "About",
         user=request.ctx.current_user
@@ -23,7 +23,7 @@ async def about(request: Request):
 
 @index_bp.route("/help")
 async def about(request: Request):
-    return html(render_template(
+    return html(render_page_template(
         "markdown-demo.html",
         user=request.ctx.current_user
     ))

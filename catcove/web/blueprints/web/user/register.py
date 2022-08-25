@@ -14,12 +14,12 @@ from ..forms.user import (
 from .....usecase.users import UserService
 from .....usecase.auth import AuthService
 from .....entities.schemas.user.request import SignUpModel
-from .....services.render import render_template
+from .....services.render import render_page_template
 
 class RegisterView(HTTPMethodView):
 
     def signup_render(self, form) -> HTTPResponse:
-        return html(render_template(
+        return html(render_page_template(
             'account/signup.html',
             role="SignUp",
             form=form))

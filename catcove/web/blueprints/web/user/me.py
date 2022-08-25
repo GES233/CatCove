@@ -9,7 +9,7 @@ from .....entities.tables.users import Users
 
 from .....usecase.users import UserService
 from .....usecase.auth import AuthService
-from .....services.render import render_template
+from .....services.render import render_page_template
 
 
 async def profile(request: Request):
@@ -28,7 +28,7 @@ async def profile(request: Request):
 
     # Return data and render.
     return html(
-        render_template(
+        render_page_template(
             "account/me.html",
             user=request.ctx.current_user
         )

@@ -4,7 +4,7 @@ from sanic.views import HTTPMethodView
 from sanic.exceptions import SanicException
 
 from ....entities.schemas.user.request import UserLoginModel
-from ....services.render import render_template
+from ....services.render import render_page_template
 from ....usecase.users import UserService
 from ....usecase.auth import AuthService
 from .forms.auth import (
@@ -20,7 +20,7 @@ auth_bp = Blueprint("auth")
 class UserLoginView(HTTPMethodView):
 
     def login_render(self, form) -> HTTPResponse:
-        return html(render_template(
+        return html(render_page_template(
             'account/login.html',
             role="Login",
             form=form))
@@ -81,7 +81,7 @@ async def logout(request: Request):
     if not request.ctx.cookie_ser.cookie:
         return redirect("https://www.bilibili.com")
     
-    content = html(render_template("account/logout.html", title="Hope your back"))
+    content = html(render_page_template("account/logout.html", title="Hope your back"))
     return request.ctx.cookie_ser.del_cookie(request, content)
 
 auth_bp.add_route(UserLoginView.as_view(), "/login")

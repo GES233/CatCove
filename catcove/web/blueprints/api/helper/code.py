@@ -1,6 +1,10 @@
 """ Code of API. """
 
+# Internal Error.
 SERVER_ERROR:                  int = 5000
+
+# Authentation related.
+...
 
 # Found resource.
 RESOURCE_FETCHED_DEFAULT:      int = 6700

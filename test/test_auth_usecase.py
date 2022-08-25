@@ -52,34 +52,45 @@ class TestAuthService(object):
         # Initialize.
         user = self.init_db()
 
+        import os
+        os.environ["APP_ENV"] = "dev"
+        from catcove.web.app import create_config_app
+        app = create_config_app()
+        from catcove.services.security.crypto import pri_key, pub_key
+
+        self.pri_key = pri_key
+        self.pub_key = pub_key
+
         payload = self.ser.gen_payload(user, timedelta(days=7))
         assert isinstance(payload, dict)
         raw = self.ser.dict_to_str()
         assert raw == True
 
-        # Cookie.
-        _ = self.ser.encrypt()
+        # Cookie and cookie.
+        _ = self.ser.encrypt(self.pri_key)
         assert _ == True
 
-        # Token.
-        ...
 
-        return self.ser.cookie, None
+        return self.ser.cookie, self.ser.token
     
     def test_decrypt(self):
-        cookie, token = self.test_encrypt()
-        self.ser.cookie = cookie
-        self.ser.token = token
+        cookie, self.ser.token = self.test_encrypt()
 
-        # Cookie.
-        _ = self.ser.decrypt()
+        # Token.
+        _ = self.ser.decrypt(self.pub_key)
         assert _ == True
         _ = self.ser.str_to_dict()
         assert _ == True
         assert isinstance(self.ser.payload["id"], int)
 
-        # Token.
-        ...
+        # Cookie.
+        self.ser.cookie = cookie
+        self.ser.token = None
+        _ = self.ser.decrypt()
+        assert _ == True
+        _ = self.ser.str_to_dict()
+        assert _ == True
+        assert isinstance(self.ser.payload["id"], int)
     
     def test_cookie_set(self):
         """ Honestly, put it to `test_page_access.py` is better. """

@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
-from jwt import PyJWT
-from Crypto.PublicKey import ECC
+from typing import Callable
+import jwt
+# from jose.jwe import encrypt, decrypt\
 from sanic.request import Request
 from sanic.response import HTTPResponse
 import base64
@@ -15,21 +16,40 @@ class AuthService(ServiceBase):
     """ Service about auth. """
     def __init__(
         self,
-        status: dict | None = None,
         token: str | None = None,
         cookie: str | None = None,
-        exp: timedelta = timedelta(days=7)
+        ser_type: str | None = None,
+        exp: timedelta = timedelta(days=7),
     ) -> None:
-        super().__init__(status)
+        super().__init__()
+        """ 
+            {
+                "config": {
+                    "type": "token/cookie/null", <-- ser_type
+                }
+            }
+        """
         # Put cookie/token here, plz.
         if token:
+            # Token -> payload.
+            self.service_status["config"]["type"] = "token"
             self.token = token
             self.cookie = None
         elif cookie:
+            # Cookie -> payload.
+            self.service_status["config"]["type"] = "cookie"
             self.token = None
             self.cookie = cookie
-        else: self.token = self.cookie = None
+        else:
+            # Generate token&cookie.
+            self.exp = exp + datetime.utcnow()
+            self.service_status["config"]["type"] = "" if not ser_type else ser_type
+            self.token = self.cookie = None
 
+        self.cookie_encrypt_func: Callable[[str], str] = lambda x: base64.b64encode(x.encode("utf-8")).decode("latin1")
+        self.cookie_decrypt_func: Callable[[str], str] = lambda x: base64.b64decode(x.encode("latin1")).decode("utf-8")
+        self.token_encrypt_func = jwt.encode
+        self.token_decrypt_func = jwt.decode
         self.raw: str = ""
         self.payload: dict = {}
         # payload["id"]: int
@@ -41,34 +61,46 @@ class AuthService(ServiceBase):
         # >> Update when change.
         # payload["timezone"]: int | (-12, 12)
         # payload["exp"]: float
-        self.exp: datetime = datetime.utcnow() + exp
     
     def gen_payload(self, user: Users, exp: timedelta | None = None) -> dict:
         # May need return as bool.
         # Set exp first.
         if exp:
             self.exp = datetime.utcnow() + exp
-        self.payload = user2payload(user, datetime.timestamp(self.exp))
+        self.payload = user2payload(
+            user,
+            datetime.timestamp(self.exp)
+        )
         return self.payload
 
-    def encrypt(self) -> bool:
+    def encrypt(self, sk: str | None = None) -> bool:
         """ From payload/raw to token/cookie. """
-        if not (self.raw or self.payload):
+        if not self.payload:
             # Not have raw/payload.
             return False
-        if not self.raw and self.payload:
-            _ = self.dict_to_str()
-            return False if _ == False else ...
-        self.cookie = base64.b64encode(self.raw.encode("utf-8")).decode("latin1")
-        self.token = ...
+        
+        if self.service_status["config"]["type"] != "token":
+            if not self.raw:
+                _ = self.dict_to_str()
+                return False if _ == False else ...
+            self.cookie = self.cookie_encrypt_func(self.raw)
+        else:
+            # From payload.
+            self.token = self.token_encrypt_func(
+                self.payload,
+                sk,
+                "ES256",
+            )
+        
         return True
     
-    def decrypt(self) -> bool:
+    def decrypt(self, pk: str = "") -> bool:
         """ From token/cookie to payload. """
-        if self.token:
-            self.raw = self.token
-        elif self.cookie:
-            self.raw = base64.b64decode(self.cookie.encode("latin1")).decode("utf-8")
+        if self.service_status["config"]["type"] == "token":
+            self.payload = self.token_decrypt_func(self.token, pk, ["ES256"])
+        else:
+            self.raw = self.cookie_decrypt_func(self.cookie)
+
         return True
     
     def str_to_dict(self) -> bool:

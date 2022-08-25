@@ -16,20 +16,19 @@ async def login(request: Request) -> HTTPResponse:
     password = data["password"]
 
     user = UserService(request.ctx.db_session)
+    # Using `request.ctx.token_ser` to replace later.
     token = AuthService()
 
-    db_user = await user.check_common_user(nickname, "")
+    user_exist = await user.check_common_user(nickname, None)
     
-    if db_user != True:
-        # User not exist.
-
-        # Construct and return error.
+    if user_exist != True:
+        ...
+    
+    password_match = user.user.check_passwd(password)
+    if password_match == False:
         ...
     
     if user.user.check_passwd(password) != True:
-        # Password error.
-
-        # Construct and return error.
         ...
     
     # Generate_token payload.

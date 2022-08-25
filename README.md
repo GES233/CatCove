@@ -62,7 +62,7 @@ python server.py run --pro
   - [ ] 类似于 Flask 的 `flash()` （No-JS）
   - [ ] ESS 的实现（需要JS）
 - [ ] 简单的API
-  - [ ] 基于JWE的鉴权
+  - [x] 基于JWE的鉴权（测试已通过）
   - [ ] 文档
   - [ ] Pydantic 的个性化定制
 - [ ] `Markdown` 支持

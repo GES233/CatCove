@@ -33,4 +33,6 @@ def register_services(app: Sanic) -> None:
     app.register_listener(setup_templates, "before_server_start")
 
     # Key
-    # from .services.security.crypto import ...
+    from .security.crypto import register_key
+    register_key(app)
+    

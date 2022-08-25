@@ -47,7 +47,7 @@ class UserLoginView(HTTPMethodView):
         if isinstance(model, LoginForm):
             return self.login_render(model)
 
-        cookie = AuthService()
+        # cookie = AuthService()
         user_ser = UserService(request.ctx.db_session)
         
         user_exist = await user_ser.check_common_user(model.nickname, None)
@@ -60,29 +60,29 @@ class UserLoginView(HTTPMethodView):
                 return self.login_render(
                     password_not_match(LoginForm()))
         
-        _ = cookie.gen_payload(user_ser.user)
-        _ = cookie.dict_to_str()
+        _ = request.ctx.cookie_ser.gen_payload(user_ser.user)
+        _ = request.ctx.cookie_ser.dict_to_str()
         if _ == False:
             raise SanicException("Some error happend when generate token.")
-        _ = cookie.encrypt()
+        _ = request.ctx.cookie_ser.encrypt()
         if _ == False:
             raise SanicException("Some error happend when generate token.")
         
         response = redirect("/")
         # Add remember_me code here.
-        return cookie.set_cookie(response)
+        return request.ctx.cookie_ser.set_cookie(response)
 
 
 async def logout(request: Request):
-    cookie = AuthService()
+    # cookie = AuthService()
     # set cookie here.
-    cookie.cookie = request.cookies.get("UserMeta")
+    request.ctx.cookie_ser.cookie = request.cookies.get("UserMeta")
 
-    if not cookie.cookie:
+    if not request.ctx.cookie_ser.cookie:
         return redirect("https://www.bilibili.com")
     
     content = html(render_template("account/logout.html", title="Hope your back"))
-    return cookie.del_cookie(request, content)
+    return request.ctx.cookie_ser.del_cookie(request, content)
 
 auth_bp.add_route(UserLoginView.as_view(), "/login")
 auth_bp.add_route(logout, "/logout")

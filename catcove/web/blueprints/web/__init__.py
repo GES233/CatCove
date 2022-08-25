@@ -1,3 +1,4 @@
+from datetime import datetime
 from sanic import Blueprint, Request
 
 from .pages import index_bp
@@ -21,6 +22,7 @@ async def fetch_cookie(request: Request):
     if not request.cookies.get("UserMeta"):
         # Do nothing.
         request.ctx.current_user = None
+        request.ctx.cookie_ser = AuthService()
     else:
         request.ctx.cookie_ser = AuthService(
             cookie = request.cookies.get("UserMeta")
@@ -28,7 +30,11 @@ async def fetch_cookie(request: Request):
         de_cookie = request.ctx.cookie_ser.decrypt()
         de__cookie = request.ctx.cookie_ser.str_to_dict()
         if de_cookie == True and de__cookie == True:
-            request.ctx.current_user = request.ctx.cookie_ser.payload
+            _payload = request.ctx.cookie_ser.payload
+            if _payload["exp"] < datetime.timestamp(datetime.utcnow()):
+                request.ctx.current_user = None
+            else:
+                request.ctx.current_user = request.ctx.cookie_ser.payload
         else:
             request.ctx.current_user = None
             request.ctx.cookie_ser = AuthService()

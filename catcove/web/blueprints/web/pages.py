@@ -16,6 +16,7 @@ async def index(request: Request):
 async def about(request: Request):
     return html(render_template(
         "about.html",
+        role = "About",
         user=request.ctx.current_user
     ))
 

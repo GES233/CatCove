@@ -27,4 +27,9 @@ async def profile(request: Request):
     user_meta = user_ser.user
 
     # Return data and render.
-    ...
+    return html(
+        render_template(
+            "account/me.html",
+            user=request.ctx.current_user
+        )
+    )

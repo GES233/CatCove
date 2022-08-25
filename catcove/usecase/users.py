@@ -55,8 +55,8 @@ class UserService(ServiceBase):
         async with self.db_session.begin():
             sql = select(Users).where(Users.id==token["id"])
             users = await self.db_session.execute(sql)
-            if not users: return False
             user: Users = users.scalars().first()
+            if not user: return False
             self.db_session.expunge(user)
         
         if not user:

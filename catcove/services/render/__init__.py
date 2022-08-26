@@ -1,6 +1,7 @@
 from sanic import Sanic
 from jinja2.environment import Template
 
+# Will set custom Markdown render here.
 
 def render_page_template(template_name: str, **kwargs) -> str:
     # For "views" route.

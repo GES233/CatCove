@@ -115,7 +115,8 @@ def create_spectator(transformation):
 
 
 @manage.command("run")
-@click.option("--dev", "mode", flag_value="dev", default=True)
+@click.option("--dev", "mode", flag_value="dev")
+@click.option("--demo", "-d", "mode", flag_value="demo", default=True)
 @click.option("--pro", "mode", flag_value="pro")
 def run(mode):
     """ Run the application. """
@@ -128,6 +129,16 @@ def run(mode):
             host="127.0.0.1",
             # host="0.0.0.0",  # `route print`
             port="6969",
+            dev=True
+        )
+    elif mode == "demo":
+        os.environ["APP_ENV"] = "dev"
+
+        from .web.app import create_app
+        app = create_app()
+        app.run(
+            host="0.0.0.0",  # `route print`
+            port="80",
             dev=True
         )
     else:

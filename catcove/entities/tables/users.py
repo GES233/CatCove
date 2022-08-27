@@ -47,7 +47,7 @@ class Users(Base):
         comment="username is ASCII only."
     )
     email = Column(String(256), unique=True)
-    password = Column(String)
+    password = Column(LargeBinary)
     gender = Column(String(2), nullable=True)
     birth = Column(Date, nullable=True)
     info = Column(Text, nullable=True)

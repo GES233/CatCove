@@ -1,8 +1,8 @@
-"""empty message
+"""Initialize Database.
 
-Revision ID: fcdb33894062
+Revision ID: dd590f0d3782
 Revises: 
-Create Date: 2022-08-20 15:55:57.525736
+Create Date: 2022-08-27 20:46:32.590458
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'fcdb33894062'
+revision = 'dd590f0d3782'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -37,7 +37,7 @@ def upgrade() -> None:
     sa.Column('nickname', sa.String(length=128), nullable=False),
     sa.Column('username', sa.String(length=64), nullable=True, comment='username is ASCII only.'),
     sa.Column('email', sa.String(length=256), nullable=True),
-    sa.Column('password', sa.String(), nullable=True),
+    sa.Column('password', sa.LargeBinary(), nullable=True),
     sa.Column('gender', sa.String(length=2), nullable=True),
     sa.Column('birth', sa.Date(), nullable=True),
     sa.Column('info', sa.Text(), nullable=True),

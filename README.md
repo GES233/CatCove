@@ -31,7 +31,8 @@ git clone https://github.com/GES233/CatCove.git
 # Create a env before.
 pip install requirements.txt
 # Configure the application.
-python server.py init --migrate
+python server.py init
+python server.py db
 # Following constructions.
 python server.py run --pro
 ```

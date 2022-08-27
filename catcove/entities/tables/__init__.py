@@ -9,7 +9,8 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     MetaData,
-    Table
+    Table,
+    LargeBinary
 )
 
 metadata = MetaData()

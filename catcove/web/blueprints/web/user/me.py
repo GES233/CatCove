@@ -1,6 +1,6 @@
 from datetime import timedelta
 from sanic import Request, Blueprint
-from sanic.response import html, redirect, HTTPResponse
+from sanic.response import html, redirect, HTTPResponse, text
 from sanic.views import HTTPMethodView
 
 from .....entities.tables.users import Users
@@ -26,10 +26,13 @@ async def profile(request: Request):
 
     user_meta = user_ser.user
 
+    # Transform data from db to a model.
+
     # Return data and render.
     return html(
         render_page_template(
             "account/me.html",
-            user=request.ctx.current_user
+            user=request.ctx.current_user,
+            db_user=user_meta
         )
     )

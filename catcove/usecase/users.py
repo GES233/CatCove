@@ -66,6 +66,7 @@ class UserService(ServiceBase):
             ((user.is_spectator == True and token["role"] == "spectator") or \
                 (user.is_spectator == False and token["role"] == "normal")) and \
                 (user.nickname == token["nickname"]):
+            self.user = user
             return True
         else:
             return False
@@ -131,12 +132,10 @@ class UserService(ServiceBase):
 
             # Return None if not existed.
             if not now_user:
-                # self.service_status["errors"].append("User Not Exist")
                 return False
             now_user.status = status
 
             # Update.
-            # ?
             await self.db_session.flush()
             self.db_session.expunge(now_user)
 
@@ -155,7 +154,6 @@ class UserService(ServiceBase):
         """
         # No person exist.
         if not isinstance(self.user, Users) or not self.user.id:
-            # self.service_status["errors"].append("User Not Load or Exist")
             return False
 
         data = {k: v for k, v in profile.items() if v is not None}
@@ -170,7 +168,6 @@ class UserService(ServiceBase):
         """ Update user's password. """
         # No person in instance.
         if not (isinstance(self.user, Users) and self.user.id):
-            # self.service_status["errors"].append("User Not Load or Exist")
             return False
         async with self.db_session.begin():
             result = await self.db_session.\
@@ -179,7 +176,6 @@ class UserService(ServiceBase):
 
             # Not in database.
             if not user:
-                # self.service_status["errors"].append("User Not Exist")
                 await self.db_session.close()
                 return False
             else:

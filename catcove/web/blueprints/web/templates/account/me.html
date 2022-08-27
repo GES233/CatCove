@@ -9,8 +9,24 @@
 <main>
     <article>
         {%- if user -%}
-        <h4>{{ user.nickname }}</h4>
-        <p><small>UID: <code><i>{{ user.id }}</i></code></small></p>
+        <h4>{{ db_user.nickname }}{%- if db_user.username -%}&nbsp;<sub>@<code>{{ db_user.username }}</code></sbu>{%- endif -%}</h4>
+        <div class="grid">
+            <p>
+                <small>
+                    UID: <code><i>{{ db_user.id }}</i></code>
+                </small>
+            </p>
+            <p>
+                昵称：&nbsp;<small>{{ db_user.nickname }}</small>
+            </p>
+        </div>
+        <div class="grid">
+            <p>性别：&nbsp;<small>{%- if db_user.gender -%}{{ db_user.gender }}{% else %}私密{%- endif -%}</small></p>
+            <p>生日：&nbsp;<small>{%- if db_user.birth -%}{{ db_user.birth }}{% else %}私密{%- endif -%}</small></p>
+        </div>
+        <div class="grid">
+            <p>个人简介：&nbsp;<small>{{ db_user.info }}</small></p>
+        </div>
         {% else %}
         <p>请您<a href="/login">登录</a></p>
         {%- endif -%}

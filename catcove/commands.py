@@ -57,13 +57,13 @@ def set_instance(db, uri) -> None:
                 text="Please Enter the Password:"
             )
             path = click.prompt(
-                text="Please enter your database's Path lastly:"
+                text="Please enter your database's Path/Database lastly:"
             )
     
     _app = Sanic("__temprory_app")
     padding_instance(
         _app,
-        databeses = "SQLALCHEMY_DATABASE_URI: {}".format(
+        databeses = None if db else "SQLALCHEMY_DATABASE_URI: {}".format(
             uri if uri else set_database_uri(
                 dialect,
                 username, password,

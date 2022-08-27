@@ -1,5 +1,8 @@
 """ Code of API. """
 
+# Request related.
+REQUEST_NO_JSON:               int = 4300
+
 # Internal Error.
 SERVER_ERROR:                  int = 5000
 

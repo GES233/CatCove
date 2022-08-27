@@ -57,8 +57,7 @@ python server.py run --pro
 
 ## TODO
 
-- [ ] Rickroll
-- [ ] 表单有「记住我」后能够设置的过期日期 <-- doing
+- [ ] 表单有「记住我」后能够设置的过期日期
 - [ ] 消息机制的引入
   - [ ] APSchedule
   - [ ] 类似于 Flask 的 `flash()` （No-JS）
@@ -66,15 +65,18 @@ python server.py run --pro
 - [ ] 简单的API
   - [x] 基于JWE的鉴权（测试已通过）
   - [ ] 文档
-  - [ ] Pydantic 的个性化定制
+    - [ ] `code` 与 `info`
+  - [ ] Pydantic 错误的个性化定制
 - [ ] `Markdown` 支持
   - [ ] 渲染
+  - [ ] 链接渲染
 - [ ] 文件上传以及下载功能
   - [ ] 多媒体内容的存取
+    - [ ] Rickroll
   - [ ] 断点续传
 - [ ] 个人主页
   - [ ] 头像
-  - [ ] 动态（基于UserPosts） <-- doing
+  - [ ] 动态（基于UserPosts）
   - [ ] 账号冻结
   - [ ] 注销导出数据
 - [ ] 简单分类的话题/节点结构
@@ -82,4 +84,5 @@ python server.py run --pro
   - [ ] 业务逻辑部分
 - [ ] 用户日志功能（计划采用 NoSQL 数据存储）
 - [ ] 管理业务
- - ...
+ - [ ] 后台界面
+ - [ ] 管理员面板

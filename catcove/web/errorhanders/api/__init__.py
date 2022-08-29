@@ -3,7 +3,6 @@ from sanic.response import HTTPResponse, json
 
 from ....usecase.api import APIServise
 
-from ....entities.schemas.api import OriginContentModel
 from ...blueprints.api.helper import code
 
 class CustomJSONRenderer(JSONRenderer):

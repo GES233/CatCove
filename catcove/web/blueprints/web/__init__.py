@@ -18,7 +18,7 @@ views = Blueprint.group(
 from ....usecase.auth import AuthService
 
 @views.middleware("request")
-async def fetch_cookie(request: Request):
+async def fetch_cookie(request: Request) -> None:
     if not request.cookies.get("UserMeta"):
         # Do nothing.
         request.ctx.current_user = None

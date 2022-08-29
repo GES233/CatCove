@@ -14,4 +14,11 @@ class ServiceBase:
             "config": {},
             "errors": []
         }
+    
+    """ functions:
+        
+        if is opration: => bool
+        else
+        if is opration with value: => target_type
+    """
 

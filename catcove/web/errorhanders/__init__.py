@@ -1,14 +1,15 @@
+import re
 from sanic import Request, Sanic
 from sanic.handlers import ErrorHandler
 from sanic.errorpages import exception_response
-import re
+from sanic.response import HTTPResponse
 
 from .render import HTMLRendererWithStyle
 from .api import CustomJSONRenderer
 
 class CostumErrorHander(ErrorHandler):
 
-    def default(self, request: Request, exception: Exception):
+    def default(self, request: Request, exception: Exception) -> HTTPResponse:
         self.log(request, exception)
         fallback = request.app.config.FALLBACK_ERROR_FORMAT
         url = request.path

@@ -4,7 +4,7 @@ from traceback import extract_tb
 from sanic.errorpages import HTMLRenderer, escape
 from sanic.response import HTTPResponse, html
 
-from ....services.render import render_page_template
+from ...services.render import render_page_template
 
 
 class HTMLRendererWithStyle(HTMLRenderer):

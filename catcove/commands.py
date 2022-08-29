@@ -73,7 +73,7 @@ def set_instance(db, uri) -> None:
     )
 
 
-async def init_db_no_migrate():
+async def init_db_no_migrate() -> None:
     try:
         from catcove.entities.tables import Base
         from catcove.dependencies.db import async_session
@@ -93,7 +93,7 @@ async def init_db_no_migrate():
 
 @manage.command("db")
 @click.option("--migrate", default=True, help="Use alembic to install the database.")
-def db(migrate):
+def db(migrate) -> None:
     """ Initlize the database. """
     if migrate == False:
         # Use SQLAlchemy to initialize the database.
@@ -109,7 +109,7 @@ def db(migrate):
 @manage.command("admin")
 @click.option("--appointment", "transformation", flag_value="apt", help="There's no such implication whatsoever.")
 @click.option("--create", "transformation", flag_value="crt", help="catcave.create(new_admin()) =>: ATM <- BTM.")
-def create_spectator(transformation):
+def create_spectator(transformation) -> None:
     """ Add `spectator`(aka admin). """
     ...
 
@@ -118,7 +118,7 @@ def create_spectator(transformation):
 @click.option("--dev", "mode", flag_value="dev")
 @click.option("--demo", "-d", "mode", flag_value="demo", default=True)
 @click.option("--pro", "mode", flag_value="pro")
-def run(mode):
+def run(mode) -> None:
     """ Run the application. """
     if mode == "dev":
         os.environ["APP_ENV"] = "dev"

@@ -25,11 +25,11 @@ class UserLoginView(HTTPMethodView):
             role="Login",
             form=form))
 
-    async def get(self, request: Request):
+    async def get(self, request: Request) -> HTTPResponse:
         # Render
         return self.login_render(LoginForm())
 
-    async def post(self, request: Request):
+    async def post(self, request: Request) -> HTTPResponse:
         # Submit -> POST
         form_data = request.form
         if form_data.get("email") or \
@@ -73,7 +73,7 @@ class UserLoginView(HTTPMethodView):
         return request.ctx.cookie_ser.set_cookie(response)
 
 
-async def logout(request: Request):
+async def logout(request: Request) -> HTTPResponse:
     # cookie = AuthService()
     # set cookie here.
     request.ctx.cookie_ser.cookie = request.cookies.get("UserMeta")

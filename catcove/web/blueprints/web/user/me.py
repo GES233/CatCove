@@ -1,6 +1,6 @@
 from datetime import timedelta
 from sanic import Request, Blueprint
-from sanic.response import html, redirect, HTTPResponse, text
+from sanic.response import html, redirect, HTTPResponse
 from sanic.views import HTTPMethodView
 
 from .....entities.tables.users import Users
@@ -12,9 +12,9 @@ from .....usecase.auth import AuthService
 from .....services.render import render_page_template
 
 
-async def profile(request: Request):
-    user_ser = UserService(request.ctx.db_session)
-    auth_ser = request.ctx.cookie_ser
+async def profile(request: Request) -> HTTPResponse:
+    user_ser: UserService = UserService(request.ctx.db_session)
+    auth_ser: AuthService = request.ctx.cookie_ser
     
     # Query current user.
     db_user = await user_ser.check_user_token(

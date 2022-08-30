@@ -44,6 +44,7 @@ class AuthService(ServiceBase):
             # Generate token&cookie.
             self.exp = exp + datetime.utcnow()
             self.service_status["config"]["type"] = "" if not ser_type else ser_type
+            self.service_status["config"]["cookie"] = "UserMeta"
             self.token = self.cookie = None
 
         self.cookie_encrypt_func: Callable[[str], str] = lambda x: base64.b64encode(x.encode("utf-8")).decode("latin1")
@@ -85,6 +86,7 @@ class AuthService(ServiceBase):
                 return False if _ == False else ...
             self.cookie = self.cookie_encrypt_func(self.raw)
         else:
+            """ It will raise Error if not fetched key. """
             # From payload.
             self.token = self.token_encrypt_func(
                 self.payload,
@@ -96,12 +98,14 @@ class AuthService(ServiceBase):
     
     def decrypt(self, pk: str = "") -> bool:
         """ From token/cookie to payload. """
-        if self.service_status["config"]["type"] == "token":
-            self.payload = self.token_decrypt_func(self.token, pk, ["ES256"])
-        else:
-            self.raw = self.cookie_decrypt_func(self.cookie)
-
-        return True
+        try:
+            if self.service_status["config"]["type"] == "token":
+                """ It will raise Error if not fetched key. """
+                self.payload = self.token_decrypt_func(self.token, pk, ["ES256"])
+            else:
+                self.raw = self.cookie_decrypt_func(self.cookie)
+            return True
+        except: return False
     
     def str_to_dict(self) -> bool:
         """ raw -> payload """
@@ -127,18 +131,18 @@ class AuthService(ServiceBase):
         return True
     
     def set_cookie(self, response: HTTPResponse) -> HTTPResponse:
-        response.cookies["UserMeta"] = self.cookie
-        response.cookies["UserMeta"]["path"] = "/"
-        response.cookies["UserMeta"]["httponly"] = True
-        response.cookies["UserMeta"]["expires"] = self.exp
+        response.cookies[self.service_status["config"]["cookie"]] = self.cookie
+        response.cookies[self.service_status["config"]["cookie"]]["path"] = "/"
+        response.cookies[self.service_status["config"]["cookie"]]["httponly"] = True
+        response.cookies[self.service_status["config"]["cookie"]]["expires"] = self.exp
 
         return response
     
     def del_cookie(self, request: Request, response: HTTPResponse)\
         -> HTTPResponse:
-        if request.cookies.get("UserMeta"):
-            response.cookies["UserMeta"] = ""
-            response.cookies["UserMeta"]["max-age"] = 0
+        if request.cookies.get(self.service_status["config"]["cookie"]):
+            response.cookies[self.service_status["config"]["cookie"]] = ""
+            response.cookies[self.service_status["config"]["cookie"]]["max-age"] = 0
         
         return response
     

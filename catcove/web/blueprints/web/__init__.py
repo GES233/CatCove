@@ -19,13 +19,13 @@ from ....usecase.auth import AuthService
 
 @views.middleware("request")
 async def fetch_cookie(request: Request) -> None:
-    if not request.cookies.get("UserMeta"):
+    request.ctx.cookie_ser = AuthService()
+    if not request.cookies.get(request.ctx.cookie_ser.service_status["config"]["cookie"]):
         # Do nothing.
         request.ctx.current_user = None
-        request.ctx.cookie_ser = AuthService()
     else:
         request.ctx.cookie_ser = AuthService(
-            cookie = request.cookies.get("UserMeta")
+            cookie = request.cookies.get(request.ctx.cookie_ser.service_status["config"]["cookie"])
         )
         de_cookie = request.ctx.cookie_ser.decrypt()
         de__cookie = request.ctx.cookie_ser.str_to_dict()

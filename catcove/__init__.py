@@ -48,7 +48,8 @@ from .web.app import create_app
     And here are other folders:
 
     catcove/static/                 # Static resources
-    catcove/templates/              # HTML Templates
+    catcove/web/blueprints/web/templates/
+    *                               # HTML Templates
     migrate/                        # Migrate env and script for alembic
     instance/                       # Storge some config which not invisible for git.
     test/                           # Shown as its name

@@ -73,37 +73,15 @@ def set_instance(db, uri) -> None:
     )
 
 
-async def init_db_no_migrate() -> None:
-    try:
-        from catcove.entities.tables import Base
-        from catcove.dependencies.db import async_session
-    except ImportError:
-        raise SanicException("Do not run this from commands.py.")
-    except AttributeError:
-        # Not get the `SQLALCHEMY_DATABSE_URI`, to the instance/config.pro to update.
-        raise SanicException("Please set the configure of app.")
-    
-    async with async_session.begin() as conn:
-        # Can't run still.
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
-    
-    click.secho("Database initialzed!", fg="blue")
-
-
 @manage.command("db")
-@click.option("--migrate", default=True, help="Use alembic to install the database.")
-def db(migrate) -> None:
+def db() -> None:
     """ Initlize the database. """
-    if migrate == False:
-        # Use SQLAlchemy to initialize the database.
-        asyncio.get_event_loop().run_until_complete(init_db_no_migrate())
-    else:
-        from alembic import command
-        from alembic.config import Config as AlembicConfig
+    # Add some WARNING info.
+    from alembic import command
+    from alembic.config import Config as AlembicConfig
 
-        alembic_config = AlembicConfig(Path(PROJECT_PATH/"alembic.ini").__str__())
-        command.upgrade(alembic_config, "head")
+    alembic_config = AlembicConfig(Path(PROJECT_PATH/"alembic.ini").__str__())
+    command.upgrade(alembic_config, "head")
 
 
 @manage.command("admin")
@@ -127,7 +105,6 @@ def run(mode) -> None:
         app = create_app()
         app.run(
             host="127.0.0.1",
-            # host="0.0.0.0",  # `route print`
             port="6969",
             dev=True
         )

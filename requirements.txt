@@ -26,4 +26,4 @@ typing_extensions==4.3.0
 ujson==5.4.0
 uvloop==0.16.0
 websockets==10.3
-WTForms==3.0.1
+WTForms==3.3.3

@@ -68,7 +68,7 @@ class Tags(Base):
     create_time = Column(DateTime, default=datetime.utcnow())
 
     title = Column(String(32), index=True, unique=True, nullable=False)
-    description = Column(String(256), index=True, nullable=True)
+    description = Column(String(1024), index=True, nullable=True)
     content = Column(Text, nullable=True)
 
     maintainers = relationship(

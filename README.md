@@ -61,7 +61,7 @@ python server.py run --pro
 - [ ] 消息机制的引入
   - [ ] APSchedule
   - [ ] 类似于 Flask 的 `flash()` （No-JS）
-  - [ ] ESS 的实现（需要JS）
+  - [ ] SSE （Server-sent events）的实现（需要JS）
 - [ ] 简单的API
   - [x] 基于JWE的鉴权（测试已通过）
   - [ ] 文档

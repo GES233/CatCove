@@ -8,8 +8,8 @@
 来由：
 
 - 几个人或几十个人的后花园
-- 小圈子生辰高质内容的站点
-- 国内的备案 + 无法过审
+- 小圈子产出高质内容的站点
+- 国内的备案机制 + 可能存在的无法过审的内容
 
 想法：*构建一个轻便而易于部署的网页程序，可以随时跑路再建的那种*
 
@@ -19,7 +19,7 @@
 
 - Python
   - ... 一堆插件（见 `requirements.txt` ）
-- Pico.css
+- Pico.css（已经在 `/static/css` 里了）
 - SimpleMDE/raw-text (Optional)
 
 ### 代码
@@ -32,6 +32,7 @@ git clone https://github.com/GES233/CatCove.git
 pip install requirements.txt
 # Configure the application.
 python server.py init
+...
 python server.py db
 # Following constructions.
 python server.py run --pro
@@ -72,9 +73,10 @@ python server.py run --pro
   - [ ] 链接渲染
 - [ ] 文件上传以及下载功能
   - [ ] 多媒体内容的存取
-    - [ ] Rickroll
+    - [ ] ~~Rickroll~~ 文件太大，没法跟着版本控制，等到部署后再放上去
   - [ ] 断点续传
 - [ ] 个人主页
+  - [x] 基本资料
   - [ ] 头像
   - [ ] 动态（基于UserPosts）
   - [ ] 账号冻结
@@ -82,7 +84,7 @@ python server.py run --pro
 - [ ] 简单分类的话题/节点结构
   - [x] 相对应的表
   - [ ] 业务逻辑部分
-- [ ] 用户日志功能（计划采用 NoSQL 数据存储）
+- [ ] 用户日志功能（计划采用 NoSQL 存储）
 - [ ] 管理业务
  - [ ] 后台界面
  - [ ] 管理员面板

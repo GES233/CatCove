@@ -20,7 +20,8 @@ def padding_instance(app: Sanic, **other_settings) -> None:
         # Create a new folder.
         instance_path.mkdir()
 
-        # Create_Key file.
+        # Create_Key file (openssl relable).
+        # This part will change by customize the token related.
         os.popen(
             f"cd {instance_path} && \
             openssl ecparam -genkey -noout -name prime256v1 -out eckey.pem -text && \
@@ -81,7 +82,7 @@ def register_configure(app: Sanic) -> None:
     # **This Setting IS NOT used for running.**
     # `APP_ENV`
     if not app.config.get("ENV"):
-        app_mode = "pro"
+        app_mode = "dev"
         # It will be production if not set to development.
     else:
         app_mode = app.config.ENV

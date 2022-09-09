@@ -15,11 +15,9 @@ from .....services.render import render_page_template
 async def profile(request: Request) -> HTTPResponse:
     user_ser: UserService = UserService(request.ctx.db_session)
     auth_ser: AuthService = request.ctx.cookie_ser
-    
+
     # Query current user.
-    db_user = await user_ser.check_user_token(
-        request.ctx.current_user
-    )
+    db_user = await user_ser.check_user_token(request.ctx.current_user)
     if db_user == False:
         # 401.
         ...
@@ -31,8 +29,6 @@ async def profile(request: Request) -> HTTPResponse:
     # Return data and render.
     return html(
         render_page_template(
-            "account/me.html",
-            user=request.ctx.current_user,
-            db_user=user_meta
+            "account/me.html", user=request.ctx.current_user, db_user=user_meta
         )
     )

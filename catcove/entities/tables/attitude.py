@@ -8,39 +8,36 @@ from . import *
 
 @declarative_mixin
 class AtittudeBase(Base):
-    """ How `User.Attitude -> Content`?
-        
-        larger than assistance table.
+    """How `User.Attitude -> Content`?
 
-        +------+            +---------+
-        | User |many<-->many| Content |
-        +------+            +---------+
+    larger than assistance table.
 
-                    ||
-                    \/
-        
-        +---------------+
-        |    Attitude   |
-        +---------------+
-        |  holder_id FP |-->Users.id
-        +---------------+
-        | content_id FP |-->Content.id
-        +---------------+
-        | ....
-        | thumb, angry, etc.
-        +---------------+
+    +------+            +---------+
+    | User |many<-->many| Content |
+    +------+            +---------+
+
+                ||
+                \/
+
+    +---------------+
+    |    Attitude   |
+    +---------------+
+    |  holder_id FP |-->Users.id
+    +---------------+
+    | content_id FP |-->Content.id
+    +---------------+
+    | ....
+    | thumb, angry, etc.
+    +---------------+
     """
+
     __abstract__ = True
     # => 2 Primary Key.
 
     @declared_attr
     def holder_id(self) -> Column:
-        return Column(
-            Integer,
-            ForeignKey("users.id"),
-            primary_key=True
-        )
-    
+        return Column(Integer, ForeignKey("users.id"), primary_key=True)
+
     # And a terget_id as a primary key.
 
     set_time = Column(DateTime, default=datetime.utcnow())
@@ -67,4 +64,3 @@ class AttitudeForUserPosts(AtittudeBase):
     __tablename__ = "attitude_for_userposts"
 
     userpost_id = relationship()
-

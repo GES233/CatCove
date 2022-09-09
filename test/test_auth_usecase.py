@@ -13,7 +13,7 @@ engine = create_async_engine(
     url="sqlite+aiosqlite:///tinycat_test.db",  # Use async.
     encoding="utf-8",
     echo=True,
-    future=True
+    future=True,
 )
 
 sync_engine = create_engine(
@@ -22,11 +22,7 @@ sync_engine = create_engine(
     echo=True,
 )
 
-db_session = sessionmaker(
-    bind=engine,
-    class_=AsyncSession,
-    expire_on_commit=True
-)
+db_session = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=True)
 
 
 def async_as_sync(func):
@@ -34,7 +30,7 @@ def async_as_sync(func):
 
 
 class TestAuthService(object):
-    
+
     ser = AuthService()
 
     def init_db(self):
@@ -44,17 +40,19 @@ class TestAuthService(object):
 
         # Import.
         from catcove.usecase.users import UserService
+
         usr = UserService(db_session())
         return async_as_sync(usr.create_user("123", "123@321.xyz", "123456"))
-
 
     def test_encrypt(self):
         # Initialize.
         user = self.init_db()
 
         import os
+
         os.environ["APP_ENV"] = "dev"
         from catcove.web.app import create_config_app
+
         app = create_config_app()
         from catcove.services.security.crypto import pri_key, pub_key
 
@@ -70,9 +68,8 @@ class TestAuthService(object):
         _ = self.ser.encrypt(self.pri_key)
         assert _ == True
 
-
         return self.ser.cookie, self.ser.token
-    
+
     def test_decrypt(self):
         cookie, self.ser.token = self.test_encrypt()
 
@@ -91,9 +88,9 @@ class TestAuthService(object):
         _ = self.ser.str_to_dict()
         assert _ == True
         assert isinstance(self.ser.payload["id"], int)
-    
+
     def test_cookie_set(self):
-        """ Honestly, put it to `test_page_access.py` is better. """
+        """Honestly, put it to `test_page_access.py` is better."""
         # Initialize.
         user = self.init_db()
 
@@ -103,12 +100,13 @@ class TestAuthService(object):
 
         # Create a Sanic app.
         from sanic import Sanic, text
+
         app = Sanic("test")
 
         @app.route("/")
         async def index(request):
             return self.ser.set_cookie(text("Cookie here"))
-        
+
         app.run(workers=1)
 
         # Request.

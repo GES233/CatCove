@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Callable
 import jwt
+
 # from jose.jwe import encrypt, decrypt\
 from sanic.request import Request
 from sanic.response import HTTPResponse
@@ -12,8 +13,10 @@ from ..entities.tables.users import Users
 from ..entities.schemas.auth import UserTokenPayload
 from ..services.security.user import user2payload
 
+
 class AuthService(ServiceBase):
-    """ Service about auth. """
+    """Service about auth."""
+
     def __init__(
         self,
         token: str | None = None,
@@ -47,8 +50,12 @@ class AuthService(ServiceBase):
             self.service_status["config"]["cookie"] = "UserMeta"
             self.token = self.cookie = None
 
-        self.cookie_encrypt_func: Callable[[str], str] = lambda x: base64.b64encode(x.encode("utf-8")).decode("latin1")
-        self.cookie_decrypt_func: Callable[[str], str] = lambda x: base64.b64decode(x.encode("latin1")).decode("utf-8")
+        self.cookie_encrypt_func: Callable[[str], str] = lambda x: base64.b64encode(
+            x.encode("utf-8")
+        ).decode("latin1")
+        self.cookie_decrypt_func: Callable[[str], str] = lambda x: base64.b64decode(
+            x.encode("latin1")
+        ).decode("utf-8")
         self.token_encrypt_func = jwt.encode
         self.token_decrypt_func = jwt.decode
         self.raw: str = ""
@@ -62,58 +69,56 @@ class AuthService(ServiceBase):
         # >> Update when change.
         # payload["timezone"]: int | (-12, 12)
         # payload["exp"]: float
-    
+
     def gen_payload(self, user: Users, exp: timedelta | None = None) -> dict:
         # May need return as bool.
         # Set exp first.
         if exp:
             self.exp = datetime.utcnow() + exp
-        self.payload = user2payload(
-            user,
-            datetime.timestamp(self.exp)
-        )
+        self.payload = user2payload(user, datetime.timestamp(self.exp))
         return self.payload
 
     def encrypt(self, sk: str | None = None) -> bool:
-        """ From payload/raw to token/cookie. """
+        """From payload/raw to token/cookie."""
         if not self.payload:
             # Not have raw/payload.
             return False
-        
+
         if self.service_status["config"]["type"] != "token":
             if not self.raw:
                 _ = self.dict_to_str()
                 return False if _ == False else ...
             self.cookie = self.cookie_encrypt_func(self.raw)
         else:
-            """ It will raise Error if not fetched key. """
+            """It will raise Error if not fetched key."""
             # From payload.
             self.token = self.token_encrypt_func(
                 self.payload,
                 sk,
                 "ES256",
             )
-        
+
         return True
-    
+
     def decrypt(self, pk: str = "") -> bool:
-        """ From token/cookie to payload. """
+        """From token/cookie to payload."""
         try:
             if self.service_status["config"]["type"] == "token":
-                """ It will raise Error if not fetched key. """
+                """It will raise Error if not fetched key."""
                 self.payload = self.token_decrypt_func(self.token, pk, ["ES256"])
             else:
                 self.raw = self.cookie_decrypt_func(self.cookie)
             return True
-        except: return False
-    
+        except:
+            return False
+
     def str_to_dict(self) -> bool:
-        """ raw -> payload """
+        """raw -> payload"""
         if not self.raw:
             # Not encrypted.
             ...
             return False
-        
+
         _dict = eval(self.raw)
 
         if not isinstance(_dict, dict):
@@ -123,13 +128,14 @@ class AuthService(ServiceBase):
 
         self.payload = _dict
         return True
-    
+
     def dict_to_str(self) -> bool:
-        """ payload -> raw """
-        if not self.payload: return False
+        """payload -> raw"""
+        if not self.payload:
+            return False
         self.raw = self.payload.__str__()
         return True
-    
+
     def set_cookie(self, response: HTTPResponse) -> HTTPResponse:
         response.cookies[self.service_status["config"]["cookie"]] = self.cookie
         response.cookies[self.service_status["config"]["cookie"]]["path"] = "/"
@@ -137,15 +143,14 @@ class AuthService(ServiceBase):
         response.cookies[self.service_status["config"]["cookie"]]["expires"] = self.exp
 
         return response
-    
-    def del_cookie(self, request: Request, response: HTTPResponse)\
-        -> HTTPResponse:
+
+    def del_cookie(self, request: Request, response: HTTPResponse) -> HTTPResponse:
         if request.cookies.get(self.service_status["config"]["cookie"]):
             response.cookies[self.service_status["config"]["cookie"]] = ""
             response.cookies[self.service_status["config"]["cookie"]]["max-age"] = 0
-        
+
         return response
-    
+
     def set_key(self) -> str:
-        """ Hard to be import services.render.render_api_resp. """
+        """Hard to be import services.render.render_api_resp."""
         return self.token

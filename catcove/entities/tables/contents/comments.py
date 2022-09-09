@@ -4,16 +4,15 @@ from .. import *
 
 from . import ContentMixin
 
+
 @declarative_mixin
 class CommentsBase(ContentMixin):
     __abstract__ = True
-  
+
     @declared_attr
     def owner_id(self):
-        return Column(
-            Integer,
-            ForeignKey("users.id"))
-    
+        return Column(Integer, ForeignKey("users.id"))
+
     # locate.
     lgt = Column(Integer)
     rgt = Column(Integer)
@@ -28,8 +27,8 @@ class CommentsBase(ContentMixin):
     # ====
     # Add:
     # UPDATE `comments`
-    # SET lgt = 
-    #     CASE 
+    # SET lgt =
+    #     CASE
     #         WHEN lgt >= $parent_node.rgt
     #             THEN lgt = lgt + 2
     #         ELSE lgt
@@ -44,27 +43,16 @@ class CommentsBase(ContentMixin):
 
     @declared_attr
     def __repr__(self) -> str:
-        return '<Comment %s from %s at %s>' % (
-            self.id,
-            self.owner_id,
-            self.create_time
-        )
+        return "<Comment %s from %s at %s>" % (self.id, self.owner_id, self.create_time)
 
 
 class CommentsUnderUserPosts(CommentsBase):
     __tablename__ = "comments_under_userposts"
-    parent_node = Column(
-        Integer,
-        ForeignKey("userposts.id")
-    )
+    parent_node = Column(Integer, ForeignKey("userposts.id"))
     ...
 
 
 class CommentsUnderPosts(CommentsBase):
     __tablename__ = "comments_under_posts"
-    parent_node = Column(
-        Integer,
-        ForeignKey("posts.id")
-    )
+    parent_node = Column(Integer, ForeignKey("posts.id"))
     ...
-

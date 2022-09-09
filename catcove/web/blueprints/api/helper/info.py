@@ -1,4 +1,4 @@
 """ Response of API. """
 
 # OK.
-OK:                            str = "OK"
+OK: str = "OK"

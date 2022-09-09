@@ -3,11 +3,16 @@ from sanic.response import redirect
 from sanic.request import Request
 
 
-def token_auth() -> None: pass
-def cookie_auth() -> None: pass
+def token_auth() -> None:
+    pass
 
 
-def resp_unauth_api(): return ...
+def cookie_auth() -> None:
+    pass
+
+
+def resp_unauth_api():
+    return ...
 
 
 def token_required(wrapped):
@@ -22,7 +27,9 @@ def token_required(wrapped):
                 return response
             else:
                 return resp_unauth_api()
+
         return decorated_function
+
     return decorated(wrapped)
 
 
@@ -38,5 +45,7 @@ def cookie_required(wrapped):
                 return response
             else:
                 return redirect("/login")
+
         return decorated_function
+
     return decorated(wrapped)

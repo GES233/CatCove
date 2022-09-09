@@ -9,7 +9,7 @@ def read_key_from_path():
     try:
         public_key = Path(Sanic.get_app("Meow").config.ECC_PUBLIC_KEY).read_text()
         private_key = Path(Sanic.get_app("Meow").config.ECC_PRIVATE_KEY).read_text()
-        '''
+        """
         prkey_start = "-----BEGIN EC PRIVATE KEY-----"
         pbkey_start = "-----BEGIN PUBLIC KEY-----"
         prkey_end = "-----END EC PRIVATE KEY-----"
@@ -20,14 +20,16 @@ def read_key_from_path():
         from Crypto.PublicKey import ECC
         pub_key = ECC.import_key(pbkey.findall(public_key)[0])
         pri_key = ECC.import_key(prkey.findall(private_key)[0])
-        '''
+        """
     except:
         raise SanicException("Could not get the ECC_KEY from app.")
-    
+
     return None
+
 
 pub_key = Path(Sanic.get_app("Meow").config.ECC_PUBLIC_KEY).read_text()
 pri_key = Path(Sanic.get_app("Meow").config.ECC_PRIVATE_KEY).read_text()
+
 
 def gen_key(path: Path) -> None:
     sk = ecdsa.SigningKey.generate(ecdsa.NIST256p)

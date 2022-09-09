@@ -5,24 +5,25 @@ from ....usecase.api import APIServise
 
 from ...blueprints.api.helper import code
 
+
 class CustomJSONRenderer(JSONRenderer):
     def render(self) -> HTTPResponse:
         return super().render()
-    
+
     def minimal(self) -> HTTPResponse:
         output = self._generate_output(full=False)
         api = APIServise()
-        return json(api.base_resp(
-            code=code.SERVER_ERROR,
-            info=output["message"],
-            type="ERROR",
-            data={
-                "description": output["description"]
-            }
+        return json(
+            api.base_resp(
+                code=code.SERVER_ERROR,
+                info=output["message"],
+                type="ERROR",
+                data={"description": output["description"]},
             ).json(),
             status=self.status,
-            dumps=lambda x: x)
-    
+            dumps=lambda x: x,
+        )
+
     def full(self) -> HTTPResponse:
         output = self._generate_output(full=True)
         api = APIServise()
@@ -30,16 +31,18 @@ class CustomJSONRenderer(JSONRenderer):
         # Some business code to set code and info.
         ...
 
-        return json(api.base_resp(
-            code=code.SERVER_ERROR,
-            info=output["message"],
-            type="ERROR",
-            data={
+        return json(
+            api.base_resp(
+                code=code.SERVER_ERROR,
+                info=output["message"],
+                type="ERROR",
+                data={
                     "description": output["description"],
                     "path": output["path"],
                     "args": output["args"],
-                    "exceptions": output["exceptions"]
-                }
+                    "exceptions": output["exceptions"],
+                },
             ).json(),
             status=self.status,
-            dumps=lambda x: x)
+            dumps=lambda x: x,
+        )

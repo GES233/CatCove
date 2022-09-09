@@ -13,7 +13,7 @@ engine = create_async_engine(
     url="sqlite+aiosqlite:///tinycat_test.db",  # Use async.
     encoding="utf-8",
     echo=True,
-    future=True
+    future=True,
 )
 
 sync_engine = create_engine(
@@ -22,11 +22,7 @@ sync_engine = create_engine(
     echo=True,
 )
 
-db_session = sessionmaker(
-    bind=engine,
-    class_=AsyncSession,
-    expire_on_commit=True
-)
+db_session = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=True)
 
 
 def async_as_sync(func):
@@ -35,7 +31,8 @@ def async_as_sync(func):
 
 
 class TestUserService:
-    """ Test user service without authentation and others. """
+    """Test user service without authentation and others."""
+
     ser = UserService(db_session())
 
     def test_create_user(self):
@@ -45,27 +42,24 @@ class TestUserService:
 
         # Check an un-exitsted user.
         common_user = async_as_sync(
-            self.ser.check_common_user(
-                nickname = "12345",
-                email="12345@zz.top"
-            )
+            self.ser.check_common_user(nickname="12345", email="12345@zz.top")
         )
 
         if common_user == False:
             # Add user.
-            user = async_as_sync(self.ser.create_user("12345", "12345@zz.top", "123456"))
+            user = async_as_sync(
+                self.ser.create_user("12345", "12345@zz.top", "123456")
+            )
             assert hasattr(user, "id")
-        else: assert False
-        
+        else:
+            assert False
+
         # Requery.
         common_user = async_as_sync(
-            self.ser.check_common_user(
-                nickname = "None",
-                email="12345@zz.top"
-            )
+            self.ser.check_common_user(nickname="None", email="12345@zz.top")
         )
         assert hasattr(self.ser.user, "id")
-    
+
     def test_check_user(self):
         # Initialize first.
         Base.metadata.drop_all(bind=sync_engine)
@@ -75,28 +69,20 @@ class TestUserService:
         _ = async_as_sync(self.ser.create_user("12345", "12345@zz.top", "123456"))
 
         common_user = async_as_sync(
-            self.ser.check_common_user(
-                nickname = "12345",
-                email="12345@zz.top"
-            )
+            self.ser.check_common_user(nickname="12345", email="12345@zz.top")
         )
-        if common_user == False: assert False
+        if common_user == False:
+            assert False
 
         # Check password.
-        login_accept = (
-            self.ser.user.check_passwd("123456")
-        )
-        login_reject = (
-            self.ser.user.check_passwd("12345")
-        )
+        login_accept = self.ser.user.check_passwd("123456")
+        login_reject = self.ser.user.check_passwd("12345")
 
         # Update password.
         _ = async_as_sync(self.ser.update_password("12345"))
 
         # Re-check.
-        login_reaccpect = (
-            self.ser.user.check_passwd("12345")
-        )
+        login_reaccpect = self.ser.user.check_passwd("12345")
         assert login_accept == True
         assert login_reject == False
         assert login_reaccpect == True
@@ -118,8 +104,9 @@ class TestUserService:
             # Requery.
             _ = async_as_sync(self.ser.get_user(id=self.ser.user.id))
             assert _.status == "normal"
-        else: assert False
-    
+        else:
+            assert False
+
     def test_modify_info(self):
         # Initialize first.
         Base.metadata.drop_all(bind=sync_engine)
@@ -129,24 +116,19 @@ class TestUserService:
         _ = async_as_sync(self.ser.create_user("12345", "12345@zz.top", "123456"))
 
         # Modify info.
-        gender_update = async_as_sync(
-            self.ser.change_user_profile(gender="M")
-        )
+        gender_update = async_as_sync(self.ser.change_user_profile(gender="M"))
         birth_update = async_as_sync(
-            self.ser.change_user_profile(birth=date(
-                year=1989, month=6, day=4
-            ))
+            self.ser.change_user_profile(birth=date(year=1989, month=6, day=4))
         )
         info_update = async_as_sync(
             self.ser.change_user_profile(
-                info="My name's Q, and I love fish.",
-                username="Q"
+                info="My name's Q, and I love fish.", username="Q"
             )  # Multiple.
         )
         assert gender_update == True
         assert birth_update == True
         assert info_update == True
-    
+
     def test_follow(self):
         # Initialize first.
         Base.metadata.drop_all(bind=sync_engine)

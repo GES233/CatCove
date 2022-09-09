@@ -10,7 +10,7 @@ from .static import load_static
 
 
 def create_app() -> Sanic:
-    """ Create a Sanic application to run. """
+    """Create a Sanic application to run."""
     app = Sanic("Meow", env_prefix="APP_")
 
     register_configure(app)
@@ -24,8 +24,9 @@ def create_app() -> Sanic:
     register_routers(app)
 
     load_static(app)
-    
+
     return app
+
 
 def create_config_app() -> Sanic:
     try:

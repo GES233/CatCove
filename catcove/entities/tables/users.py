@@ -28,23 +28,18 @@ class Users(Base):
         primary_key=True,
         unique=True,
         index=True,
-        comment="The ID of user in 'users'."
+        comment="The ID of user in 'users'.",
     )
     # status: `normal`, `blocked`, `freeze`, `newbie`, `deleted`
     status = Column(String(16), default="newbie")
     join_time = Column(DateTime, default=datetime.utcnow())
-    nickname = Column(
-        String(128),
-        unique=True,
-        nullable=False,
-        index=True
-    )
+    nickname = Column(String(128), unique=True, nullable=False, index=True)
     username = Column(
         String(64),
         unique=True,
         index=True,
         nullable=True,
-        comment="username is ASCII only."
+        comment="username is ASCII only.",
     )
     email = Column(String(256), unique=True)
     password = Column(LargeBinary)
@@ -74,27 +69,32 @@ class Users(Base):
     """
     # Followers Following sb. ->
     # followers -> folowing
-    followers = relationship("Users", secondary=following_table,
-        primaryjoin=(id==following_table.c.follower_id),
-        secondaryjoin=(id==following_table.c.followed_id),
+    followers = relationship(
+        "Users",
+        secondary=following_table,
+        primaryjoin=(id == following_table.c.follower_id),
+        secondaryjoin=(id == following_table.c.followed_id),
         back_populates="following",
-        lazy="select")
-    following = relationship("Users", secondary=following_table,
-        primaryjoin=(id==following_table.c.followed_id),
-        secondaryjoin=(id==following_table.c.follower_id),
+        lazy="select",
+    )
+    following = relationship(
+        "Users",
+        secondary=following_table,
+        primaryjoin=(id == following_table.c.followed_id),
+        secondaryjoin=(id == following_table.c.follower_id),
         back_populates="followers",
-        lazy="select")
-    tags = relationship("Tags",
-        secondary=tag_maintainers,
-        back_populates="maintainers",
-        lazy="select")
+        lazy="select",
+    )
+    tags = relationship(
+        "Tags", secondary=tag_maintainers, back_populates="maintainers", lazy="select"
+    )
 
     def encrypt_passwd(self, password: str) -> None:
         salt = gensalt()
         self.password = hashpw(password.encode("utf-8"), salt)
-    
+
     def check_passwd(self, password: str) -> bool:
         return True if checkpw(password.encode("utf-8"), self.password) else False
 
     def __repr__(self) -> str:
-        return "<User %s (uid:%s)>" %(self.nickname, self.id)
+        return "<User %s (uid:%s)>" % (self.nickname, self.id)

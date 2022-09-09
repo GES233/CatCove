@@ -11,19 +11,15 @@ from .forms.auth import (
     LoginForm,
     validate_login_form,
     user_not_exist,
-    password_not_match
+    password_not_match,
 )
 
 auth_bp = Blueprint("auth")
 
 
 class UserLoginView(HTTPMethodView):
-
     def login_render(self, form) -> HTTPResponse:
-        return html(render_page_template(
-            'account/login.html',
-            role="Login",
-            form=form))
+        return html(render_page_template("account/login.html", role="Login", form=form))
 
     async def get(self, request: Request) -> HTTPResponse:
         # Render
@@ -32,34 +28,38 @@ class UserLoginView(HTTPMethodView):
     async def post(self, request: Request) -> HTTPResponse:
         # Submit -> POST
         form_data = request.form
-        if form_data.get("email") or \
-            form_data.get("nickname") == "" or \
-            form_data.get("password") == "":
+        if (
+            form_data.get("email")
+            or form_data.get("nickname") == ""
+            or form_data.get("password") == ""
+        ):
             # Case: post from `/register`;`
             # Case: not updated value.
             return self.login_render(LoginForm())
 
-        model: UserLoginModel = validate_login_form(LoginForm(data={
-            "nickname": form_data.get("nickname"),
-            "password": form_data.get("password"),
-            # Add remember_me here.
-        }))
+        model: UserLoginModel = validate_login_form(
+            LoginForm(
+                data={
+                    "nickname": form_data.get("nickname"),
+                    "password": form_data.get("password"),
+                    # Add remember_me here.
+                }
+            )
+        )
         if isinstance(model, LoginForm):
             return self.login_render(model)
 
         # cookie = AuthService()
         user_ser = UserService(request.ctx.db_session)
-        
+
         user_exist = await user_ser.check_common_user(model.nickname, None)
         if user_exist != True:
-            return self.login_render(
-                user_not_exist(LoginForm()))
+            return self.login_render(user_not_exist(LoginForm()))
         else:
             password_match = user_ser.user.check_passwd(model.password)
             if password_match == False:
-                return self.login_render(
-                    password_not_match(LoginForm()))
-        
+                return self.login_render(password_not_match(LoginForm()))
+
         _ = request.ctx.cookie_ser.gen_payload(user_ser.user)
         _ = request.ctx.cookie_ser.dict_to_str()
         if _ == False:
@@ -67,7 +67,7 @@ class UserLoginView(HTTPMethodView):
         _ = request.ctx.cookie_ser.encrypt()
         if _ == False:
             raise SanicException("Some error happend when generate token.")
-        
+
         response = redirect("/")
         # Add remember_me code here.
         return request.ctx.cookie_ser.set_cookie(response)
@@ -80,9 +80,10 @@ async def logout(request: Request) -> HTTPResponse:
 
     if not request.ctx.cookie_ser.cookie:
         return redirect("https://www.bilibili.com")
-    
+
     content = html(render_page_template("account/logout.html", title="Hope your back"))
     return request.ctx.cookie_ser.del_cookie(request, content)
+
 
 auth_bp.add_route(UserLoginView.as_view(), "/login")
 auth_bp.add_route(logout, "/logout")

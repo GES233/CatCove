@@ -23,10 +23,10 @@ async def login(request: Request) -> HTTPResponse:
                 code=api_code.REQUEST_NO_JSON,
                 info="Failer",
                 type="message",
-                data="No JSON updated."
+                data="No JSON updated.",
             ),
             status=400,
-            dumps=lambda x: x
+            dumps=lambda x: x,
         )
     data = request.json
     nickname = data["nickname"]
@@ -37,25 +37,13 @@ async def login(request: Request) -> HTTPResponse:
     token = AuthService()
 
     user_exist = await user.check_common_user(nickname, None)
-    
+
     if user_exist != True:
-        return json(
-            body=api.base_resp(
-                ...
-            ),
-            status=404,
-            dumps=lambda x: x
-        )
-    
+        return json(body=api.base_resp(...), status=404, dumps=lambda x: x)
+
     password_match = user.user.check_passwd(password)
     if password_match == False:
-        return json(
-            body=api.base_resp(
-                ...
-            ),
-            status=401,
-            dumps=lambda x: x
-        )
+        return json(body=api.base_resp(...), status=401, dumps=lambda x: x)
 
     # Generate_token payload.
     token_payload = user.get_user_token()

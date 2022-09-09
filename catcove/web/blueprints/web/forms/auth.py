@@ -3,10 +3,8 @@ from wtforms.fields import (
     StringField,
     PasswordField,
     BooleanField,
-    )
-from wtforms.validators import (
-    DataRequired
 )
+from wtforms.validators import DataRequired
 
 from .....entities.schemas.user.request import UserLoginModel
 
@@ -14,35 +12,26 @@ from .....entities.schemas.user.request import UserLoginModel
 class LoginForm(Form):
     nickname = StringField(
         "nickname",
-        validators=[
-            DataRequired()
-        ],
+        validators=[DataRequired()],
         render_kw={
             "placeholder": "昵称或邮件地址",
             "aria-label": "昵称或邮件地址",
-            "autocomplete": "username"
-        }
+            "autocomplete": "username",
+        },
     )
     password = PasswordField(
         "password",
-        validators=[
-            DataRequired()
-        ],
+        validators=[DataRequired()],
         render_kw={
             "placeholder": "密码",
             "aria-label": "密码",
-            "autocomplete": "current-password"
-        }
+            "autocomplete": "current-password",
+        },
     )
-    remember = BooleanField(
-        render_kw={
-            "role": "switch",
-            "checked": "checked"
-        }
-    )
+    remember = BooleanField(render_kw={"role": "switch", "checked": "checked"})
 
 
-def validate_login_form(form: LoginForm)-> UserLoginModel | LoginForm:
+def validate_login_form(form: LoginForm) -> UserLoginModel | LoginForm:
     if form.validate():
         return UserLoginModel(**form.data)
     else:

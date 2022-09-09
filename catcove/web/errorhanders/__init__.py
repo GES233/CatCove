@@ -7,8 +7,8 @@ from sanic.response import HTTPResponse
 from .render import HTMLRendererWithStyle
 from .api import CustomJSONRenderer
 
-class CostumErrorHander(ErrorHandler):
 
+class CostumErrorHander(ErrorHandler):
     def default(self, request: Request, exception: Exception) -> HTTPResponse:
         self.log(request, exception)
         fallback = request.app.config.FALLBACK_ERROR_FORMAT
@@ -20,7 +20,7 @@ class CostumErrorHander(ErrorHandler):
                 debug=self.debug,
                 base=self.base,
                 fallback=fallback,
-                renderer=CustomJSONRenderer
+                renderer=CustomJSONRenderer,
             )
         else:
             return exception_response(
@@ -29,12 +29,12 @@ class CostumErrorHander(ErrorHandler):
                 debug=self.debug,
                 base=self.base,
                 fallback=fallback,
-                renderer=HTMLRendererWithStyle
+                renderer=HTMLRendererWithStyle,
             )
 
 
 def custom_error(app: Sanic) -> None:
     # Custom errorhander.
     from ..errorhanders import CostumErrorHander
-    app.error_handler = CostumErrorHander()
 
+    app.error_handler = CostumErrorHander()

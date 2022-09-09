@@ -1,15 +1,7 @@
 from typing import Any
 from wtforms.form import Form
-from wtforms.fields import (
-    StringField,
-    PasswordField,
-    BooleanField
-    )
-from wtforms.validators import (
-    DataRequired,
-    Email,
-    EqualTo
-)
+from wtforms.fields import StringField, PasswordField, BooleanField
+from wtforms.validators import DataRequired, Email, EqualTo
 
 from .....entities.schemas.user.request import SignUpModel
 
@@ -17,54 +9,35 @@ from .....entities.schemas.user.request import SignUpModel
 class SignUpForm(Form):
     nickname = StringField(
         "nickname",
-        validators=[
-            DataRequired()
-        ],
-        render_kw={
-            "placeholder": "昵称",
-            "aria-label": "昵称",
-            "autocomplete": "username"
-        }
+        validators=[DataRequired()],
+        render_kw={"placeholder": "昵称", "aria-label": "昵称", "autocomplete": "username"},
     )
     email = StringField(
         "email",
-        validators=[
-            DataRequired(),
-            Email()
-        ],
+        validators=[DataRequired(), Email()],
         render_kw={
             "placeholder": "邮件地址",
             "aria-label": "邮件地址",
-            "autocomplete": "email"
-        }
+            "autocomplete": "email",
+        },
     )
     password = PasswordField(
         "password",
-        validators=[
-            DataRequired()
-        ],
+        validators=[DataRequired()],
         render_kw={
             "placeholder": "密码",
             "aria-label": "密码",
-        }
+        },
     )
     confirm = PasswordField(
         "confirm",
-        validators=[
-            DataRequired(),
-            EqualTo("password")
-        ],
+        validators=[DataRequired(), EqualTo("password")],
         render_kw={
             "placeholder": "确认密码",
             "aria-label": "确认密码",
-        }
+        },
     )
-    auto_login = BooleanField(
-        render_kw={
-            "role": "switch",
-            "checked": "checked"
-        }
-    )
+    auto_login = BooleanField(render_kw={"role": "switch", "checked": "checked"})
 
 
 def check_signup_form(form: SignUpForm) -> SignUpModel | SignUpForm:

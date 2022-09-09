@@ -5,6 +5,7 @@ from sanic import Request, json
 from ....usecase.api import APIServise
 from ...blueprints.api.helper import code, info
 
+
 def api_validator(wrapped):
     def decorated(func):
         @wraps(func)
@@ -15,18 +16,13 @@ def api_validator(wrapped):
                 api = APIServise()
                 ...
                 return json(
-                    api.base_resp(
-                        code=...,
-                        info=...,
-                        type=...,
-                        data={
-                            ...
-                        }
-                    ).json(),
+                    api.base_resp(code=..., info=..., type=..., data={...}).json(),
                     status=...,
-                    dumps=lambda x: x
+                    dumps=lambda x: x,
                 )
             else:
                 return response
+
         return decorated_function
+
     return decorated(wrapped)

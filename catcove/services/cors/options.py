@@ -6,18 +6,15 @@ from sanic.router import Route
 
 from . import _add_cors_headers
 
-def _compile_routes_needing_options(
-    routes: Dict[str, Route]
-) -> Dict[str, FrozenSet]:
+
+def _compile_routes_needing_options(routes: Dict[str, Route]) -> Dict[str, FrozenSet]:
     needs_options = defaultdict(list)
     # This is 21.12 and later. You will need to change this for older versions.
     for route in routes.values():
         if "OPTIONS" not in route.methods:
             needs_options[route.uri].extend(route.methods)
 
-    return {
-        uri: frozenset(methods) for uri, methods in dict(needs_options).items()
-    }
+    return {uri: frozenset(methods) for uri, methods in dict(needs_options).items()}
 
 
 def _options_wrapper(handler, methods):
@@ -44,4 +41,3 @@ def setup_options(app: Sanic, _):
             methods=["OPTIONS"],
         )
     app.router.finalize()
- 

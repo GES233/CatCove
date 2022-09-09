@@ -7,12 +7,11 @@ def load_static(app: Sanic) -> None:
     prj_path = Path(__file__).cwd()
     static_path = PurePath(prj_path / "catcove/static")
 
-    favicon_path = PurePath( static_path / "img/favicon.ico")
-    robots_path = PurePath( static_path / "robots.txt")
-    css_path = PurePath( static_path / "css/")
-    js_path = PurePath( static_path / "js/")
-    img_path = PurePath( static_path / "img/")
-
+    favicon_path = PurePath(static_path / "img/favicon.ico")
+    robots_path = PurePath(static_path / "robots.txt")
+    css_path = PurePath(static_path / "css/")
+    js_path = PurePath(static_path / "js/")
+    img_path = PurePath(static_path / "img/")
 
     app.static("/favicon.ico", favicon_path)
     app.static("/robots.txt", robots_path)

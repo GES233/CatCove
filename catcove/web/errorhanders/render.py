@@ -8,7 +8,7 @@ from ...services.render import render_page_template
 
 
 class HTMLRendererWithStyle(HTMLRenderer):
-    """ Sanic HTMLRender with Pico.css. """
+    """Sanic HTMLRender with Pico.css."""
 
     TRACEBACK_LINE_HTML = (
         "<details>"
@@ -25,14 +25,14 @@ class HTMLRendererWithStyle(HTMLRenderer):
         "The above exception was the direct cause of the following exception:"
         "</p></b>"
     )
-    
+
     TRACEBACK_WRAPPER_HTML = (
         "<article>"
         "<header><code><b>{exc_name}</b></code> : {exc_value}</header>"
         "{frame_html}"
         "</article>"
     )
-    
+
     def _generate_body(self, *, full):
         if full == False:
             return super()._generate_body(full=False)
@@ -64,28 +64,27 @@ class HTMLRendererWithStyle(HTMLRenderer):
                     lines.append(self._generate_object_display(info, attr))
 
             return "\n".join(lines)
-    
+
     def minimal(self) -> HTTPResponse:
         return html(
             render_page_template(
                 "errorpages/internal_error.html",
                 title=self.title,
                 error_text=self.text,
-                error_body=self._generate_body(full=False)
+                error_body=self._generate_body(full=False),
             ),
             status=self.status,
-            headers=self.headers
+            headers=self.headers,
         )
-    
+
     def full(self) -> HTTPResponse:
         return html(
             render_page_template(
                 "errorpages/internal_error.html",
                 title=self.title,
                 error_text=self.text,
-                error_body=self._generate_body(full=True)
+                error_body=self._generate_body(full=True),
             ),
             status=self.status,
-            headers=self.headers
+            headers=self.headers,
         )
-

@@ -9,7 +9,7 @@ user_bp = Blueprint("user", version=0.1)
 
 @user_bp.post("/signup")
 async def register(request: Request) -> HTTPResponse:
-    
+
     # Please check password at front.
     data = request.json
     nickname = data["nickname"]
@@ -32,7 +32,7 @@ async def register(request: Request) -> HTTPResponse:
 
         # Construct and return error.
         ...
-    
+
     # not common.
     _ = await user.create_user(password)
 

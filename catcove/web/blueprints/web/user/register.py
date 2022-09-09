@@ -5,24 +5,18 @@ from sanic.views import HTTPMethodView
 
 from .....entities.tables.users import Users
 
-from ..forms.user import (
-    SignUpForm,
-    check_signup_form,
-    common_nickname,
-    common_email
-)
+from ..forms.user import SignUpForm, check_signup_form, common_nickname, common_email
 from .....usecase.users import UserService
 from .....usecase.auth import AuthService
 from .....entities.schemas.user.request import SignUpModel
 from .....services.render import render_page_template
 
-class RegisterView(HTTPMethodView):
 
+class RegisterView(HTTPMethodView):
     def signup_render(self, form) -> HTTPResponse:
-        return html(render_page_template(
-            'account/signup.html',
-            role="SignUp",
-            form=form))
+        return html(
+            render_page_template("account/signup.html", role="SignUp", form=form)
+        )
 
     async def get(self, request: Request) -> HTTPResponse:
         return self.signup_render(SignUpForm())
@@ -33,46 +27,44 @@ class RegisterView(HTTPMethodView):
         if not form_data:
             return self.signup_render(SignUpForm())
 
-        temp_form = SignUpForm(data={
+        temp_form = SignUpForm(
+            data={
                 "nickname": form_data.get("nickname"),
                 "email": form_data.get("email"),
                 "password": form_data.get("password"),
                 "confirm": form_data.get("confirm"),
-                "auto_login": form_data.get("auto_login")}
+                "auto_login": form_data.get("auto_login"),
+            }
         )
         model: SignUpModel = check_signup_form(temp_form)
-        if isinstance(model, SignUpForm): return self.signup_render(model)
+        if isinstance(model, SignUpForm):
+            return self.signup_render(model)
 
         # Other check.
         # email, invitation code, etc.
 
         # Query.
         user_ser = UserService(db_session=request.ctx.db_session)
-        
+
         common = await user_ser.check_common_user(
-            nickname=model.nickname,
-            email=model.email
-            )
+            nickname=model.nickname, email=model.email
+        )
 
         if common:
             common_user = user_ser.user
-            if model.nickname == common_user.nickname \
-                or model.nickname == common_user.email:
-                return self.signup_render(
-                    common_nickname(temp_form)
-                )
+            if (
+                model.nickname == common_user.nickname
+                or model.nickname == common_user.email
+            ):
+                return self.signup_render(common_nickname(temp_form))
             elif model.email == common_user.email:
-                return self.signup_render(
-                    common_email(temp_form)
-                )
+                return self.signup_render(common_email(temp_form))
             else:
                 return self.signup_render(SignUpForm())
 
         # Insert.
         newbie: Users = await user_ser.create_user(
-            model.nickname,
-            model.email,
-            model.password
+            model.nickname, model.email, model.password
         )
 
         # Redirect.
@@ -88,4 +80,3 @@ class RegisterView(HTTPMethodView):
         else:
             # Move the request.
             return redirect("/login")
-    

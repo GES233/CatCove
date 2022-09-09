@@ -42,7 +42,7 @@ async def login(request: Request) -> HTTPResponse:
         return json(body=api.base_resp(...), status=404, dumps=lambda x: x)
 
     password_match = user.user.check_passwd(password)
-    if password_match == False:
+    if password_match != True:
         return json(body=api.base_resp(...), status=401, dumps=lambda x: x)
 
     # Generate_token payload.
@@ -51,7 +51,7 @@ async def login(request: Request) -> HTTPResponse:
     # Encrypt token.
     token.payload = token_payload
     _ = token.dict_to_str()
-    if _ == False:
+    if _ != True:
         # Payload not ready.
 
         # Return error.(500)

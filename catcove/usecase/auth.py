@@ -11,7 +11,6 @@ from . import ServiceBase
 
 from ..entities.tables.users import Users
 from ..entities.schemas.auth import UserTokenPayload
-from ..services.security.user import user2payload
 
 
 class AuthService(ServiceBase):
@@ -75,7 +74,13 @@ class AuthService(ServiceBase):
         # Set exp first.
         if exp:
             self.exp = datetime.utcnow() + exp
-        self.payload = user2payload(user, datetime.timestamp(self.exp))
+        self.payload = UserTokenPayload(
+            id=user.id,
+            nickname=user.nickname,
+            status=user.status,
+            role="spectator" if user.is_spectator == True else "normal",
+            exp=datetime.timestamp(self.exp),
+        ).dict()
         return self.payload
 
     def encrypt(self, sk: str | None = None) -> bool:

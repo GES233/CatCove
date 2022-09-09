@@ -22,11 +22,13 @@ def padding_instance(app: Sanic, **other_settings) -> None:
 
         # Create_Key file (openssl relable).
         # This part will change by customize the token related.
-        os.popen(
+        '''os.popen(
             f"cd {instance_path} && \
             openssl ecparam -genkey -noout -name prime256v1 -out eckey.pem -text && \
             openssl ec -in eckey.pem -pubout -out ecpubkey.pem"
-        )
+        )'''
+        from ..services.security.crypto import gen_key
+        gen_key(instance_path)
 
     ecc_prk = Path(instance_path / "eckey.pem")
     ecc_puk = Path(instance_path / "ecpubkey.pem")

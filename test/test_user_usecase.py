@@ -36,8 +36,8 @@ def async_as_sync(func):
 class TestUserService:
     """Test user service without authentation and others."""
 
-    # ser = UserService(db_session())
-    ser = ManageService(db_session())
+    ser = UserService(db_session())
+    m_ser = ManageService(db_session())
 
     def test_create_user(self):
         # Initialize first.

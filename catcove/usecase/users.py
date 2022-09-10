@@ -148,6 +148,25 @@ class UserService(ServiceBase):
 
         self.user = now_user
         return True
+    
+    async def change_user_status(self, role: str) -> bool:
+        async with self.db_session.begin():
+            result = await self.db_session.execute(
+                select(Users).where(Users.id == self.user.id)
+            )
+            now_user: Users = result.scalars().first()
+
+            # Return None if not existed.
+            if not now_user:
+                return False
+            now_user.role = role
+
+            # Update.
+            await self.db_session.flush()
+            self.db_session.expunge(now_user)
+
+        self.user = now_user
+        return True
 
     async def change_user_profile(self, **profile) -> bool:
         """Change user's profile.

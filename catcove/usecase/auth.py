@@ -78,7 +78,7 @@ class AuthService(ServiceBase):
             id=user.id,
             nickname=user.nickname,
             status=user.status,
-            role="spectator" if user.is_spectator == True else "normal",
+            role=user.role,
             exp=datetime.timestamp(self.exp),
         ).dict()
         return self.payload

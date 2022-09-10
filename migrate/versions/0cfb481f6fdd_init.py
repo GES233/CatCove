@@ -1,8 +1,8 @@
-"""Initialize Database.
+"""Init.
 
-Revision ID: dd590f0d3782
+Revision ID: 0cfb481f6fdd
 Revises: 
-Create Date: 2022-08-27 20:46:32.590458
+Create Date: 2022-09-10 14:18:26.575554
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'dd590f0d3782'
+revision = '0cfb481f6fdd'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,7 +23,7 @@ def upgrade() -> None:
     sa.Column('status', sa.String(length=16), nullable=False),
     sa.Column('create_time', sa.DateTime(), nullable=True),
     sa.Column('title', sa.String(length=32), nullable=False),
-    sa.Column('description', sa.String(length=256), nullable=True),
+    sa.Column('description', sa.String(length=1024), nullable=True),
     sa.Column('content', sa.Text(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
@@ -41,7 +41,7 @@ def upgrade() -> None:
     sa.Column('gender', sa.String(length=2), nullable=True),
     sa.Column('birth', sa.Date(), nullable=True),
     sa.Column('info', sa.Text(), nullable=True),
-    sa.Column('is_spectator', sa.Boolean(), nullable=True),
+    sa.Column('role', sa.String(length=16), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )

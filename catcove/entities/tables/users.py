@@ -46,7 +46,8 @@ class Users(Base):
     gender = Column(String(2), nullable=True)
     birth = Column(Date, nullable=True)
     info = Column(Text, nullable=True)
-    is_spectator = Column(Boolean, default=0)
+    role = Column(String(16), default="user")
+    # is_spectator = Column(Boolean, default=0)
 
     # == With other tables  == #
 

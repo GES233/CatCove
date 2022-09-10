@@ -1,20 +1,21 @@
-from .users import UserService
+from . import ServiceBase
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import select, update, or_, table
 
 from ..entities.tables.users import Users, Moderator, Spectator
 
-class ManageService(UserService):
-    """涉及到管理的业务用这个取代原本的 `UserServies` 即可。"""
+class ManageService(ServiceBase):
 
     def __init__(
         self,
         db_session: sessionmaker,
+        user: Users,
         role: str = "",
         status: dict | None = None,
-        user: Users | None = None,
     ) -> None:
-        super().__init__(db_session, status, user)
+        super().__init__(status)
+        self.db_session= db_session
+        self.user = user
         self.user_as_spectator: Spectator | None = None
         self.user_as_moderator: Moderator | None = None
         self.role = role

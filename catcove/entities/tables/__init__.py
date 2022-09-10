@@ -17,7 +17,12 @@ metadata = MetaData()
 
 Base = declarative_base(metadata)
 
-from .users import Users, following_table
+from .users import (
+    Users,
+    following_table,
+    Spectator,
+    Moderator,
+)
 from .contents.posts import UserPosts, PostsUnderThread
 from .contents.threads import Threads
 from .tags import (

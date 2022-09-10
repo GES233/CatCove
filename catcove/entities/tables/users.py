@@ -51,6 +51,17 @@ class Users(Base):
 
     # == With other tables  == #
 
+    """ User-to-user:
+
+        +-------+                  +-------------+
+        | Users |one <---> zero/one| User(other) |
+        +-------+                  +-------------+
+    """
+    # role = "spectator"
+    as_spectator = relationship("Spectator", uselist=False, back_populates="user")
+    as_moderator = relationship("Moderator", uselist=False, back_populates="user")
+    # maintainer in `tags`.
+
     """ Contents:
         
         +-------+                  +---------+
@@ -99,3 +110,26 @@ class Users(Base):
 
     def __repr__(self) -> str:
         return "<User %s (uid:%s)>" % (self.nickname, self.id)
+
+
+class Spectator(Base):
+    __tablename__ = "spectator"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    # 开后台用的。
+    password = Column(LargeBinary)
+    user = relationship("Users", uselist=False, back_populates="as_spectator")
+
+    def encrypt_passwd(self, password: str) -> None:
+        salt = gensalt(64)
+        self.password = hashpw(password.encode("utf-8"), salt)
+    
+    def check_passwd(self, password: str) -> bool:
+        return True if checkpw(password.encode("utf-8"), self.password) else False
+
+
+class Moderator(Base):
+    __tablename__ = "moderator"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    user = relationship("Users", uselist=False, back_populates="as_moderator")

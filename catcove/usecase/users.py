@@ -1,5 +1,5 @@
 from typing import List, Any
-from sqlalchemy.sql import select, update, or_
+from sqlalchemy.sql import select, update, or_, insert
 from sqlalchemy.orm import sessionmaker
 
 from . import ServiceBase
@@ -18,6 +18,7 @@ class UserService(ServiceBase):
         # User with others.
     ) -> None:
         """Usage:
+        ```
         a = UserService(
             config=None,
             db_session=request.ctx.session,
@@ -25,6 +26,7 @@ class UserService(ServiceBase):
         )
         a.get_user()
         a.user = Users(id=2, nickname="2", ...)
+        ```
         """
         super().__init__(status)
         self.db_session = db_session
@@ -86,7 +88,7 @@ class UserService(ServiceBase):
             id=self.user.id,
             nickname=self.user.nickname,
             status=self.user.status,
-            role="spectator" if self.user.is_spectator == True else "normal",
+            role=self.user.role,
         ).dict()
 
     async def check_common_user(self, nickname: str, email: str) -> bool:
@@ -141,25 +143,6 @@ class UserService(ServiceBase):
             if not now_user:
                 return False
             now_user.status = status
-
-            # Update.
-            await self.db_session.flush()
-            self.db_session.expunge(now_user)
-
-        self.user = now_user
-        return True
-    
-    async def change_user_status(self, role: str) -> bool:
-        async with self.db_session.begin():
-            result = await self.db_session.execute(
-                select(Users).where(Users.id == self.user.id)
-            )
-            now_user: Users = result.scalars().first()
-
-            # Return None if not existed.
-            if not now_user:
-                return False
-            now_user.role = role
 
             # Update.
             await self.db_session.flush()

@@ -121,7 +121,7 @@ class Spectator(Base):
     user = relationship("Users", uselist=False, back_populates="as_spectator")
 
     def encrypt_passwd(self, password: str) -> None:
-        salt = gensalt(64)
+        salt = gensalt(rounds=26)
         self.password = hashpw(password.encode("utf-8"), salt)
     
     def check_passwd(self, password: str) -> bool:

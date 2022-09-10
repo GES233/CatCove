@@ -1,4 +1,6 @@
 from datetime import date
+from time import sleep
+from types import NoneType
 import pytest
 import asyncio
 from sqlalchemy import create_engine
@@ -7,6 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import select, or_
 
 from catcove.usecase.users import UserService
+from catcove.usecase.manage import ManageService
 from catcove.entities.tables import Base
 
 engine = create_async_engine(
@@ -33,7 +36,8 @@ def async_as_sync(func):
 class TestUserService:
     """Test user service without authentation and others."""
 
-    ser = UserService(db_session())
+    # ser = UserService(db_session())
+    ser = ManageService(db_session())
 
     def test_create_user(self):
         # Initialize first.
@@ -59,6 +63,18 @@ class TestUserService:
             self.ser.check_common_user(nickname="None", email="12345@zz.top")
         )
         assert hasattr(self.ser.user, "id")
+    
+    def test_user_role(self):
+        # Initialize first.
+        Base.metadata.drop_all(bind=sync_engine)
+        Base.metadata.create_all(bind=sync_engine)
+        _ = async_as_sync(
+            self.ser.create_user("12345", "12345@zz.top", "123456")
+        )
+        # Add a role.
+        _ = async_as_sync(
+            self.ser.get_role()
+        )
 
     def test_check_user(self):
         # Initialize first.

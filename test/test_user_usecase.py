@@ -37,7 +37,6 @@ class TestUserService:
     """Test user service without authentation and others."""
 
     ser = UserService(db_session())
-    m_ser = ManageService(db_session())
 
     def test_create_user(self):
         # Initialize first.
@@ -157,3 +156,18 @@ class TestUserService:
 
         # ...
         ...
+
+    def get_user(self):
+        Base.metadata.drop_all(bind=sync_engine)
+        Base.metadata.create_all(bind=sync_engine)
+
+        return async_as_sync(self.ser.create_user("12345", "12345@zz.top", "123456"))
+
+    def test_be_a_spectator(self):
+        m_ser = ManageService(db_session(), self.get_user())
+
+        _ = async_as_sync(m_ser.be_spectator("1234"))
+
+        user_in_db = async_as_sync(self.ser.get_user(1))
+
+        assert user_in_db.role == "spactator"

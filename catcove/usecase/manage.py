@@ -1,6 +1,7 @@
 from . import ServiceBase
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.sql import select, update, or_, table
+from sqlalchemy.sql import select, update, or_, table, values
+from bcrypt import gensalt, hashpw
 
 from ..entities.tables.users import Users, Moderator, Spectator
 
@@ -43,12 +44,29 @@ class ManageService(ServiceBase):
 
         return True
     
-    async def be_spectator(self, password: str) -> Spectator | None:
+    async def be_spectator(self, password_: str) -> Spectator | None:
         if not isinstance(self.user, Users):
             return None
         """ use `Service.get_user` before. """
 
-        # Update role and insert data.
+        # Update role.
+        async with self.db_session.begin():
+            smpt = update(Users).where(Users.id==self.user.id).\
+                values({"role": "spactator"})
+            spactator = Spectator(user_id=self.user.id)
+            self.db_session.add(spactator)
+            await self.db_session.flush()
+            await self.db_session.execute(smpt)
+
+        # Insert data.
+        async with self.db_session.begin():
+            result = await self.db_session.execute(
+                select(Spectator).where(Spectator.user_id == self.user.id)
+            )
+            spactator = result.scalars().first()
+            spactator.encrypt_passwd(password_)
+            await self.db_session.flush()
+            self.db_session.expunge(spactator)
 
     async def be_moderator(self) -> Moderator | None:
         if not isinstance(self.user, Users):

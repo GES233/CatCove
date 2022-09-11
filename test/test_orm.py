@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import select, or_
+from sqlalchemy.schema import CreateSchema
 
 engine = create_async_engine(
     url="sqlite+aiosqlite:///tinycat_test.db",  # Use async.
@@ -32,4 +33,6 @@ def sync_to_async(func):
     asyncio.get_event_loop().run_until_complete(func)
 
 
-...
+class TestORM(object):
+
+    def test_init(self): return init_db()

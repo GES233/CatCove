@@ -11,7 +11,24 @@ class APIServise(ServiceBase):
         self.api = BaseAPI
         self.org = OriginContentModel
 
-    def base_resp(self, code: int, info: str, type: str, data: Any) -> BaseModel:
+    def base_resp(self, code: int, info: str, type: str, data: Any) -> BaseAPI:
+        _rsp: dict = {
+            "code": code,
+            "info": info,
+            "type": type,
+            "data": data
+        }
         return self.api(
-            code=code, info=info, org=self.org(content_type=type, data=data)
+            code=_rsp["code"],
+            info=_rsp["info"],
+            org=self.org(
+                content_type=_rsp["type"],
+                data=_rsp["data"]
+            )
+        )
+    
+    def not_found(self, target):
+        # Generate a dict here.
+        return self.base_resp(
+            ...
         )

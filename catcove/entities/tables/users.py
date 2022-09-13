@@ -123,7 +123,7 @@ class Spectator(Base):
     def encrypt_passwd(self, password: str) -> None:
         salt = gensalt(rounds=26)
         self.password = hashpw(password.encode("utf-8"), salt)
-    
+
     def check_passwd(self, password: str) -> bool:
         return True if checkpw(password.encode("utf-8"), self.password) else False
 

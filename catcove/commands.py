@@ -9,6 +9,7 @@ from sanic.exceptions import SanicException
 PROJECT_PATH = Path().cwd()
 APP_PATH = Path(PROJECT_PATH / "catcove")
 
+
 def run_async(func: Callable) -> Any:
     # May have some change.
     return asyncio.get_event_loop().run_until_complete(func)
@@ -61,13 +62,13 @@ def set_instance(db, uri) -> None:
             path = click.prompt(
                 text="Please enter your database's Path/Database lastly"
             )
-    
+
     # Add redis here.
 
     _app = Sanic("__temprory_app")
     padding_instance(
         _app,
-        databases = None
+        databases=None
         if db == False
         else "SQLALCHEMY_DATABASE_URI: {}".format(
             uri
@@ -122,8 +123,12 @@ def create_spectator(transformation) -> None:
         nickname = click.prompt("Please enter new spectator's nickname")
         email = click.prompt("Please enter new spectator's email")
         while password != confirm:
-            password = click.prompt("Please enter new spectator's password", hide_input=True)
-            confirm = click.prompt("Please confirm new spectator's password", hide_input=True)
+            password = click.prompt(
+                "Please enter new spectator's password", hide_input=True
+            )
+            confirm = click.prompt(
+                "Please confirm new spectator's password", hide_input=True
+            )
         common = run_async(user_service.check_common_user(nickname, email))
         if common:  # common != False
             click.secho(
@@ -132,7 +137,7 @@ def create_spectator(transformation) -> None:
             )
         else:
             _ = run_async(user_service.create_user(nickname, email, password))
-            _status = run_async(user_service.change_user_profile(is_spectator = True))
+            _status = run_async(user_service.change_user_profile(is_spectator=True))
             if _status == False:
                 click.secho("Some error happend", fg="red")
             else:
@@ -145,7 +150,7 @@ def create_spectator(transformation) -> None:
 @click.option("--pro", "mode", flag_value="pro")
 def run(mode) -> None:
     """Run the application."""
-    
+
     from .web.app import create_app
 
     if mode == "dev":

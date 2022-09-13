@@ -9,7 +9,6 @@ pub_key = Path(Sanic.get_app("Meow").config.ECC_PUBLIC_KEY).read_text()
 pri_key = Path(Sanic.get_app("Meow").config.ECC_PRIVATE_KEY).read_text()
 
 
-
 def gen_key(path: Path) -> None:
     sk = ecdsa.SigningKey.generate(ecdsa.NIST256p)
     vk = sk.verifying_key

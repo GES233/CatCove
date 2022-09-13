@@ -5,8 +5,8 @@ from bcrypt import gensalt, hashpw
 
 from ..entities.tables.users import Users, Moderator, Spectator
 
-class ManageService(ServiceBase):
 
+class ManageService(ServiceBase):
     def __init__(
         self,
         db_session: sessionmaker,
@@ -15,12 +15,12 @@ class ManageService(ServiceBase):
         status: dict | None = None,
     ) -> None:
         super().__init__(status)
-        self.db_session= db_session
+        self.db_session = db_session
         self.user = user
         self.user_as_spectator: Spectator | None = None
         self.user_as_moderator: Moderator | None = None
         self.role = role
-    
+
     async def get_role(self) -> bool:
         if not isinstance(self.user, Users):
             return False
@@ -38,12 +38,12 @@ class ManageService(ServiceBase):
             _as_moderator = await self.db_session.execute(smpt_for_moderator)
             _as_moderator = _as_moderator.scalars().first()
             self.db_session.expunge(_as_moderator) if _as_spectator else ...
-        
+
         self.user_as_spectator = _as_spectator
         self.user_as_moderator = _as_moderator
 
         return True
-    
+
     async def be_spectator(self, password_: str) -> Spectator | None:
         if not isinstance(self.user, Users):
             return None
@@ -51,8 +51,11 @@ class ManageService(ServiceBase):
 
         # Update role.
         async with self.db_session.begin():
-            smpt = update(Users).where(Users.id==self.user.id).\
-                values({"role": "spactator"})
+            smpt = (
+                update(Users)
+                .where(Users.id == self.user.id)
+                .values({"role": "spactator"})
+            )
             spactator = Spectator(user_id=self.user.id)
             self.db_session.add(spactator)
             await self.db_session.flush()
@@ -72,5 +75,5 @@ class ManageService(ServiceBase):
         if not isinstance(self.user, Users):
             return None
         """ use `Service.get_user` before. """
-        
+
         ...

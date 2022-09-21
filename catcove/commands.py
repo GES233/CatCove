@@ -22,7 +22,7 @@ def manage():
 
 
 @manage.command("init")
-@click.option("--db", is_flag=True, default=True, help="DataBase settings.")
+@click.option("--db/--no-db", is_flag=True, default=True, help="DataBase settings.")
 @click.option("--uri", default=None, help="Use URI to connect the DB.")
 def set_instance(db, uri) -> None:
     """Installation the application."""
@@ -35,7 +35,7 @@ def set_instance(db, uri) -> None:
     # Relational database.
     if db == True:
         click.secho(
-            "[WARNING] Please check your database's driver before nd install it.",
+            "[WARNING] Please check your database's driver before and install it.",
             fg="red",
         )
         click.echo("sqlite: aiosqlite [installed]")
@@ -54,6 +54,9 @@ def set_instance(db, uri) -> None:
         else:
             host = click.prompt(
                 text="Please Enter your database's Host", default="localhost"
+            )
+            port = click.prompt(
+                text="Please Enter your database's Post", default="2345"
             )
             username = click.prompt(
                 text="Please Enter your database's Username", default=dialect
@@ -79,14 +82,28 @@ def set_instance(db, uri) -> None:
 
 
 @manage.command("db")
-def upgrade_db() -> None:
-    """Initlize the database."""
-    # Add some WARNING info.
+@click.option("--dev", "mode", flag_value="dev")
+@click.option("--pro", "mode", flag_value="pro", default=True)
+def upgrade_db(mode) -> None:
+    """Initialize the database."""
+    # Set warning first.
+    click.secho(
+        "[WARNING] This command will running via alembic, and it will reshape your database.",
+        fg="red"
+    )
+    click.confirm("[CONFIRM]", abort=True)
     from alembic import command
     from alembic.config import Config as AlembicConfig
 
+    # mode -> env.
+    os.environ["APP_ENV"] = mode
+
+    # Execute the command.
     alembic_config = AlembicConfig(Path(PROJECT_PATH / "alembic.ini").__str__())
     command.upgrade(alembic_config, "head")
+
+    # Finish.
+    click.secho("Database initialized.", fg="green")
 
 
 @manage.command("admin")

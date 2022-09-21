@@ -3,7 +3,7 @@ from sanic import Sanic
 # Some contexts.
 from contextvars import ContextVar
 
-_base_model_session_ctx = ContextVar("session")
+_base_model_session_ctx = ContextVar("db_session")
 
 
 def register_dependencies(app: Sanic) -> None:

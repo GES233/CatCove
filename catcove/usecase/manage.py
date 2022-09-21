@@ -1,15 +1,19 @@
 from . import ServiceBase
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import select, update, or_, table, values
 from bcrypt import gensalt, hashpw
 
-from ..entities.tables.users import Users, Moderator, Spectator
+from ..entities.tables.users import (
+    Users,
+    Moderator,
+    Spectator,
+)
 
 
 class ManageService(ServiceBase):
     def __init__(
         self,
-        db_session: sessionmaker,
+        db_session: AsyncSession,
         user: Users,
         role: str = "",
         status: dict | None = None,
@@ -32,7 +36,6 @@ class ManageService(ServiceBase):
                 Moderator.user_id == self.user.id
             )
             _as_spectator = await self.db_session.execute(smpt_for_spectator)
-            # AttributeError: 'coroutine' object has no attribute 'scalars'
             _as_spectator = _as_spectator.scalars().first()
             self.db_session.expunge(_as_spectator) if _as_spectator else ...
             _as_moderator = await self.db_session.execute(smpt_for_moderator)

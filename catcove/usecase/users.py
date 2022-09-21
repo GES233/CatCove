@@ -1,6 +1,6 @@
 from typing import List, Any
 from sqlalchemy.sql import select, update, or_, insert
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import ServiceBase
 from ..entities.tables.users import Users, following_table
@@ -12,7 +12,7 @@ class UserService(ServiceBase):
 
     def __init__(
         self,
-        db_session: sessionmaker,
+        db_session: AsyncSession,
         status: dict | None = None,
         user: Users | None = None,
         # User with others.

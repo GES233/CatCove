@@ -1,3 +1,4 @@
+import base64
 from datetime import datetime, timedelta
 from typing import Callable
 import jwt
@@ -5,7 +6,6 @@ import jwt
 # from jose.jwe import encrypt, decrypt\
 from sanic.request import Request
 from sanic.response import HTTPResponse
-import base64
 
 from . import ServiceBase
 

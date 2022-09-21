@@ -103,7 +103,7 @@ def upgrade_db(mode) -> None:
     command.upgrade(alembic_config, "head")
 
     # Finish.
-    click.secho("Database initialized.", fg="green")
+    click.secho("[INFO]    Database initialized.", fg="green")
 
 
 @manage.command("admin")
@@ -149,7 +149,7 @@ def create_spectator(transformation) -> None:
         common = run_async(user_service.check_common_user(nickname, email))
         if common:  # common != False
             click.secho(
-                "Have common user, please check your nickname or email, or use `--appointment` instead.",
+                "[ERROR]   Have common user, please check your nickname or email, or use `--appointment` instead.",
                 fg="red",
             )
         else:
@@ -167,6 +167,7 @@ def create_spectator(transformation) -> None:
 @click.option("--pro", "mode", flag_value="pro")
 def run(mode) -> None:
     """Run the application."""
+    click.secho("[INFO]    The application is starting...", fg="green")
 
     from .web.app import create_app
 

@@ -28,6 +28,7 @@ class UserLoginView(HTTPMethodView):
     async def post(self, request: Request) -> HTTPResponse:
         # Submit -> POST
         form_data = request.form
+        print(f"Raw-mode: {form_data.get('remember')}")
         if (
             form_data.get("email")
             or form_data.get("nickname") == ""
@@ -36,13 +37,20 @@ class UserLoginView(HTTPMethodView):
             # Case: post from `/register`;`
             # Case: not updated value.
             return self.login_render(LoginForm())
+        
+        # Remember-me:
+        '''
+        if not form_data.get('remember'):
+            _remember = False
+        else:
+            _remember = True'''
 
         model: UserLoginModel = validate_login_form(
             LoginForm(
                 data={
                     "nickname": form_data.get("nickname"),
                     "password": form_data.get("password"),
-                    # Add remember_me here.
+                    "remember": form_data.get('remember'),
                 }
             )
         )
@@ -70,7 +78,7 @@ class UserLoginView(HTTPMethodView):
 
         response = redirect("/")
         # Add remember_me code here.
-        return request.ctx.cookie_ser.set_cookie(response)
+        return request.ctx.cookie_ser.set_cookie(response, model.remember)
 
 
 async def logout(request: Request) -> HTTPResponse:

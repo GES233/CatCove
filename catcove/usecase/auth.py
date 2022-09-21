@@ -40,6 +40,7 @@ class AuthService(ServiceBase):
         elif cookie:
             # Cookie -> payload.
             self.service_status["config"]["type"] = "cookie"
+            self.service_status["config"]["cookie"] = "UserMeta"
             self.token = None
             self.cookie = cookie
         else:
@@ -141,11 +142,12 @@ class AuthService(ServiceBase):
         self.raw = self.payload.__str__()
         return True
 
-    def set_cookie(self, response: HTTPResponse) -> HTTPResponse:
+    def set_cookie(self, response: HTTPResponse, remember: bool = True) -> HTTPResponse:
         response.cookies[self.service_status["config"]["cookie"]] = self.cookie
         response.cookies[self.service_status["config"]["cookie"]]["path"] = "/"
         response.cookies[self.service_status["config"]["cookie"]]["httponly"] = True
-        response.cookies[self.service_status["config"]["cookie"]]["expires"] = self.exp
+        if remember:
+            response.cookies[self.service_status["config"]["cookie"]]["expires"] = self.exp
 
         return response
 

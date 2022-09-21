@@ -18,3 +18,4 @@ class SignUpModel(BaseModel):
 class UserLoginModel(BaseModel):
     nickname: str
     password: str
+    remember: bool

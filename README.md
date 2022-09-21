@@ -58,7 +58,8 @@ python server.py run --pro
 
 ## TODO
 
-- [ ] 表单有「记住我」后能够设置的过期日期
+- [ ] ORM 的进一步解耦（理想情况： SQLAlchemy/Tortoise-orm 无缝替换）
+- [x] 表单有「记住我」后能够设置的过期日期
 - [ ] 消息机制的引入
   - [ ] APSchedule
   - [ ] 类似于 Flask 的 `flash()` （No-JS）

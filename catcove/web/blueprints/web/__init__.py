@@ -35,6 +35,9 @@ async def fetch_cookie(request: Request) -> None:
             if _payload["exp"] < datetime.timestamp(datetime.utcnow()):
                 request.ctx.current_user = None
             else:
+                # Query from Redis if have.
+                ...
+                
                 request.ctx.current_user = request.ctx.cookie_ser.payload
         else:
             request.ctx.current_user = None

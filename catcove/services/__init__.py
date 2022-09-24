@@ -13,7 +13,7 @@ def register_services(app: Sanic) -> None:
 
     # Render
 
-    async def setup_templates(app: Sanic):
+    async def setup_templates(app: Sanic) -> None:
         from pathlib import Path, PurePath
         from jinja2 import Environment, FileSystemLoader
 

@@ -166,6 +166,7 @@ class UserService(ServiceBase):
             return False
 
         data = {k: v for k, v in profile.items() if v is not None}
+
         async with self.db_session.begin():
             sql = update(Users).where(Users.id == self.user.id).values(data)
             await self.db_session.execute(sql)
@@ -174,9 +175,11 @@ class UserService(ServiceBase):
 
     async def update_password(self, password: str) -> bool:
         """Update user's password."""
+
         # No person in instance.
         if not (isinstance(self.user, Users) and self.user.id):
             return False
+
         async with self.db_session.begin():
             result = await self.db_session.execute(
                 select(Users).where(Users.id == self.user.id)

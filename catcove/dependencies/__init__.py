@@ -16,6 +16,9 @@ def register_dependencies(app: Sanic) -> None:
     @app.on_request
     async def inject_session(request):
         request.ctx.db_session = async_session()
+
+        # 将变量设为「全局」可用的
+        # 并且为了线程安全，类似于 SQLAlchemy 的 `scoped_session()`
         request.ctx.session_ctx_token = _base_model_session_ctx.set(
             request.ctx.db_session
         )

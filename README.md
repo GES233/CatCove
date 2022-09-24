@@ -59,6 +59,7 @@ python server.py run --pro
 ## TODO
 
 - [ ] ORM 的进一步解耦（理想情况： SQLAlchemy/Tortoise-orm 无缝替换）
+  - [ ] 重写相关逻辑
 - [x] 表单有「记住我」后能够设置的过期日期
 - [ ] 消息机制的引入
   - [ ] APSchedule
@@ -71,7 +72,7 @@ python server.py run --pro
   - [ ] Pydantic 错误的个性化定制
 - [ ] `Markdown` 支持
   - [ ] 渲染
-  - [ ] 链接渲染
+  - [ ] 网站链接的渲染
 - [ ] 文件上传以及下载功能
   - [ ] 多媒体内容的存取
     - [ ] ~~Rickroll~~ 文件太大，没法跟着版本控制，等到部署后再放上去

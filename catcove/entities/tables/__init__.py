@@ -13,9 +13,9 @@ from sqlalchemy import (
     LargeBinary,
 )
 
-metadata = MetaData()
+# metadata = MetaData()
 
-Base = declarative_base(metadata)
+Base = declarative_base()
 
 from .users import (
     Users,

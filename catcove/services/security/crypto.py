@@ -18,6 +18,6 @@ def gen_key(path: Path) -> None:
         pk_path.write_bytes(ecpubkey)
 
 
-def register_key(app: Sanic):
+def register_key(app: Sanic) -> None:
     app.ctx.ecc_pub = Path(app.config.ECC_PUBLIC_KEY).read_text()
     app.ctx.ecc_pri = Path(app.config.ECC_PRIVATE_KEY).read_text()

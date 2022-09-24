@@ -4,7 +4,7 @@ from sanic.response import HTTPResponse
 from ....services.render import render_page_template
 
 index_bp = Blueprint("index")
-""" I'll using Markdown render to replace this. """
+""" I'll using Markdown renderer to replace this. """
 
 
 @index_bp.route("/")

@@ -16,7 +16,7 @@ def run_async(func: Callable) -> Any:
 
 
 @click.group()
-def manage():
+def manage() -> None:
     """Manage the application."""
     pass
 

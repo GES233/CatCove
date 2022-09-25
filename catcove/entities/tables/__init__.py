@@ -8,12 +8,9 @@ from sqlalchemy import (
     Date,
     DateTime,
     ForeignKey,
-    MetaData,
     Table,
     LargeBinary,
 )
-
-# metadata = MetaData()
 
 Base = declarative_base()
 

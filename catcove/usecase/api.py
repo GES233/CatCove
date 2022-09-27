@@ -1,5 +1,6 @@
 from typing import Any
 from pydantic import BaseModel
+from functools import update_wrapper
 
 from . import ServiceBase
 from ..entities.schemas.api import BaseAPI, OriginContentModel
@@ -27,8 +28,22 @@ class APIServise(ServiceBase):
             )
         )
     
+    def api_add_properties(self, f):
+        """打算采用装饰器的方式来加载程序，返回结果。"""
+        def wrapper_func(f, *args, **kwargs):
+            return f(*args, **kwargs)
+        return update_wrapper(wrapper_func, f)
+    
+    def _not_found(self, *args, **kwargs) -> dict:
+        return ...
+    
+    @api_add_properties
     def not_found(self, target):
-        # Generate a dict here.
-        return self.base_resp(
-            ...
-        )
+        """用例：
+
+            ```
+            @not_found
+            return api.base_resp("查无此人")
+            ```
+        """
+        ...

@@ -60,6 +60,11 @@ class UserLoginView(HTTPMethodView):
             password_match = user_ser.user.check_passwd(model.password)
             if password_match == False:
                 return self.login_render(password_not_match(LoginForm()))
+        
+        if user_ser.user.status == "blocked":
+            ...
+        elif user_ser.user.status == "deleted":
+            ...
 
         _ = request.ctx.cookie_ser.gen_payload(user_ser.user)
         _ = request.ctx.cookie_ser.dict_to_str()
@@ -68,6 +73,9 @@ class UserLoginView(HTTPMethodView):
         _ = request.ctx.cookie_ser.encrypt()
         if _ == False:
             raise SanicException("Some error happend when generate token.")
+
+        if user_ser.user.status == "freeze":
+            ...
 
         response = redirect("/")
         # Add remember_me code here.

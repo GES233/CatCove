@@ -1,3 +1,4 @@
+from typing import Tuple
 from . import ServiceBase
 
 # from sqlalchemy.ext.asyncio import AsyncSession
@@ -107,3 +108,49 @@ class ManageService(ServiceBase):
                     moderator = None
 
         return moderator
+    
+    async def _check_role_in_session(self, session) -> Tuple:
+        stmt_for_spectator = select(Spectator).where(
+            Spectator.user_id == self.user.id
+        )
+        stmt_for_moderator = select(Moderator).where(
+            Moderator.user_id == self.user.id
+        )
+        _as_spectator = await session.execute(stmt_for_spectator)
+        _as_spectator = _as_spectator.scalars().first()
+        _as_moderator = await session.execute(stmt_for_moderator)
+        _as_moderator = _as_moderator.scalars().first()
+        return _as_spectator, _as_moderator
+    
+    async def delist_spectator(self) -> bool:
+        if not isinstance(self.user, Users):
+            return None
+        
+        async with self.db_session() as session:
+            async with session.begin():
+                spectator, moderator = self._check_role_in_session(session)
+
+                if moderator:
+                    # Move role to `moderator`.
+                    ...
+                else:
+                    # Move role to `user`.
+                    ...
+                
+                # Remove spectator.
+                ...
+    
+    async def delist_moderator(self) -> bool:
+        if not isinstance(self.user, Users):
+            return None
+        
+        async with self.db_session() as session:
+            async with session.begin():
+                spectator, moderator = self._check_role_in_session(session)
+
+                if not spectator:
+                    # Move role to `user`.
+                    ...
+                
+                # Remove spectator.
+                ...

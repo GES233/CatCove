@@ -1,6 +1,8 @@
 from typing import List, Any
 from sqlalchemy.sql import select, update, or_, insert
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import sessionmaker
+
+# from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import ServiceBase
 from ..entities.tables.users import Users, following_table
@@ -12,7 +14,7 @@ class UserService(ServiceBase):
 
     def __init__(
         self,
-        db_session: AsyncSession,
+        db_session: sessionmaker,
         status: dict | None = None,
         user: Users | None = None,
         # User with others.
@@ -39,13 +41,11 @@ class UserService(ServiceBase):
 
         query_id = id if id else self.user.id
 
-        async with self.db_session.begin():
+        async with self.db_session() as session:
             sql = select(Users).where(Users.id == query_id)
-            users = await self.db_session.execute(sql)
+            users = await session.execute(sql)
             user = users.scalars().first()
-            self.db_session.expunge(user) if user else ...
-
-            # Save userposts, following table etc.
+            session.expunge(user) if user else ...
 
         self.user = user
         return self.user
@@ -54,13 +54,13 @@ class UserService(ServiceBase):
 
         # Check expire firstly.
 
-        async with self.db_session.begin():
+        async with self.db_session() as session:
             sql = select(Users).where(Users.id == token["id"])
-            users = await self.db_session.execute(sql)
+            users = await session.execute(sql)
             user: Users = users.scalars().first()
             if not user:
                 return False
-            self.db_session.expunge(user)
+            session.expunge(user)
 
         if not user:
             return False
@@ -93,7 +93,7 @@ class UserService(ServiceBase):
 
     async def check_common_user(self, nickname: str, email: str) -> bool:
 
-        async with self.db_session.begin():
+        async with self.db_session() as session:
             sql = select(Users).where(
                 or_(
                     Users.nickname == nickname,
@@ -101,55 +101,59 @@ class UserService(ServiceBase):
                     Users.email == email,
                 )
             )
-            users = await self.db_session.execute(sql)
+            users = await session.execute(sql)
             user: Users | None = users.scalars().first()
-            self.db_session.expunge(user) if user else ...
+            session.expunge(user) if user else ...
+
         if user:
             self.user = user
             return True
         else:
-            # self.service_status["errors"].append("User Not Exist")
             return False
 
     async def create_user(self, nickname: str, email: str, password: str) -> Users:
 
-        async with self.db_session.begin():
-            newbie = Users(
-                nickname=nickname,
-                email=email,
-            )
-            newbie.encrypt_passwd(password)
-            self.db_session.add(newbie)
-            await self.db_session.flush()
-            self.db_session.expunge(newbie)
+        async with self.db_session() as session:
+            async with session.begin():
+                newbie = Users(
+                    nickname=nickname,
+                    email=email,
+                )
+                newbie.encrypt_passwd(password)
+                session.add(newbie)
+                await session.flush()
+                session.expunge(newbie)
 
         self.user = newbie
         return self.user
 
     async def change_user_status(self, status: str) -> bool:
-        async with self.db_session.begin():
-            """
-            sql = update(Users).\
-                where(Users.id == self.user.id).\
-                values(status=status)
-            await self.db_session.execute(sql)
-            """
-            result = await self.db_session.execute(
-                select(Users).where(Users.id == self.user.id)
-            )
-            now_user: Users = result.scalars().first()
+        async with self.db_session() as session:
+            async with session.begin():
+                """
+                sql = update(Users).\
+                    where(Users.id == self.user.id).\
+                    values(status=status)
+                await session.execute(sql)
+                """
+                result = await session.execute(
+                    select(Users).where(Users.id == self.user.id)
+                )
+                now_user: Users = result.scalars().first()
 
-            # Return None if not existed.
-            if not now_user:
-                return False
-            now_user.status = status
+                if now_user:
+                    now_user.status = status
 
-            # Update.
-            await self.db_session.flush()
-            self.db_session.expunge(now_user)
+                    # Update.
+                    await session.flush()
+                    session.expunge(now_user)
 
-        self.user = now_user
-        return True
+        if now_user:
+            self.user = now_user
+            return True
+        else:
+            self.user = None
+            return False
 
     async def change_user_profile(self, **profile) -> bool:
         """Change user's profile.
@@ -167,9 +171,10 @@ class UserService(ServiceBase):
 
         data = {k: v for k, v in profile.items() if v is not None}
 
-        async with self.db_session.begin():
-            sql = update(Users).where(Users.id == self.user.id).values(data)
-            await self.db_session.execute(sql)
+        async with self.db_session() as session:
+            async with session.begin():
+                stmt = update(Users).where(Users.id == self.user.id).values(data)
+                await session.execute(stmt)
 
         return True
 
@@ -180,21 +185,22 @@ class UserService(ServiceBase):
         if not (isinstance(self.user, Users) and self.user.id):
             return False
 
-        async with self.db_session.begin():
-            result = await self.db_session.execute(
-                select(Users).where(Users.id == self.user.id)
-            )
-            user = result.scalars().first()
+        async with self.db_session() as session:
+            async with session.begin():
+                result = await session.execute(
+                    select(Users).where(Users.id == self.user.id)
+                )
+                user = result.scalars().first()
 
-            # Not in database.
-            if not user:
-                await self.db_session.close()
-                return False
-            else:
-                user.encrypt_passwd(password)
-                await self.db_session.flush()
-                # Update password to `self.user`
-                self.db_session.expunge(user)
+                # Not in database.
+                if not user:
+                    await session.close()
+                    return False
+                else:
+                    user.encrypt_passwd(password)
+                    await session.flush()
+                    # Update password to `self.user`
+                    session.expunge(user)
 
         self.user = user
         return True
@@ -218,29 +224,30 @@ class UserService(ServiceBase):
         if offset <= 0 and limit <= 0:
             return []
 
-        async with self.db_session.begin():
-            if following == True:
-                # return following => user AS A follower role
-                smpt = (
-                    select(Users)
-                    .where(following_table.c.follower_id == Users.id)
-                    .limit(limit)
-                    .offset(offset)
-                )
-            else:
-                # return followed => user followed BY => user AS followed role
-                smpt = (
-                    select(Users)
-                    .where(following_table.c.followed_id == Users.id)
-                    .limit(limit)
-                    .offset(offset)
-                )
-            result = await self.db_session.execute(smpt)
-            if not result:
-                return []
-            else:
-                following_list = result.scalar().all()
-                self.db_session.expunge(following_list)
+        async with self.db_session() as session:
+            async with session.begin():
+                if following == True:
+                    # return following => user AS A follower role
+                    stmt = (
+                        select(Users)
+                        .where(following_table.c.follower_id == Users.id)
+                        .limit(limit)
+                        .offset(offset)
+                    )
+                else:
+                    # return followed => user followed BY => user AS followed role
+                    stmt = (
+                        select(Users)
+                        .where(following_table.c.followed_id == Users.id)
+                        .limit(limit)
+                        .offset(offset)
+                    )
+                result = await session.execute(stmt)
+                if not result:
+                    following_list = []
+                else:
+                    following_list = result.scalar().all()
+                    session.expunge(following_list)
 
         return following_list
 

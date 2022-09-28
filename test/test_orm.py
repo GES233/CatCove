@@ -24,9 +24,10 @@ sync_engine = create_engine(
 db_session = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=True)
 
 
-def init_db():
-    Base.metadata.drop_all(bind=sync_engine)
-    Base.metadata.create_all(bind=sync_engine)
+async def _init(engine):
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
 
 
 def sync_to_async(func):
@@ -34,5 +35,5 @@ def sync_to_async(func):
 
 
 class TestORM(object):
-
-    def test_init(self): return init_db()
+    def test_init(self):
+        return sync_to_async(_init(engine))

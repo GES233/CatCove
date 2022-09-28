@@ -37,7 +37,7 @@ async def fetch_cookie(request: Request) -> None:
             else:
                 # Query from Redis if have.
                 ...
-                
+
                 request.ctx.current_user = request.ctx.cookie_ser.payload
         else:
             request.ctx.current_user = None

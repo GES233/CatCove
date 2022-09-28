@@ -1,6 +1,7 @@
 from typing import List, Any
 from sqlalchemy.sql import select, update, or_, insert
 from sqlalchemy.orm import sessionmaker
+
 # from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import ServiceBase
@@ -41,13 +42,10 @@ class UserService(ServiceBase):
         query_id = id if id else self.user.id
 
         async with self.db_session() as session:
-            async with session.begin():
-                sql = select(Users).where(Users.id == query_id)
-                users = await session.execute(sql)
-                user = users.scalars().first()
-                session.expunge(user) if user else ...
-
-                # Save userposts, following table etc.
+            sql = select(Users).where(Users.id == query_id)
+            users = await session.execute(sql)
+            user = users.scalars().first()
+            session.expunge(user) if user else ...
 
         self.user = user
         return self.user
@@ -57,13 +55,12 @@ class UserService(ServiceBase):
         # Check expire firstly.
 
         async with self.db_session() as session:
-            async with session.begin():
-                sql = select(Users).where(Users.id == token["id"])
-                users = await session.execute(sql)
-                user: Users = users.scalars().first()
-                if not user:
-                    return False
-                session.expunge(user)
+            sql = select(Users).where(Users.id == token["id"])
+            users = await session.execute(sql)
+            user: Users = users.scalars().first()
+            if not user:
+                return False
+            session.expunge(user)
 
         if not user:
             return False
@@ -97,17 +94,16 @@ class UserService(ServiceBase):
     async def check_common_user(self, nickname: str, email: str) -> bool:
 
         async with self.db_session() as session:
-            async with session.begin():
-                sql = select(Users).where(
-                    or_(
-                        Users.nickname == nickname,
-                        Users.email == nickname,
-                        Users.email == email,
-                    )
+            sql = select(Users).where(
+                or_(
+                    Users.nickname == nickname,
+                    Users.email == nickname,
+                    Users.email == email,
                 )
-                users = await session.execute(sql)
-                user: Users | None = users.scalars().first()
-                session.expunge(user) if user else ...
+            )
+            users = await session.execute(sql)
+            user: Users | None = users.scalars().first()
+            session.expunge(user) if user else ...
 
         if user:
             self.user = user
@@ -145,17 +141,19 @@ class UserService(ServiceBase):
                 )
                 now_user: Users = result.scalars().first()
 
-                # Return None if not existed.
-                if not now_user:
-                    return False
-                now_user.status = status
+                if now_user:
+                    now_user.status = status
 
-                # Update.
-                await session.flush()
-                session.expunge(now_user)
+                    # Update.
+                    await session.flush()
+                    session.expunge(now_user)
 
-        self.user = now_user
-        return True
+        if now_user:
+            self.user = now_user
+            return True
+        else:
+            self.user = None
+            return False
 
     async def change_user_profile(self, **profile) -> bool:
         """Change user's profile.

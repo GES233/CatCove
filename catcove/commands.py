@@ -89,7 +89,7 @@ def upgrade_db(mode) -> None:
     # Set warning first.
     click.secho(
         "[WARNING] This command will running via alembic, and it will reshape your database.",
-        fg="red"
+        fg="red",
     )
     click.confirm("[CONFIRM]", abort=True)
     from alembic import command

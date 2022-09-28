@@ -147,7 +147,9 @@ class AuthService(ServiceBase):
         response.cookies[self.service_status["config"]["cookie"]]["path"] = "/"
         response.cookies[self.service_status["config"]["cookie"]]["httponly"] = True
         if remember:
-            response.cookies[self.service_status["config"]["cookie"]]["expires"] = self.exp
+            response.cookies[self.service_status["config"]["cookie"]][
+                "expires"
+            ] = self.exp
 
         return response
 

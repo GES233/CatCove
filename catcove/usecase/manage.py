@@ -1,8 +1,8 @@
 from . import ServiceBase
+
 # from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.sql import select, update, or_, table, values
-from bcrypt import gensalt, hashpw
+from sqlalchemy.sql import select, update
 
 from ..entities.tables.users import (
     Users,
@@ -30,19 +30,19 @@ class ManageService(ServiceBase):
         if not isinstance(self.user, Users):
             return False
         async with self.db_session() as session:
-            async with session.begin():
-                stmt_for_spectator = select(Spectator).where(
-                    Spectator.user_id == self.user.id
-                )
-                stmt_for_moderator = select(Moderator).where(
-                    Moderator.user_id == self.user.id
-                )
-                _as_spectator = await session.execute(stmt_for_spectator)
-                _as_spectator = _as_spectator.scalars().first()
-                session.expunge(_as_spectator) if _as_spectator else ...
-                _as_moderator = await session.execute(stmt_for_moderator)
-                _as_moderator = _as_moderator.scalars().first()
-                session.expunge(_as_moderator) if _as_spectator else ...
+            # async with session.begin():
+            stmt_for_spectator = select(Spectator).where(
+                Spectator.user_id == self.user.id
+            )
+            stmt_for_moderator = select(Moderator).where(
+                Moderator.user_id == self.user.id
+            )
+            _as_spectator = await session.execute(stmt_for_spectator)
+            _as_spectator = _as_spectator.scalars().first()
+            session.expunge(_as_spectator) if _as_spectator else ...
+            _as_moderator = await session.execute(stmt_for_moderator)
+            _as_moderator = _as_moderator.scalars().first()
+            session.expunge(_as_moderator) if _as_spectator else ...
 
         self.user_as_spectator = _as_spectator
         self.user_as_moderator = _as_moderator
@@ -54,27 +54,25 @@ class ManageService(ServiceBase):
             return None
         """ use `Service.get_user` before. """
 
-        _hashed_passwd = lambda x: hashpw(x.encode("utf-8"), gensalt(rounds=26))
-        hashed_passwd = _hashed_passwd(password)
-        spactator = Spectator(
-            user_id=self.user.id,
-            password=hashed_passwd,
-        )
-
         # Update role.
         async with self.db_session() as session:
             async with session.begin():
+                spactator = Spectator(
+                    user_id=self.user.id,
+                )
+                spactator.encrypt_passwd(password)
+
                 stmt = (
                     update(Users)
                     .where(Users.id == self.user.id)
                     .values({"role": "spactator"})
                 )
-                
+
                 session.add(spactator)
                 await session.execute(stmt)
                 await session.flush()
                 session.expunge(spactator)
-        
+
         return spactator
 
     async def be_moderator(self) -> Moderator | None:

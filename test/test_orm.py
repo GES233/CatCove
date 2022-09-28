@@ -35,5 +35,5 @@ def sync_to_async(func):
 
 
 class TestORM(object):
-
-    def test_init(self): return sync_to_async(_init(engine))
+    def test_init(self):
+        return sync_to_async(_init(engine))

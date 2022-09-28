@@ -37,20 +37,13 @@ class UserLoginView(HTTPMethodView):
             # Case: post from `/register`;`
             # Case: not updated value.
             return self.login_render(LoginForm())
-        
-        # Remember-me:
-        '''
-        if not form_data.get('remember'):
-            _remember = False
-        else:
-            _remember = True'''
 
         model: UserLoginModel = validate_login_form(
             LoginForm(
                 data={
                     "nickname": form_data.get("nickname"),
                     "password": form_data.get("password"),
-                    "remember": form_data.get('remember'),
+                    "remember": form_data.get("remember"),
                 }
             )
         )

@@ -54,7 +54,6 @@ class ManageService(ServiceBase):
             return None
         """ use `Service.get_user` before. """
 
-        # Update role.
         async with self.db_session() as session:
             async with session.begin():
                 spactator = Spectator(
@@ -80,4 +79,31 @@ class ManageService(ServiceBase):
             return None
         """ use `Service.get_user` before. """
 
-        ...
+        async with self.db_session() as session:
+            async with session.begin():
+                stmt_query = (
+                    select(Users.role)
+                    .where(Users.id == self.user.id)
+                )
+                stmt_update = (
+                    update(Users)
+                    .where(Users.id == self.user.id)
+                    .values({"role": "moderator"})
+                )
+
+                moderator = Moderator(
+                    user_id=self.user.id,
+                )
+
+                _query_result = await session.execute(stmt_query)
+                role = _query_result.scalars().first() if _query_result else None
+                if role != "spactator":
+                    await session.execute(stmt_update)
+                if role:
+                    session.add(moderator)
+                    await session.flush()
+                    session.expunge(moderator)
+                else:
+                    moderator = None
+
+        return moderator

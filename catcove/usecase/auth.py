@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from typing import Callable
 import jwt
 
-# from jose.jwe import encrypt, decrypt\
 from sanic.request import Request
 from sanic.response import HTTPResponse
 
@@ -50,6 +49,7 @@ class AuthService(ServiceBase):
             self.service_status["config"]["cookie"] = "UserMeta"
             self.token = self.cookie = None
 
+        # 以后肯定会变的。
         self.cookie_encrypt_func: Callable[[str], str] = lambda x: base64.b64encode(
             x.encode("utf-8")
         ).decode("latin1")
@@ -60,15 +60,18 @@ class AuthService(ServiceBase):
         self.token_decrypt_func = jwt.decode
         self.raw: str = ""
         self.payload: dict = {}
-        # payload["id"]: int
-        # payload["nickname"]: str
-        # >> Update when change.
-        # payload["status"]: str | Enum\
-        # >> Update when change.
-        # payload["role"]: str | Enum
-        # >> Update when change.
-        # payload["timezone"]: int | (-12, 12)
-        # payload["exp"]: float
+        """
+        Parameters in payload:
+
+        ```python
+        payload["id"]: int
+        payload["nickname"]: str  # Update when change.
+        payload["status"]: str  # Update when change.
+        payload["role"]: str  # Update when change.
+        payload["timezone"]: int  # range(-12, 12)
+        payload["exp"]: float
+        ```
+        """
 
     def gen_payload(self, user: Users, exp: timedelta | None = None) -> dict:
         # May need return as bool.
@@ -97,6 +100,8 @@ class AuthService(ServiceBase):
             self.cookie = self.cookie_encrypt_func(self.raw)
         else:
             """It will raise Error if not fetched key."""
+            if not sk:
+                raise Exception("Encrypt token need secret key.")
             # From payload.
             self.token = self.token_encrypt_func(
                 self.payload,
@@ -111,6 +116,8 @@ class AuthService(ServiceBase):
         try:
             if self.service_status["config"]["type"] == "token":
                 """It will raise Error if not fetched key."""
+                if pk == "":
+                    raise Exception("Encrypt token need secret key.")
                 self.payload = self.token_decrypt_func(self.token, pk, ["ES256"])
             else:
                 self.raw = self.cookie_decrypt_func(self.cookie)
@@ -122,14 +129,12 @@ class AuthService(ServiceBase):
         """raw -> payload"""
         if not self.raw:
             # Not encrypted.
-            ...
             return False
 
         _dict = eval(self.raw)
 
         if not isinstance(_dict, dict):
             # Not a dict.
-            ...
             return False
 
         self.payload = _dict

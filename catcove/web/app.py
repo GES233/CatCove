@@ -10,7 +10,7 @@ from .static import load_static
 
 
 def create_app() -> Sanic:
-    """Create a Sanic application to run."""
+    """Create a Sanic application to serving."""
     app = Sanic("Meow", env_prefix="APP_")
 
     register_configure(app)
@@ -29,6 +29,7 @@ def create_app() -> Sanic:
 
 
 def create_config_app() -> Sanic:
+    """Create a Sanic instance to set config."""
     try:
         app = Sanic.get_app("Meow")
         return app

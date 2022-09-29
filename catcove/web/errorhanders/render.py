@@ -8,7 +8,7 @@ from ...services.render import render_page_template
 
 
 class HTMLRendererWithStyle(HTMLRenderer):
-    """Sanic HTMLRender with Pico.css."""
+    """Rewrite Sanic's HTMLRenderer with `Pico.css`."""
 
     TRACEBACK_LINE_HTML = (
         "<details>"

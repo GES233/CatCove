@@ -10,9 +10,10 @@ from ...blueprints.api.helper import code, info
 def api_validator(wrapped):
     def decorated(func):
         @wraps(func)
+        # 你也不想你的函数的文档被装饰器的内容弄脏吧~
         async def decorated_function(request: Request, *args, **kwargs) -> HTTPResponse:
             try:
-                response = await func(request, *args, **kwargs)
+                response: HTTPResponse = await func(request, *args, **kwargs)
             except ValidationError as val_error:
                 api = APIServise()
 

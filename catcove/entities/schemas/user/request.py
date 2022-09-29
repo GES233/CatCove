@@ -6,8 +6,7 @@ class SignUpModel(BaseModel):
     email: EmailStr
     password: str
     confirm: str
-    auto_login: bool = False
-    # Alyways false if using API.
+    agree_policy: bool
 
     @validator("confirm")
     def passwd_match(cls, v, values, **kwargs):

@@ -33,7 +33,7 @@ class RegisterView(HTTPMethodView):
                 "email": form_data.get("email"),
                 "password": form_data.get("password"),
                 "confirm": form_data.get("confirm"),
-                "auto_login": form_data.get("auto_login"),
+                "agree_policy": form_data.get("agree_policy"),
             }
         )
         model: SignUpModel = check_signup_form(temp_form)
@@ -67,6 +67,7 @@ class RegisterView(HTTPMethodView):
             model.nickname, model.email, model.password
         )
 
+        """
         # Redirect.
         if model.auto_login == True:
             # Add cookie.
@@ -80,3 +81,13 @@ class RegisterView(HTTPMethodView):
         else:
             # Move the request.
             return redirect("/login")
+        """
+
+        # Add cookie.
+        cookie = AuthService(exp=timedelta(days=14))
+        cookie.gen_payload(newbie)
+        _ = cookie.dict_to_str()
+        _ = cookie.encrypt()
+        # Return to index.
+        response = redirect("/")
+        return cookie.set_cookie(response)

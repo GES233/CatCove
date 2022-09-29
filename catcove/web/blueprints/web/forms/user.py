@@ -21,6 +21,14 @@ class SignUpForm(Form):
             "autocomplete": "email",
         },
     )
+    invite_code = StringField(
+        "invite_code",
+        validators=[],  # Add DataRequired() in future.
+        render_kw={
+            "placeholder": "邀请码（暂时不限制注册）",
+            "disabled": True
+        }
+    )
     password = PasswordField(
         "password",
         validators=[DataRequired()],
@@ -37,7 +45,7 @@ class SignUpForm(Form):
             "aria-label": "确认密码",
         },
     )
-    auto_login = BooleanField(render_kw={"role": "switch", "checked": "checked"})
+    agree_policy = BooleanField(render_kw={"role": "switch", "checked": "checked"})
 
 
 def check_signup_form(form: SignUpForm) -> SignUpModel | SignUpForm:

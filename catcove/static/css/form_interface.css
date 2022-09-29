@@ -1,4 +1,5 @@
 /* Image in 2nd div */
+/* 用于登录/注册的界面，代码修改于Pico.css的官方文档。 */
 article div:nth-of-type(2) {
     background-color: #a63bd4;
     border-radius: 8px;

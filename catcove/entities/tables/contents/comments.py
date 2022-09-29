@@ -1,4 +1,5 @@
 from sqlalchemy.orm import declarative_mixin, declared_attr
+from sqlalchemy import event
 
 from .. import *
 
@@ -14,8 +15,8 @@ class CommentsBase(ContentMixin):
         return Column(Integer, ForeignKey("users.id"))
 
     # locate.
-    lgt = Column(Integer)
-    rgt = Column(Integer)
+    left = Column("lft", Integer)
+    right = Column("rgt", Integer)
     depth = Column(Integer)
 
     # Query:

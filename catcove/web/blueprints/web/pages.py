@@ -23,5 +23,12 @@ async def about(request: Request) -> HTTPResponse:
 @index_bp.route("/help")
 async def about(request: Request) -> HTTPResponse:
     return html(
-        render_page_template("markdown-demo.html", user=request.ctx.current_user)
+        render_page_template("markdown-demo.html", title="Help About Markdown", user=request.ctx.current_user)
+    )
+
+
+@index_bp.route("/use-policy")
+async def use_policy(request: Request) -> HTTPResponse:
+    return html(
+        render_page_template("use-policy.html", title="Read before signup", user=request.ctx.current_user)
     )

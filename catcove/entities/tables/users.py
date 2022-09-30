@@ -59,7 +59,7 @@ class Users(Base):
     """
     # role = "spectator"
     as_spectator = relationship("Spectator", uselist=False, back_populates="user")
-    as_moderator = relationship("Moderator", uselist=False, back_populates="user")
+    as_mediator = relationship("Mediator", uselist=False, back_populates="user")
     # maintainer in `tags`.
 
     """ Contents:
@@ -131,11 +131,12 @@ class Spectator(Base):
         return "<Spectator %s (uid for user:%s)>" % (self.id, self.user_id)
 
 
-class Moderator(Base):
-    __tablename__ = "moderator"
+class Mediator(Base):
+    # 其实真的叫「调停者」（mediators）也不错
+    __tablename__ = "mediators"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("Users", uselist=False, back_populates="as_moderator")
+    user = relationship("Users", uselist=False, back_populates="as_mediator")
 
     def __repr__(self) -> str:
-        return "<Moderator %s (uid for user:%s)>" % (self.id, self.user_id)
+        return "<Mediator %s (uid for user:%s)>" % (self.id, self.user_id)

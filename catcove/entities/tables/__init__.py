@@ -18,7 +18,7 @@ from .users import (
     Users,
     following_table,
     Spectator,
-    Moderator,
+    Mediator,
 )
 from .contents.posts import UserPosts, PostsUnderThread
 from .contents.threads import Threads

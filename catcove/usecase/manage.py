@@ -7,7 +7,7 @@ from sqlalchemy.sql import select, update
 
 from ..entities.tables.users import (
     Users,
-    Moderator,
+    Mediator,
     Spectator,
 )
 
@@ -24,7 +24,7 @@ class ManageService(ServiceBase):
         self.db_session = db_session
         self.user = user
         self.user_as_spectator: Spectator | None = None
-        self.user_as_moderator: Moderator | None = None
+        self.user_as_mediators: Mediator | None = None
         self.role = role
 
     async def get_role(self) -> bool:
@@ -35,18 +35,18 @@ class ManageService(ServiceBase):
             stmt_for_spectator = select(Spectator).where(
                 Spectator.user_id == self.user.id
             )
-            stmt_for_moderator = select(Moderator).where(
-                Moderator.user_id == self.user.id
+            stmt_for_mediators = select(Mediator).where(
+                Mediator.user_id == self.user.id
             )
             _as_spectator = await session.execute(stmt_for_spectator)
             _as_spectator = _as_spectator.scalars().first()
             session.expunge(_as_spectator) if _as_spectator else ...
-            _as_moderator = await session.execute(stmt_for_moderator)
-            _as_moderator = _as_moderator.scalars().first()
-            session.expunge(_as_moderator) if _as_spectator else ...
+            _as_mediators = await session.execute(stmt_for_mediators)
+            _as_mediators = _as_mediators.scalars().first()
+            session.expunge(_as_mediators) if _as_spectator else ...
 
         self.user_as_spectator = _as_spectator
-        self.user_as_moderator = _as_moderator
+        self.user_as_mediators = _as_mediators
 
         return True
 
@@ -75,7 +75,7 @@ class ManageService(ServiceBase):
 
         return spactator
 
-    async def be_moderator(self) -> Moderator | None:
+    async def be_mediators(self) -> Mediator | None:
         if not isinstance(self.user, Users):
             return None
         """ use `Service.get_user` before. """
@@ -89,10 +89,10 @@ class ManageService(ServiceBase):
                 stmt_update = (
                     update(Users)
                     .where(Users.id == self.user.id)
-                    .values({"role": "moderator"})
+                    .values({"role": "mediators"})
                 )
 
-                moderator = Moderator(
+                mediators = Mediator(
                     user_id=self.user.id,
                 )
 
@@ -101,26 +101,26 @@ class ManageService(ServiceBase):
                 if role != "spactator":
                     await session.execute(stmt_update)
                 if role:
-                    session.add(moderator)
+                    session.add(mediators)
                     await session.flush()
-                    session.expunge(moderator)
+                    session.expunge(mediators)
                 else:
-                    moderator = None
+                    mediators = None
 
-        return moderator
+        return mediators
     
     async def _check_role_in_session(self, session) -> Tuple:
         stmt_for_spectator = select(Spectator).where(
             Spectator.user_id == self.user.id
         )
-        stmt_for_moderator = select(Moderator).where(
-            Moderator.user_id == self.user.id
+        stmt_for_mediators = select(Mediator).where(
+            Mediator.user_id == self.user.id
         )
         _as_spectator = await session.execute(stmt_for_spectator)
         _as_spectator = _as_spectator.scalars().first()
-        _as_moderator = await session.execute(stmt_for_moderator)
-        _as_moderator = _as_moderator.scalars().first()
-        return _as_spectator, _as_moderator
+        _as_mediators = await session.execute(stmt_for_mediators)
+        _as_mediators = _as_mediators.scalars().first()
+        return _as_spectator, _as_mediators
     
     async def delist_spectator(self) -> bool:
         if not isinstance(self.user, Users):
@@ -128,10 +128,10 @@ class ManageService(ServiceBase):
         
         async with self.db_session() as session:
             async with session.begin():
-                spectator, moderator = self._check_role_in_session(session)
+                spectator, mediators = self._check_role_in_session(session)
 
-                if moderator:
-                    # Move role to `moderator`.
+                if mediators:
+                    # Move role to `mediators`.
                     ...
                 else:
                     # Move role to `user`.
@@ -140,13 +140,13 @@ class ManageService(ServiceBase):
                 # Remove spectator.
                 ...
     
-    async def delist_moderator(self) -> bool:
+    async def delist_mediators(self) -> bool:
         if not isinstance(self.user, Users):
             return None
         
         async with self.db_session() as session:
             async with session.begin():
-                spectator, moderator = self._check_role_in_session(session)
+                spectator, mediators = self._check_role_in_session(session)
 
                 if not spectator:
                     # Move role to `user`.

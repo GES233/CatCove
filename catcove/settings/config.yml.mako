@@ -6,4 +6,4 @@ ECC_PRIVATE_KEY: ${ecc_prk_path}
 ECC_PUBLIC_KEY: ${ecc_puk_path}
 
 # DATABASE
-${databases if databases else ""}
+${databases if databases else ""}${redis_uri__ if redis_uri__ else ""}

@@ -18,7 +18,7 @@ class ProConfig:
     # redis
     REDIS: bool = False
     REDIS_URI: str = ""
-    REDIS_ENCODING: str = ""
+    REDIS_ENCODING: str = "utf8"
 
     # connect
     KEEP_ALIVE_TIMEOUT: int = 6

@@ -5,3 +5,4 @@ __pycache__/
 .vscode/
 .VSCodeCounter/
 .pytest_cache/
+*job.db

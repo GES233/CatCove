@@ -32,4 +32,13 @@ def register_dependencies(app: Sanic) -> None:
     # Redis
     # ...
 
-    # ...
+    # Workers.
+    from apscheduler.schedulers.asyncio import AsyncIOScheduler
+    from .scheduler import scheduler as app_scheduler
+
+    @app.before_server_start
+    def setup_schedular(app: Sanic):
+        # Using Sanic app.
+        app.ctx.scheduler: AsyncIOScheduler = app_scheduler
+        # Add linstener.
+        app.ctx.scheduler.start()

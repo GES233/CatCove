@@ -1,3 +1,4 @@
+from datetime import datetime
 from sanic import Blueprint, Request
 from sanic.response import html, redirect, HTTPResponse
 from sanic.views import HTTPMethodView
@@ -18,12 +19,15 @@ auth_bp = Blueprint("auth")
 
 
 class UserLoginView(HTTPMethodView):
-    def login_render(self, form) -> HTTPResponse:
-        return html(render_page_template("account/login.html", role="Login", form=form))
+    def login_render(self, form, **kwargs) -> HTTPResponse:
+        return html(render_page_template("account/login.html", role="Login", form=form, **kwargs))
 
     async def get(self, request: Request) -> HTTPResponse:
         # Render
-        return self.login_render(LoginForm())
+        return self.login_render(
+            LoginForm(),
+            user=request.ctx.current_user,
+        )
 
     async def post(self, request: Request) -> HTTPResponse:
         # Submit -> POST
@@ -90,7 +94,10 @@ async def logout(request: Request) -> HTTPResponse:
     if not request.ctx.cookie_ser.cookie:
         return redirect("https://www.bilibili.com")
 
-    content = html(render_page_template("account/logout.html", title="Hope your back"))
+    content = html(render_page_template(
+        "account/logout.html",
+        title="Hope your back",
+    ))
     return request.ctx.cookie_ser.del_cookie(request, content)
 
 

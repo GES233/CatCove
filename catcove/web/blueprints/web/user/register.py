@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from sanic import Request
 from sanic.response import html, redirect, HTTPResponse
 from sanic.views import HTTPMethodView
@@ -13,19 +13,25 @@ from .....services.render import render_page_template
 
 
 class RegisterView(HTTPMethodView):
-    def signup_render(self, form) -> HTTPResponse:
+    def signup_render(self, form, **kwargs) -> HTTPResponse:
         return html(
-            render_page_template("account/signup.html", role="SignUp", form=form)
+            render_page_template("account/signup.html", role="SignUp", form=form, **kwargs)
         )
 
     async def get(self, request: Request) -> HTTPResponse:
-        return self.signup_render(SignUpForm())
+        return self.signup_render(
+            SignUpForm(),
+            user=request.ctx.current_user,
+        )
 
     async def post(self, request: Request) -> HTTPResponse:
         # Check form firstly.
         form_data = request.form
         if not form_data:
-            return self.signup_render(SignUpForm())
+            return self.signup_render(
+                SignUpForm(),
+            user=request.ctx.current_user,
+        )
 
         temp_form = SignUpForm(
             data={
@@ -38,7 +44,10 @@ class RegisterView(HTTPMethodView):
         )
         model: SignUpModel = check_signup_form(temp_form)
         if isinstance(model, SignUpForm):
-            return self.signup_render(model)
+            return self.signup_render(
+                model,
+                user=request.ctx.current_user,
+            )
 
         # Other check.
         # email, invitation code, etc.
@@ -56,11 +65,20 @@ class RegisterView(HTTPMethodView):
                 model.nickname == common_user.nickname
                 or model.nickname == common_user.email
             ):
-                return self.signup_render(common_nickname(temp_form))
+                return self.signup_render(
+                    common_nickname(temp_form),
+                    user=request.ctx.current_user,
+                )
             elif model.email == common_user.email:
-                return self.signup_render(common_email(temp_form))
+                return self.signup_render(
+                    common_email(temp_form),
+                    user=request.ctx.current_user,
+                )
             else:
-                return self.signup_render(SignUpForm())
+                return self.signup_render(
+                    SignUpForm(),
+                    user=request.ctx.current_user,
+                )
 
         # Insert.
         newbie: Users = await user_ser.create_user(

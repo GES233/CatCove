@@ -11,26 +11,18 @@ def register_services(app: Sanic) -> None:
     app.register_listener(setup_options, "before_server_start")
     app.register_middleware(add_cors_headers, "response")
 
-    # Render
+    # Render web content.
 
-    async def setup_templates(app: Sanic) -> None:
-        from pathlib import Path, PurePath
-        from jinja2 import Environment, FileSystemLoader
-
-        static_template_path = PurePath(
-            Path(__file__).cwd() / "catcove/web/blueprints/web/templates"
-        )
-
-        app.ctx.static_template_env = Environment(
-            loader=FileSystemLoader(static_template_path)
-        )
-
-        # Globlas functions:
-        # app.ctx.template_env.globals["..."] = ...
-
-        # - user check with cookie.
+    from .render import setup_templates
 
     app.register_listener(setup_templates, "before_server_start")
+
+
+    # Render Markdown to HTML.
+    from .markdown import setup_md_renderer
+    
+    app.register_listener(setup_md_renderer, "before_server_start")
+
 
     # Key
     from .security.crypto import register_key

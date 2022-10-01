@@ -39,10 +39,7 @@ class CollectSets(Base):
     ...
 
     def __repr__(self) -> str:
-        return "<CollectSets '{}' for user {}>".format(
-            self.name,
-            self.owner_id
-        )
+        return "<CollectSets '{}' for user {}>".format(self.name, self.owner_id)
 
 
 @declarative_mixin

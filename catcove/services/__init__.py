@@ -17,12 +17,10 @@ def register_services(app: Sanic) -> None:
 
     app.register_listener(setup_templates, "before_server_start")
 
-
     # Render Markdown to HTML.
     from .markdown import setup_md_renderer
-    
-    app.register_listener(setup_md_renderer, "before_server_start")
 
+    app.register_listener(setup_md_renderer, "before_server_start")
 
     # Key
     from .security.crypto import register_key

@@ -8,6 +8,7 @@ from ...blueprints.api.helper import code
 
 class CustomJSONRenderer(JSONRenderer):
     """Rewrite Sanic's JSONRenderer with custome format."""
+
     def render(self) -> HTTPResponse:
         return super().render()
 

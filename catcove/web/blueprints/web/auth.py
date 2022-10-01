@@ -60,7 +60,7 @@ class UserLoginView(HTTPMethodView):
             password_match = user_ser.user.check_passwd(model.password)
             if password_match == False:
                 return self.login_render(password_not_match(LoginForm()))
-        
+
         if user_ser.user.status == "blocked":
             ...
         elif user_ser.user.status == "deleted":

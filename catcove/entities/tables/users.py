@@ -126,7 +126,7 @@ class Spectator(Base):
 
     def check_passwd(self, password: str) -> bool:
         return True if checkpw(password.encode("utf-8"), self.password) else False
-    
+
     def __repr__(self) -> str:
         return "<Spectator %s (uid for user:%s)>" % (self.id, self.user_id)
 

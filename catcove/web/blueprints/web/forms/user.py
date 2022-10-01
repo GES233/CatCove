@@ -24,10 +24,7 @@ class SignUpForm(Form):
     invite_code = StringField(
         "invite_code",
         validators=[],  # Add DataRequired() in future.
-        render_kw={
-            "placeholder": "邀请码（暂时不限制注册）",
-            "disabled": True
-        }
+        render_kw={"placeholder": "邀请码（暂时不限制注册）", "disabled": True},
     )
     password = PasswordField(
         "password",

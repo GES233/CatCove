@@ -4,7 +4,7 @@ from pygments.lexers import get_lexer_by_name
 from pygments.formatters import html
 
 
-class HighlightRenderer(mistune.renderers.HTMLRenderer):
+class CodeHighlightRenderer(mistune.renderers.HTMLRenderer):
     def block_code(self, code, lang):
         try:
             lexer = get_lexer_by_name(lang, stripall=True)
@@ -16,6 +16,6 @@ class HighlightRenderer(mistune.renderers.HTMLRenderer):
 
 
 def code2html(content: str):
-    renderer = HighlightRenderer()
+    renderer = CodeHighlightRenderer()
     markdown = mistune.Markdown(renderer=renderer)
     return markdown(content)

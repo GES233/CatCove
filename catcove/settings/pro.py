@@ -15,5 +15,10 @@ class ProConfig:
     SQLALCHEMY_DATABASE_ENCODING: str = "utf8"
     SQLALCHEMY_DATABASE_ECHO: bool = False
 
+    # redis
+    REDIS: bool = False
+    REDIS_URI: str = ""
+    REDIS_ENCODING: str = ""
+
     # connect
     KEEP_ALIVE_TIMEOUT: int = 6

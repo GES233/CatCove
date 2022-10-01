@@ -1,4 +1,4 @@
-...
+import aioredis
 
 # Load application's path to package
 import sys
@@ -12,4 +12,7 @@ from catcove.web.app import create_config_app
 
 app = create_config_app()
 
-kv_session = ...
+redis = aioredis.from_url(
+    url=app.config.REDIS_URI,
+    encoding=app.config.REDIS_ENCODING,
+)

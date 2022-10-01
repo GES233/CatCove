@@ -14,7 +14,7 @@ def register_dependencies(app: Sanic) -> None:
     from .db import async_session
 
     @app.on_request
-    async def inject_session(request):
+    async def inject_db_session(request):
         request.ctx.db_session = async_session
 
         # 将变量设为「全局」可用的
@@ -30,7 +30,12 @@ def register_dependencies(app: Sanic) -> None:
             # await request.ctx.db_session.close()
 
     # Redis
-    # ...
+    if app.config.REDIS == True:
+        from .cache import redis
+
+        @app.on_request
+        async def inject_redis_session(request):
+            request.ctx.redis_session = redis
 
     # Workers.
     from apscheduler.schedulers.asyncio import AsyncIOScheduler

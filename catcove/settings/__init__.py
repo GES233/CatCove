@@ -79,6 +79,16 @@ def set_database_uri(
     return f"{dialect}+{driver}://{username}:{password}@{host}:{port}/{path}"
 
 
+def set_redis_uri(
+    url_schemes: str, username: str, password: str, host: str, port: str, path: str,
+    socket_path: str | None = None
+) -> str:
+    if url_schemes == "redis" or "rediss":
+        return f"{url_schemes}://{username}:{password}@{host}:{port}/{path}"
+    elif url_schemes == "unix":
+        return f"{url_schemes}://{username}:{password}@/{socket_path}.sock?db={path}"
+
+
 def register_configure(app: Sanic) -> None:
 
     # Set mode from enviorment firstly.

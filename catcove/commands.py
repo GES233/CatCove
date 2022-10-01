@@ -22,9 +22,11 @@ def manage() -> None:
 
 
 @manage.command("init")
-@click.option("--db/--no-db", is_flag=True, default=True, help="DataBase settings.")
-@click.option("--uri", default=None, help="Use URI to connect the DB.")
-def set_instance(db, uri) -> None:
+@click.option("--db/--no-db", is_flag=True, default=True, help="SQL DataBase settings.")
+@click.option("--redis/--no-redis", is_flag=True, default=False, help="Redis settings.")
+@click.option("--db-uri", default=None, help="Use URI to connect the DB.")
+@click.option("--redis-uri", default=None, help="Use URI to connect the Redis.")
+def set_instance(db, redis, db_uri, redis_uri) -> None:
     """Installation the application."""
     click.secho("[INFO]    Welcome to use CatCove!", fg="yellow")
     try:
@@ -42,7 +44,7 @@ def set_instance(db, uri) -> None:
         click.echo("mysql/mariadb: aiopymysql")
         click.echo("postgresql: asyncpg")
 
-    if not uri:
+    if not db_uri:
         dialect = click.prompt(
             text="Please enter the type of Database",
             default="sqlite",
@@ -67,6 +69,8 @@ def set_instance(db, uri) -> None:
             )
 
     # Add redis here.
+    if not redis_uri:
+        ...
 
     _app = Sanic("__temprory_app")
     padding_instance(
@@ -74,8 +78,8 @@ def set_instance(db, uri) -> None:
         databases=None
         if db == False
         else "SQLALCHEMY_DATABASE_URI: {}".format(
-            uri
-            if uri
+            db_uri
+            if db_uri
             else set_database_uri(dialect, username, password, host, port, path)
         ),
     )

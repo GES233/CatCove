@@ -1,8 +1,13 @@
+# About python enviorment.
 venv/
-instance/
+
+# Some temprory file, file for editing, etc.
 __pycache__/
 *.pyc
 .vscode/
 .VSCodeCounter/
 .pytest_cache/
+
+# Can't let database in istance in Git.
+instance/
 *job.db

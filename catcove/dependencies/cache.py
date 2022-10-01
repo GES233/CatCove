@@ -15,4 +15,5 @@ app = create_config_app()
 redis = aioredis.from_url(
     url=app.config.REDIS_URI,
     encoding=app.config.REDIS_ENCODING,
+    decode_responses=True,
 )

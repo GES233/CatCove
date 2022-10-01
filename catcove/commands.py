@@ -78,14 +78,25 @@ def set_instance(db, redis, db_uri, redis_uri) -> None:
 
         if not redis_uri:
             url_schemes = click.prompt(
-                text="Please enter ",
+                text="Please enter the schemes of url",
                 default="redis",
                 type=click.Choice(["redis", "rediss", "unix"])
             )
-            if url_schemes == "unix":
-                ...
+            re_username = click.prompt(
+                text="Please enter your redis's username(ENTER whitespace if you not set password.)",
+            )
+            re_password = click.prompt("Now enter your password") if ' ' not in re_username else None
+            if ' ' in re_username:
+                re_username = None
+            if url_schemes != "unix":
+                # Host and port.
+                re_host = click.prompt(text="Enter the host", default="localhost")
+                re_port = click.prompt(text="And the port", default="6379")
+                re_path = None
             else:
-                ...
+                re_host = re_port = None
+                re_path = click.prompt("Enter your unix domain socket filename")
+            re_db = "0"
 
     _app = Sanic("__temprory_app")
     padding_instance(
@@ -99,10 +110,12 @@ def set_instance(db, redis, db_uri, redis_uri) -> None:
         ),
         redis_uri__=None
         if redis == False
-        else "REDIS_URI: {}\n".format(
+        else "REDIS_URI: {}".format(
             redis_uri
             if redis_uri
-            else set_redis_uri(url_schemes, ...)
+            else set_redis_uri(
+                url_schemes, re_username, re_password, re_host, re_port, re_db, re_path
+            )
         )
     )
 

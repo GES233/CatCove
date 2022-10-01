@@ -38,14 +38,17 @@ Put instance here to running.
 
 # == Configure the logger == #
 
+
 def error_linstener(event):
     ...
 
+
 # ==== Functions ==== #
 
+
 def addjob_in_app(
-    app: Sanic, func: Callable, job_id: str, name: str | None = None,
-    **kwargs) -> None:
+    app: Sanic, func: Callable, job_id: str, name: str | None = None, **kwargs
+) -> None:
     """Add job in Sanic env."""
     app.ctx.scheduler: AsyncIOScheduler = scheduler
     app.ctx.scheduler.add_job(

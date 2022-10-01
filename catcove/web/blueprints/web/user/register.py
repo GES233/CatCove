@@ -15,7 +15,9 @@ from .....services.render import render_page_template
 class RegisterView(HTTPMethodView):
     def signup_render(self, form, **kwargs) -> HTTPResponse:
         return html(
-            render_page_template("account/signup.html", role="SignUp", form=form, **kwargs)
+            render_page_template(
+                "account/signup.html", role="SignUp", form=form, **kwargs
+            )
         )
 
     async def get(self, request: Request) -> HTTPResponse:
@@ -30,8 +32,8 @@ class RegisterView(HTTPMethodView):
         if not form_data:
             return self.signup_render(
                 SignUpForm(),
-            user=request.ctx.current_user,
-        )
+                user=request.ctx.current_user,
+            )
 
         temp_form = SignUpForm(
             data={

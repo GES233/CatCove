@@ -1,19 +1,18 @@
+from json import dump
 import os
 import pytest
 import requests
 
 
 class TestAccess(object):
-    def init(self):
+
+    def test_index(self):
         # Run the application.
         from catcove import create_app
 
         os.environ["APP_ENV"] = "dev"
         app = create_app()
         app.run(port=6969)
-
-    def test_index(self):
-        self.init()
 
         # Return index.
         idx = requests.get("http://127.0.0.1:6969")
@@ -26,12 +25,43 @@ class TestAccess(object):
 
         assert api_idx.ok == True
 
-    def test_login(self):
-        self.init()
+        app.stop()
 
-        ...
+    def test_login(self):
+        # Run the application.
+        from catcove import create_app
+
+        os.environ["APP_ENV"] = "dev"
+        app = create_app()
+        app.run(port=6969)
+
+        login = requests.post(
+            "http://127.0.0.1/login",
+            ...
+        )
+
+        assert login.cookies.get("UserMeta")
+
+        app.stop()
 
     def test_api_login(self):
-        self.init()
+        # Run the application.
+        from catcove import create_app
 
-        ...
+        os.environ["APP_ENV"] = "dev"
+        app = create_app()
+        app.run(port=6969)
+
+        login = requests.post(
+            "http://127.0.0.1/api/v0.1/login",
+            data=dump(
+                {
+                    "nickname": "小地瓜",
+                    "password": "12345"
+                }
+            )
+        )
+
+        assert login.cookies.get("UserMeta")
+
+        app.stop()

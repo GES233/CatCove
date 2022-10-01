@@ -37,4 +37,6 @@ def create_config_app() -> Sanic:
         # The name must be same, some instruction will run this twice even third time.
         app = Sanic("Meow", env_prefix="APP_")
         register_configure(app)
+        register_dependencies(app)
+        register_services(app)
         return app

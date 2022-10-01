@@ -14,10 +14,12 @@ MARKDOWN_ROOT_PATH = Path(Path(__file__).cwd() / "catcove/static/file")
 @index_bp.route("/")
 async def index(request: Request) -> HTTPResponse:
 
-    return html(render_page_template(
-        "index.html",
-        user=request.ctx.current_user,
-    ))
+    return html(
+        render_page_template(
+            "index.html",
+            user=request.ctx.current_user,
+        )
+    )
 
 
 @index_bp.route("/about")

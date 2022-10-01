@@ -20,7 +20,11 @@ auth_bp = Blueprint("auth")
 
 class UserLoginView(HTTPMethodView):
     def login_render(self, form, **kwargs) -> HTTPResponse:
-        return html(render_page_template("account/login.html", role="Login", form=form, **kwargs))
+        return html(
+            render_page_template(
+                "account/login.html", role="Login", form=form, **kwargs
+            )
+        )
 
     async def get(self, request: Request) -> HTTPResponse:
         # Render
@@ -94,10 +98,12 @@ async def logout(request: Request) -> HTTPResponse:
     if not request.ctx.cookie_ser.cookie:
         return redirect("https://www.bilibili.com")
 
-    content = html(render_page_template(
-        "account/logout.html",
-        title="Hope your back",
-    ))
+    content = html(
+        render_page_template(
+            "account/logout.html",
+            title="Hope your back",
+        )
+    )
     return request.ctx.cookie_ser.del_cookie(request, content)
 
 

@@ -74,7 +74,7 @@ class TestUserService:
 
         _ = async_as_sync(self.ser.create_user("12345", "12345@zz.top", "123456"))
         # Add a role.
-        _ = async_as_sync(self.ser.get_role())
+        _ = async_as_sync(self.ser.change_user_profile(role="spectator"))
 
     def test_check_user(self):
         # Initialize first.
@@ -168,7 +168,7 @@ class TestUserService:
 
         user_in_db = async_as_sync(self.ser.get_user(1))
         assert user_in_db.role == "spactator"
-    
+
     def test_be_a_mediators(self):
         # Load user.
         user = self.get_user()

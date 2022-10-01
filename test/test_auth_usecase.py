@@ -16,17 +16,17 @@ engine = create_async_engine(
     future=True,
 )
 
-sync_engine = create_engine(
-    url="sqlite:///tinycat_test.db",  # Use async.
-    encoding="utf-8",
-    echo=True,
-)
-
 db_session = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=True)
 
 
 def async_as_sync(func):
     return asyncio.get_event_loop().run_until_complete(func)
+
+
+async def _init(engine):
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
 
 
 class TestAuthService(object):
@@ -35,13 +35,12 @@ class TestAuthService(object):
 
     def init_db(self):
         # Initilize
-        Base.metadata.drop_all(bind=sync_engine)
-        Base.metadata.create_all(bind=sync_engine)
+        async_as_sync(_init(engine))
 
         # Import.
         from catcove.usecase.users import UserService
 
-        usr = UserService(db_session())
+        usr = UserService(db_session)
         return async_as_sync(usr.create_user("123", "123@321.xyz", "123456"))
 
     def test_encrypt(self):
@@ -54,10 +53,9 @@ class TestAuthService(object):
         from catcove.web.app import create_config_app
 
         app = create_config_app()
-        from catcove.services.security.crypto import pri_key, pub_key
 
-        self.pri_key = pri_key
-        self.pub_key = pub_key
+        self.pri_key = app.ctx.ecc_pri
+        self.pub_key = app.ctx.ecc_pub
 
         payload = self.ser.gen_payload(user, timedelta(days=7))
         assert isinstance(payload, dict)
@@ -115,3 +113,5 @@ class TestAuthService(object):
         index_req = requests.get("http://127.0.0.1:8000")
         cookie = index_req.cookies["UserMeta"]
         assert isinstance(cookie, NoneType) == False
+
+        app.stop()

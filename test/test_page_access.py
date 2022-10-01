@@ -10,7 +10,7 @@ class TestAccess(object):
         # Run the application.
         from catcove import create_app
 
-        os.environ["APP_ENV"] = "dev"
+        os.environ["APP_ENV"] = "test"
         app = create_app()
         app.run(port=6969)
 
@@ -31,7 +31,7 @@ class TestAccess(object):
         # Run the application.
         from catcove import create_app
 
-        os.environ["APP_ENV"] = "dev"
+        os.environ["APP_ENV"] = "test"
         app = create_app()
         app.run(port=6969)
 
@@ -48,7 +48,7 @@ class TestAccess(object):
         # Run the application.
         from catcove import create_app
 
-        os.environ["APP_ENV"] = "dev"
+        os.environ["APP_ENV"] = "test"
         app = create_app()
         app.run(port=6969)
 

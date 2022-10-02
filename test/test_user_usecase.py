@@ -169,23 +169,23 @@ class TestUserService:
         user_in_db = async_as_sync(self.ser.get_user(1))
         assert user_in_db.role == "spactator"
 
-    def test_be_a_mediators(self):
+    def test_be_a_mediator(self):
         # Load user.
         user = self.get_user()
         m_ser1 = ManageService(db_session, user)
 
-        async_as_sync(m_ser1.be_mediators())
+        async_as_sync(m_ser1.be_mediator())
 
         user_in_db = async_as_sync(self.ser.get_user(1))
-        assert user_in_db.role == "mediators"
+        assert user_in_db.role == "mediator"
 
-        # spectator & mediators.
+        # spectator & mediator.
         user2 = async_as_sync(self.ser.create_user("123456", "123456@zz.top", "123456"))
 
         m_ser2 = ManageService(db_session, user2)
 
         async_as_sync(m_ser2.be_spectator("1234"))
-        async_as_sync(m_ser2.be_mediators())
+        async_as_sync(m_ser2.be_mediator())
 
         user_in_db = async_as_sync(self.ser.get_user(2))
         assert user_in_db.role == "spactator"

@@ -132,8 +132,8 @@ class Spectator(Base):
 
 
 class Mediator(Base):
-    # 其实真的叫「调停者」（mediators）也不错
-    __tablename__ = "mediators"
+    # 其实真的叫「调停者」（mediator）也不错
+    __tablename__ = "mediator"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("Users", uselist=False, back_populates="as_mediator")

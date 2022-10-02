@@ -162,16 +162,20 @@ def create_spectator(transformation) -> None:
     """Add `spectator`(aka admin)."""
     from .dependencies.db import async_session
     from .usecase.users import UserService
+    from .usecase.manage import ManageService
 
-    user_service = UserService(async_session())
+    user_service = UserService(async_session)
 
     if transformation == "apt":
         nickname_ = click.prompt("Please enter new spectator's nickname or email")
-        if nickname_:
-            ...
+        if not isinstance(eval(nickname_), int):
+            user = run_async(user_service.check_common_user(nickname_, ""))
         else:
             # Query from id.
-            ...
+            user = run_async(user_service.get_user(eval(nickname_)))
+        
+        if not user:
+            click.secho("[ERROR]   Not fetch user in database.", fg="red")
     elif transformation == "crt":
         # Create a new user.
         password = ""
@@ -186,18 +190,28 @@ def create_spectator(transformation) -> None:
                 "Please confirm new spectator's password", hide_input=True
             )
         common = run_async(user_service.check_common_user(nickname, email))
-        if common:  # common != False
+        if common == True:  # common != False
             click.secho(
                 "[ERROR]   Have common user, please check your nickname or email, or use `--appointment` instead.",
                 fg="red",
             )
         else:
-            _ = run_async(user_service.create_user(nickname, email, password))
-            _status = run_async(user_service.change_user_profile(is_spectator=True))
-            if _status == False:
-                click.secho("Some error happend", fg="red")
-            else:
-                click.secho("Add spectator success!", fg="green")
+            user = run_async(user_service.create_user(nickname, email, password))
+            
+    manage_service = ManageService(async_session, user)
+    
+    # Get current user's role firstly.
+    _ = run_async(manage_service.get_role())
+    if manage_service.user_as_spectator:
+        click.secho("[WARNING] Current user IS spectator now.", fg="yellow")
+    else:
+        _ = run_async(manage_service.be_spectator(
+            click.prompt(
+                text="Please enter password now",
+                hide_input=True,
+            )
+        ))
+        click.secho("[INFO]    Successfully now!", fg="green")
 
 
 @manage.command("run")

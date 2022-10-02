@@ -42,8 +42,8 @@ class UserService(ServiceBase):
         query_id = id if id else self.user.id
 
         async with self.db_session() as session:
-            sql = select(Users).where(Users.id == query_id)
-            users = await session.execute(sql)
+            stmt = select(Users).where(Users.id == query_id)
+            users = await session.execute(stmt)
             user = users.scalars().first()
             session.expunge(user) if user else ...
 
@@ -55,8 +55,8 @@ class UserService(ServiceBase):
         # Check expire firstly.
 
         async with self.db_session() as session:
-            sql = select(Users).where(Users.id == token["id"])
-            users = await session.execute(sql)
+            stmt = select(Users).where(Users.id == token["id"])
+            users = await session.execute(stmt)
             user: Users = users.scalars().first()
             if not user:
                 return False
@@ -94,14 +94,14 @@ class UserService(ServiceBase):
     async def check_common_user(self, nickname: str, email: str) -> bool:
 
         async with self.db_session() as session:
-            sql = select(Users).where(
+            stmt = select(Users).where(
                 or_(
                     Users.nickname == nickname,
                     Users.email == nickname,
                     Users.email == email,
                 )
             )
-            users = await session.execute(sql)
+            users = await session.execute(stmt)
             user: Users | None = users.scalars().first()
             session.expunge(user) if user else ...
 

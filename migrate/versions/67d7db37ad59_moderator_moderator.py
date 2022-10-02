@@ -24,7 +24,7 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_mediators_id'), 'mediator', ['id'], unique=False)
+    op.create_index(op.f('ix_mediator_id'), 'mediator', ['id'], unique=False)
     op.drop_index('ix_moderator_id', table_name='moderator')
     op.drop_table('moderator')
     # ### end Alembic commands ###
@@ -39,6 +39,6 @@ def downgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index('ix_moderator_id', 'moderator', ['id'], unique=False)
-    op.drop_index(op.f('ix_mediators_id'), table_name='mediators')
-    op.drop_table('mediators')
+    op.drop_index(op.f('ix_mediator_id'), table_name='mediator')
+    op.drop_table('mediator')
     # ### end Alembic commands ###

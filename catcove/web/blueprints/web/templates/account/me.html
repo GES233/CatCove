@@ -8,7 +8,7 @@
 {% block main %}
 <main>
     <article>
-        {%- if user -%}
+        {%- if db_user -%}
         <h4>{{ db_user.nickname }}{%- if db_user.username -%}&nbsp;<sub>@<code>{{ db_user.username }}</code></sbu>{%- endif -%}</h4>
         <div class="grid">
             <p>
@@ -21,14 +21,27 @@
             </p>
         </div>
         <div class="grid">
-            <p>性别：&nbsp;<small>{%- if db_user.gender -%}{{ db_user.gender }}{% else %}私密{%- endif -%}</small></p>
-            <p>生日：&nbsp;<small>{%- if db_user.birth -%}{{ db_user.birth }}{% else %}私密{%- endif -%}</small></p>
+            {%- if db_user.gender -%}<p>性别：&nbsp;<small>{{ db_user.gender }}</small></p>{%- endif -%}
+            {%- if db_user.birth -%}<p>生日：&nbsp;<small>{{ db_user.birth }}</small></p>{%- endif -%}
         </div>
         <div class="grid">
-            <p>个人简介：&nbsp;<small>{{ db_user.info }}</small></p>
+            {%- if db_user.info -%}<p>个人简介：&nbsp;<small>{{ db_user.info }}</small></p>{%- endif -%}
         </div>
+        <!--
+        <div class="profile-container">
+            <!- -这本身不会有什么，其他的CSS都是对其【内部元素】的控制。- ->
+            <div class="avatar-container"> <! --头像- ->
+                <img src="{{ db_user.avatar_link }}">
+            </div>
+            <div class="profile-info">
+                <p class="id"></p>
+                <p class="nickname"></p>
+            </div>
+        </div>
+        -->
         {% else %}
-        <p>请您<a href="/login">登录</a></p>
+        <h3>查无此人</h3>
+        <p>请您<a href="/login">登录</a>。</p>
         {%- endif -%}
     </article>
 </main>

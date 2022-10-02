@@ -4,6 +4,7 @@ from sanic.response import html, redirect, HTTPResponse
 from sanic.views import HTTPMethodView
 
 from .....entities.tables.users import Users
+from .....entities.schemas.user import UserProfile
 
 # from ..forms.user import ...
 
@@ -21,8 +22,10 @@ async def profile(request: Request) -> HTTPResponse:
     if db_user == False:
         # 401.
         ...
-
-    user_meta = user_ser.user
+        user_meta = None
+    else:
+        print({item.name: getattr(user_ser.user, item.name) for item in user_ser.user.__table__.columns})
+        user_meta = UserProfile(**{item.name: getattr(user_ser.user, item.name) for item in user_ser.user.__table__.columns})
 
     # Transform data from db to a model.
 

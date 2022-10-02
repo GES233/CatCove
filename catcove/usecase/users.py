@@ -58,9 +58,7 @@ class UserService(ServiceBase):
             stmt = select(Users).where(Users.id == token["id"])
             users = await session.execute(stmt)
             user: Users = users.scalars().first()
-            if not user:
-                return False
-            session.expunge(user)
+            session.expunge(user) if not user else ...
 
         if not user:
             return False
@@ -68,8 +66,8 @@ class UserService(ServiceBase):
         if (
             token["status"] == user.status
             and (
-                (user.is_spectator == True and token["role"] == "spectator")
-                or (user.is_spectator == False and token["role"] == "normal")
+                (user.role == "spectator" and token["role"] == "spectator")
+                or (user.role != "spectator" and token["role"] == "user")
             )
             and (user.nickname == token["nickname"])
         ):

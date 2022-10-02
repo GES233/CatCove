@@ -1,8 +1,8 @@
-from pydantic import BaseModel
-
-
-class UserAbstract(BaseModel):
-    id: int
-    nickname: str
-    status: str
-    # ...
+from .info import (
+    UserAbstract,
+    UserProfile,
+)
+from .request import (
+    SignUpModel,
+    UserLoginModel,
+)

@@ -1,4 +1,5 @@
 from typing import List, Any
+from pydantic import BaseModel
 from sqlalchemy.sql import select, update, or_, insert
 from sqlalchemy.orm import sessionmaker
 
@@ -261,3 +262,18 @@ class UserService(ServiceBase):
     async def disfollow_user(self, follower_id) -> bool:
         """AKA remove fans(this opration always exists in block)."""
         ...
+    
+    def add_avatar_link(self, instance: BaseModel) -> BaseModel | None:
+        if not isinstance(self.user, Users):
+            return None
+        
+        if not isinstance(self.user.avatar_id, str):
+            # Use default.
+            ...
+            avatar_id = "default.jpg"
+        else:
+            avatar_id = self.user.avatar_id
+
+        # Add link.
+        instance.avatar_link = "/avatar/{}".format(avatar_id)
+        return instance

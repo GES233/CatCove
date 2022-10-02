@@ -27,3 +27,7 @@ class DevConfig:
 
     # connect
     KEEP_ALIVE_TIMEOUT: int = 10
+
+    # file related
+    RAW_CONTENT_PATH: Path = Path(PRJ_PATH / "raw")
+    AVATAR_PATH: Path = Path(RAW_CONTENT_PATH / "avatar")

@@ -1,3 +1,6 @@
+from pathlib import Path
+from .dev import PRJ_PATH
+
 class ProConfig:
     # mode
     DEBUG: bool = False
@@ -22,3 +25,7 @@ class ProConfig:
 
     # connect
     KEEP_ALIVE_TIMEOUT: int = 6
+
+    # file related
+    RAW_CONTENT_PATH: Path = Path(PRJ_PATH / "raw")
+    AVATAR_PATH: Path = Path(RAW_CONTENT_PATH / "avatar")

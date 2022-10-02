@@ -24,10 +24,11 @@ def manage() -> None:
 @manage.command("init")
 @click.option("--db/--no-db", is_flag=True, default=True, help="Register SQL DataBase settings.")
 @click.option("--redis/--no-redis", is_flag=True, default=False, help="Register Redis settings.")
+@click.option("--raw/--no-raw", is_flag=True, default=False,
+            help="Set file path to store raw file automatically.")
 @click.option("--db-uri", default=None, help="Use URI to connect the DB.")
 @click.option("--redis-uri", default=None, help="Use URI to connect the Redis.")
-def set_instance(db, redis, db_uri, redis_uri) -> None:
-    print(f"{db}, {redis}, {db_uri}, {redis_uri}")
+def set_instance(db, redis, raw, db_uri, redis_uri) -> None:
     """Installation the application."""
     click.secho("[INFO]    Welcome to use CatCove!\n", fg="magenta")
     try:
@@ -98,6 +99,19 @@ def set_instance(db, redis, db_uri, redis_uri) -> None:
                 re_path = click.prompt("Enter your unix domain socket filename")
             re_db = "0"
 
+    if raw == True:
+        click.secho(
+            "[INFO]    Now we'll configurate the path to store some static file",
+            fg="blue"
+        )
+        enter_raw_path = click.prompt(text="Enter the COMPLETE path of raw content")
+        enter_avatar_path = click.prompt(
+            text="Enter the COMPLETE path of avater",
+            default=enter_raw_path,
+        )
+        if enter_avatar_path == enter_raw_path:
+            enter_avatar_path = Path(enter_raw_path)/"avatar".__str__()
+
     _app = Sanic("__temprory_app")
     padding_instance(
         _app,
@@ -116,7 +130,13 @@ def set_instance(db, redis, db_uri, redis_uri) -> None:
             else set_redis_uri(
                 url_schemes, re_username, re_password, re_host, re_port, re_db, re_path
             )
-        )
+        ),
+        raw_path=None
+        if raw == False
+        else "RAW_CONTENT_PATH: {}\n".format(enter_raw_path),
+        avatar_path=None
+        if raw == False
+        else "AVATAR_PATH: {}".format(enter_avatar_path),
     )
 
 

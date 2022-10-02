@@ -56,6 +56,15 @@ def padding_instance(app: Sanic, **other_settings) -> None:
 
     update_instance(app, config_yaml)
 
+    """ In load_static().
+    # Create raw.
+    raw_path = Path(app.config["RAW_CONTENT_PATH"])
+    avatar_path = Path(raw_path/"avatar")
+
+    if not raw_path.exists():raw_path.mkdir()
+    if not avatar_path.exists(): avatar_path.mkdir()
+    """
+
 
 def update_instance(app: Sanic, config_yaml: Path) -> None:
     # Read from it.

@@ -11,3 +11,5 @@ __pycache__/
 # Can't let database in istance in Git.
 instance/
 *job.db
+avatar/
+*raw/

@@ -41,6 +41,7 @@ class Users(Base):
         nullable=True,
         comment="username is ASCII only.",
     )
+    avatar_id = Column(String(512))
     email = Column(String(256), unique=True)
     password = Column(LargeBinary)
     gender = Column(String(2), nullable=True)

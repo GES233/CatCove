@@ -30,7 +30,7 @@ class UserLoginView(HTTPMethodView):
         # Render
         return self.login_render(
             LoginForm(),
-            user=request.ctx.current_user,
+            cookie_user=request.ctx.current_user,
         )
 
     async def post(self, request: Request) -> HTTPResponse:

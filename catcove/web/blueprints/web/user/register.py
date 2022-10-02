@@ -23,7 +23,7 @@ class RegisterView(HTTPMethodView):
     async def get(self, request: Request) -> HTTPResponse:
         return self.signup_render(
             SignUpForm(),
-            user=request.ctx.current_user,
+            cookie_user=request.ctx.current_user,
         )
 
     async def post(self, request: Request) -> HTTPResponse:
@@ -32,7 +32,7 @@ class RegisterView(HTTPMethodView):
         if not form_data:
             return self.signup_render(
                 SignUpForm(),
-                user=request.ctx.current_user,
+                cookie_user=request.ctx.current_user,
             )
 
         temp_form = SignUpForm(
@@ -48,7 +48,7 @@ class RegisterView(HTTPMethodView):
         if isinstance(model, SignUpForm):
             return self.signup_render(
                 model,
-                user=request.ctx.current_user,
+                cookie_user=request.ctx.current_user,
             )
 
         # Other check.
@@ -69,17 +69,17 @@ class RegisterView(HTTPMethodView):
             ):
                 return self.signup_render(
                     common_nickname(temp_form),
-                    user=request.ctx.current_user,
+                    cookie_user=request.ctx.current_user,
                 )
             elif model.email == common_user.email:
                 return self.signup_render(
                     common_email(temp_form),
-                    user=request.ctx.current_user,
+                    cookie_user=request.ctx.current_user,
                 )
             else:
                 return self.signup_render(
                     SignUpForm(),
-                    user=request.ctx.current_user,
+                    cookie_user=request.ctx.current_user,
                 )
 
         # Insert.

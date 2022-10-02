@@ -31,9 +31,9 @@
         <ul>
             <li>
             <div class="user-status">
-                {%- if user -%}
+                {%- if cookie_user -%}
                 <details role="list" dir="rtl"><!-- CSS need, if wanna a HTML5 env, remove it. -->
-                    <summary aria-haspopup="listbox" role="link">{{ user["nickname"] }}</summary>
+                    <summary aria-haspopup="listbox" role="link">{{ cookie_user["nickname"] }}</summary>
                     <ul>
                         <li><a href="/me">个人主页</a></li>
                         <li><a href="/logout">登出</a></li>

@@ -17,7 +17,7 @@ async def index(request: Request) -> HTTPResponse:
     return html(
         render_page_template(
             "index.html",
-            user=request.ctx.current_user,
+            cookie_user=request.ctx.current_user,
         )
     )
 
@@ -25,7 +25,7 @@ async def index(request: Request) -> HTTPResponse:
 @index_bp.route("/about")
 async def about(request: Request) -> HTTPResponse:
     return html(
-        # render_page_template("about.html", role="About", user=request.ctx.current_user)
+        # render_page_template("about.html", role="About", cookie_user=request.ctx.current_user)
         render_page_template(
             "content/raw_md_without_author.html",
             role="About",
@@ -33,7 +33,7 @@ async def about(request: Request) -> HTTPResponse:
                 Path(MARKDOWN_ROOT_PATH / "about.md").read_text("utf-8"),
                 request.app.ctx.post_renderer,
             ),
-            user=request.ctx.current_user,
+            cookie_user=request.ctx.current_user,
         )
     )
 
@@ -48,6 +48,6 @@ async def use_policy(request: Request) -> HTTPResponse:
                 Path(MARKDOWN_ROOT_PATH / "policy/newbie.md").read_text("utf-8"),
                 request.app.ctx.post_renderer,
             ),
-            user=request.ctx.current_user,
+            cookie_user=request.ctx.current_user,
         )
     )

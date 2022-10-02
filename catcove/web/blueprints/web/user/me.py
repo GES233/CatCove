@@ -15,23 +15,27 @@ from .....services.render import render_page_template
 
 async def profile(request: Request) -> HTTPResponse:
     user_ser: UserService = UserService(request.ctx.db_session)
-    auth_ser: AuthService = request.ctx.cookie_ser
 
     # Query current user.
     db_user = await user_ser.check_user_token(request.ctx.current_user)
     if db_user == False:
         # 401.
         ...
-        user_meta = None
+        user_profile = None
     else:
-        print({item.name: getattr(user_ser.user, item.name) for item in user_ser.user.__table__.columns})
-        user_meta = UserProfile(**{item.name: getattr(user_ser.user, item.name) for item in user_ser.user.__table__.columns})
-
-    # Transform data from db to a model.
+        # Transform data from db to a model.
+        user_profile = UserProfile(
+            **{
+                item.name: getattr(user_ser.user, item.name)
+                for item in user_ser.user.__table__.columns
+            }
+        )
 
     # Return data and render.
     return html(
         render_page_template(
-            "account/me.html", user=request.ctx.current_user, db_user=user_meta
+            "account/me.html",
+            cookie_user=request.ctx.current_user,
+            user=user_profile
         )
     )

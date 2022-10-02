@@ -13,3 +13,4 @@ instance/
 *job.db
 avatar/
 *raw/
+*raw.*

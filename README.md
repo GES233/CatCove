@@ -60,12 +60,13 @@ python server.py run --pro
 
 - [ ] ORM 的进一步解耦（理想情况： SQLAlchemy/Tortoise-orm 无缝替换）
   - [ ] 重写相关逻辑
-  - [ ] 确定数据库内容的协议
 - [x] 表单有「记住我」后能够设置的过期日期
-- [ ] 消息机制的引入
-  - [ ] APSchedule
-  - [ ] 类似于 Flask 的 `flash()` （No-JS）
-  - [ ] SSE （Server-sent events）的实现（需要JS）
+- [ ] 消息系统
+  - 后端
+    - [ ] APSchedule
+  - 前端
+    - [ ] 类似于 Flask 的 `flash()` （No-JS）
+    - [ ] SSE （Server-sent events）的实现（需要JS）
 - [ ] 简单的API
   - [x] 基于JWE的鉴权（测试已通过）
   - [ ] 文档
@@ -80,7 +81,7 @@ python server.py run --pro
   - [ ] 断点续传
 - [ ] 个人主页
   - [x] 基本资料
-  - [ ] 头像
+  - [x] 头像
   - [ ] 动态（基于UserPosts）
   - [ ] 账号冻结
   - [ ] 注销导出数据

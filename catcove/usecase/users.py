@@ -52,13 +52,16 @@ class UserService(ServiceBase):
 
     async def check_user_token(self, token: dict) -> bool:
 
+        if not token or "id" not in token:
+            self.user = None
+            return False
         # Check expire firstly.
 
         async with self.db_session() as session:
             stmt = select(Users).where(Users.id == token["id"])
             users = await session.execute(stmt)
             user: Users = users.scalars().first()
-            session.expunge(user) if not user else ...
+            session.expunge(user) if user else ...
 
         if not user:
             return False

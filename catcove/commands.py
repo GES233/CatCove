@@ -244,8 +244,6 @@ app = create_app()
 @click.option("--pro", "mode", flag_value="pro")
 def run(mode) -> None:
     """Run the application."""
-    from pprint import pprint
-    pprint([r for r in app.router.routes])
 
     if mode == "dev":
         os.environ["APP_ENV"] = "dev"

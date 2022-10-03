@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="cmn-Hans" data-theme="dark">
+<html lang="cmn-Hans" data-theme="light">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -41,6 +41,16 @@
                 </div>
             </li>
             -->
+            <li>
+            <details role="list" id="switcher">
+                <summary aria-haspopup="listbox" class="secondary">装扮</summary>
+                <ul>
+                    <li><a href="#" data-theme-switcher="auto">缺省</a></li>
+                    <li><a href="#" data-theme-switcher="light">亮版</a></li>
+                    <li><a href="#" data-theme-switcher="dark">暗版</a></li>
+                </ul>
+            </details>
+            </li>
             <li>
             <div class="user-status">
                 {%- if cookie_user -%}
@@ -87,5 +97,6 @@
             </ul>
         </footer>
         <!--<script src="/js/sse_client.js"></script>-->
+        <script src="../js/minimal-theme-switcher.js"></script>
     </body>
 </html>

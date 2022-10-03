@@ -247,13 +247,18 @@ def run(mode) -> None:
 
     if mode == "dev":
         os.environ["APP_ENV"] = "dev"
-        app.run(host="127.0.0.1", port=6969, debug=True, auto_reload=True)
+        app.run(host="127.0.0.1", port=6969, dev=True)
     elif mode == "demo":
         os.environ["APP_ENV"] = "dev"
-        app.run(host="0.0.0.0", port=80, dev=True)  # `route print`
+        app.make_coffee(
+            host="0.0.0.0",  # `route print`
+            port=80,
+            dev=True,
+            access_log=False,
+        )
     else:
         os.environ["APP_ENV"] = "pro"
-        app.run(
+        app.make_coffee(
             host="0.0.0.0",  # `route print`
             port=80,
             debug=False,

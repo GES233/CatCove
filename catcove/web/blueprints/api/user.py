@@ -1,6 +1,7 @@
 from sanic import Blueprint
 from sanic.request import Request
 from sanic.response import HTTPResponse, redirect
+from sanic_ext import openapi
 
 from ....usecase.users import UserService
 
@@ -8,6 +9,7 @@ user_bp = Blueprint("user", version=0.1)
 
 
 @user_bp.post("/signup")
+@openapi.summary("Create a new user.")
 async def register(request: Request) -> HTTPResponse:
 
     # Please check password at front.
@@ -23,13 +25,9 @@ async def register(request: Request) -> HTTPResponse:
     common_nickname = await user.check_common_user(nickname)
 
     if common_email == True:
-        cause = user.service_status["error"]
-
         # Construct and return error.
         ...
     elif common_nickname == True:
-        cause = user.service_status["error"]
-
         # Construct and return error.
         ...
 

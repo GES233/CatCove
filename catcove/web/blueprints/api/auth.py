@@ -1,6 +1,7 @@
 from sanic import Blueprint
 from sanic.request import Request
 from sanic.response import HTTPResponse, json
+from sanic_ext import openapi
 
 from ....usecase.users import UserService
 from ....usecase.auth import AuthService
@@ -12,6 +13,7 @@ auth_bp = Blueprint("auth", version=0.1)
 
 
 @auth_bp.post("/login")
+@openapi.summary("Login.")
 async def login(request: Request) -> HTTPResponse:
     api = APIServise()
 

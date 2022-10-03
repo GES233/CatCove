@@ -11,7 +11,7 @@ from .static import load_static
 
 def create_app() -> Sanic:
     """Create a Sanic application to serving."""
-    app = Sanic("Meow", env_prefix="APP_")
+    app = Sanic("Meow_", env_prefix="APP_", loads=lambda x: x)
 
     register_configure(app)
 
@@ -31,11 +31,11 @@ def create_app() -> Sanic:
 def create_config_app() -> Sanic:
     """Create a Sanic instance to set config."""
     try:
-        app = Sanic.get_app("Meow")
+        app = Sanic.get_app("Meow_")
         return app
     except SanicException:
         # The name must be same, some instruction will run this twice even third time.
-        app = Sanic("Meow", env_prefix="APP_")
+        app = Sanic("Meow_", env_prefix="APP_")
         register_configure(app)
         register_services(app)
         return app

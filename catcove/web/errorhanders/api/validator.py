@@ -24,7 +24,7 @@ def api_validator(wrapped):
                 return json(
                     api.base_resp(code=..., info=..., type=..., data={...}).json(),
                     status=...,
-                    dumps=lambda x: x,
+                    
                 )
             else:
                 return response

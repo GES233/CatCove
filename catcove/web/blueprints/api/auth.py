@@ -26,7 +26,6 @@ async def login(request: Request) -> HTTPResponse:
                 data="No JSON updated.",
             ),
             status=400,
-            dumps=lambda x: x,
         )
     data = request.json
     nickname = data["nickname"]
@@ -39,11 +38,11 @@ async def login(request: Request) -> HTTPResponse:
     user_exist = await user.check_common_user(nickname, None)
 
     if user_exist != True:
-        return json(body=api.base_resp(...), status=404, dumps=lambda x: x)
+        return json(body=api.base_resp(...), status=404)
 
     password_match = user.user.check_passwd(password)
     if password_match != True:
-        return json(body=api.base_resp(...), status=401, dumps=lambda x: x)
+        return json(body=api.base_resp(...), status=401)
 
     # Generate_token payload.
     token_payload = user.get_user_token()

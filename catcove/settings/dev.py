@@ -5,7 +5,7 @@ PRJ_PATH = Path(__file__).cwd()
 
 class DevConfig:
     # mode and setting
-    DEBUG: bool = True
+    # DEBUG: bool = True
     INSTANCE: bool = False
 
     # secret related

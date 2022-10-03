@@ -3,7 +3,7 @@ from .dev import PRJ_PATH
 
 class ProConfig:
     # mode
-    DEBUG: bool = False
+    # DEBUG: bool = False
     INSTANCE: bool = True
     ACCESS_LOG: bool = False
 

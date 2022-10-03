@@ -3,6 +3,7 @@ from pathlib import Path, PurePath
 
 
 def load_static(app: Sanic) -> None:
+    # DeprecationWarning: [DEPRECATION v23.3] Duplicate route names detected: Meow_.static. In the future, Sanic will enforce uniqueness in route naming.
     """Load static file to server."""
     prj_path = Path(__file__).cwd()
     static_path = PurePath(prj_path / "catcove/static")

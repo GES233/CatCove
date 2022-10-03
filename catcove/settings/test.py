@@ -1,3 +1,3 @@
 class TestConfig:
-    DEBUG: bool = False
+    # DEBUG: bool = False
     INSTANCE: bool = True

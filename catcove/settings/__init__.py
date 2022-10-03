@@ -111,7 +111,6 @@ def register_configure(app: Sanic) -> None:
     # `APP_ENV`
     if not app.config.get("ENV"):
         app_mode = "dev"
-        # It will be production if not set to development.
     else:
         app_mode = app.config.ENV
 

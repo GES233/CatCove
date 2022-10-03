@@ -18,5 +18,4 @@ async def index(request) -> HTTPResponse:
             type="message",
             data="Hello, API.",
         ).json(),
-        dumps=lambda x: x,
     )

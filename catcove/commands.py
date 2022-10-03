@@ -240,7 +240,14 @@ def create_spectator(transformation) -> None:
 @click.option("--pro", "mode", flag_value="pro")
 def run(mode) -> None:
     """Run the application."""
-    click.secho("[INFO]    The application is starting...", fg="green")
+    click.secho("[ERROR]   Not support yet, please use sanic's CLI.", fg="red")
+    return None
+    # Sanic will start processes using the spawn(opens new window) start method.
+    # This means that for every process/worker, the global scope of your
+    # application will be run on its own thread. The practical impact of
+    # this that if you do not run Sanic with the CLI, you will need to
+    # nest the execution code inside a block to make sure it only runs on __main__.
+    # click.secho("[INFO]    The application is starting...", fg="green")
 
     from .web.app import create_app
 
@@ -248,17 +255,17 @@ def run(mode) -> None:
         os.environ["APP_ENV"] = "dev"
 
         app = create_app()
-        app.run(host="127.0.0.1", port="6969", dev=True)
+        app.run(host="127.0.0.1", port=6969, debug=True, auto_reload=True)
     elif mode == "demo":
         os.environ["APP_ENV"] = "dev"
 
         app = create_app()
-        app.run(host="0.0.0.0", port="80", dev=True)  # `route print`
+        app.run(host="0.0.0.0", port=80, dev=True)  # `route print`
     else:
         app = create_app()
         app.run(
             host="0.0.0.0",  # `route print`
-            port="80",
+            port=80,
             debug=False,
             auto_reload=False,
             access_log=False,

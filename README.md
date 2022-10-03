@@ -19,7 +19,7 @@
 
 - Python
   - ... 一堆插件（见 `requirements.txt` ）
-- Pico.css（已经在 `/static/css` 里了）
+- Pico.css（已经在 `/css` 里了）
 - SimpleMDE/raw-text (Optional)
 
 ### 代码

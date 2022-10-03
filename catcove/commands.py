@@ -234,35 +234,27 @@ def create_spectator(transformation) -> None:
         click.secho("[INFO]    Successfully now!", fg="green")
 
 
+# Create an instance outside of function.
+from catcove.web.app import create_app
+app = create_app()
+
 @manage.command("run")
 @click.option("--dev", "mode", flag_value="dev")
 @click.option("--demo", "-d", "mode", flag_value="demo", default=True)
 @click.option("--pro", "mode", flag_value="pro")
 def run(mode) -> None:
     """Run the application."""
-    click.secho("[ERROR]   Not support yet, please use sanic's CLI.", fg="red")
-    return None
-    # Sanic will start processes using the spawn(opens new window) start method.
-    # This means that for every process/worker, the global scope of your
-    # application will be run on its own thread. The practical impact of
-    # this that if you do not run Sanic with the CLI, you will need to
-    # nest the execution code inside a block to make sure it only runs on __main__.
-    # click.secho("[INFO]    The application is starting...", fg="green")
-
-    from .web.app import create_app
+    from pprint import pprint
+    pprint([r for r in app.router.routes])
 
     if mode == "dev":
         os.environ["APP_ENV"] = "dev"
-
-        app = create_app()
         app.run(host="127.0.0.1", port=6969, debug=True, auto_reload=True)
     elif mode == "demo":
         os.environ["APP_ENV"] = "dev"
-
-        app = create_app()
         app.run(host="0.0.0.0", port=80, dev=True)  # `route print`
     else:
-        app = create_app()
+        os.environ["APP_ENV"] = "pro"
         app.run(
             host="0.0.0.0",  # `route print`
             port=80,

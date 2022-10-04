@@ -1,7 +1,7 @@
 # CatCove
 ![img](https://img.shields.io/badge/license-WTFPL-blue)
 
-基于话题的、轻量的SNS（目前进度10%）。
+基于话题的、轻量的SNS（目前进度15%）。
 
 ## 项目背景
 
@@ -9,7 +9,7 @@
 
 - 几个人或几十个人的后花园
 - 小圈子产出高质内容的站点
-- 国内的备案机制 + 可能存在的无法过审的内容
+- 国内的备案机制 + 站内存在可能无法过审的内容
 
 想法：*构建一个轻便而易于部署的网页程序，可以随时跑路再建的那种*
 
@@ -71,8 +71,9 @@ python server.py run --pro
 - [ ] ~~ORM 的进一步解耦（理想情况： SQLAlchemy/Tortoise-orm 无缝替换）~~
   - 声明式 => 命令式
 - [ ] 消息系统（需要缓存）
-  - [ ] APSchedule
+  - [x] APSchedule
   - [x] SSE （Server-sent events）的实现（需要JS）
+  - [ ] 业务部分
 - [ ] 文件上传以及下载功能
   - ...
 - [ ] 个人主页

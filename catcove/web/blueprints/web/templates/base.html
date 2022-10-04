@@ -29,18 +29,18 @@
             <li><small><a href="/about">关于</a></small></li>
         </ul>
         <ul>
-            <!--
             <li>
                 <div id="message">
                     <details role="list" dir="rtl">
-                    <summary aria-haspopup="listbox" role="link"><a href="#">消息</a></summary>
+                    <summary aria-haspopup="listbox" role="link"><a href="/message">消息</a></summary>
                     <ul>
-                        <p>请求拉取</p><button id="" type="" onclick="toggleInfoPush()">更换</button>
+                        <li><a href="/message/interaction" id="intrc">赞与评论</a></li>
+                        <li><a href="/message/mark" id="mark">订阅消息</a></li>
+                        <li><a href="/message/site" id="site">系统通知</a></li>
                     </ul>
                     </details>
                 </div>
             </li>
-            -->
             <li>
             <details role="list" id="switcher">
                 <summary aria-haspopup="listbox" class="secondary">装扮</summary>
@@ -96,7 +96,7 @@
                 </li>-->
             </ul>
         </footer>
-        <!--<script src="/js/sse_client.js"></script>-->
+        <script src="/js/sse_client.js"></script>
         <script src="../js/minimal-theme-switcher.js"></script>
     </body>
 </html>

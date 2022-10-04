@@ -1,49 +1,57 @@
 function sse() {
+    var status = "off";
     var source = new EventSource("/subscribe", { withCredentials: true });
 
     source.onopen = function (event) {
         console.log("[SSE]: SSE Started...");
+        console.log("Ping from client.");
+        status = "on"
     }
+    // For `event: site`
+    source.addEventListener("site", (event) => {
+        window.console.log(`${event.data} from server.`);
+    })
+    // Ping from client.
+    // Pong from server.
 
-    var disconn_num = 0
-    source.onerror = function (event) {
-        disconn_num += 1;
-        console.log("[SSE]: Disconnect to '/subcribe'.");
-        if (disconn_num > 5) {
-            console.log("[SSE]: Close SSE Connection.");
-            alert("SEE not enabled");
-            source.close();
-        }
-    }
-    source.onmessage = function (event) {
-        // Data.
-        data = event.data
-    }
+    // For `event: close`.
+    source.addEventListener("close", (event) => {
+        console.log("[SSE]: Close SSE...");
+        source.close();
+        status = "off"
+    })
+    // For `event: message`
+    source.addEventListener("message", (event) => {
+        const type = event.type;
+        window.console.log(`Data:\r\n${event.data}\r\nWith type: ${type}`);
+    })
 
     return source;
 }
 
-// 关于信息推送的部分
-/*
-<div id="message">
-    <details role="list" dir="rtl">
-    <summary aria-haspopup="listbox" role="link"><a href="#", onclick="toggleServer()"></a></summary>
-    </details>
-</div>
-*/
+
 var message_loc = document.getElementById("message");
 var source = sse();
 
-function toggleInfoPush() {
-    if (source.CLOSED) {
-        alert("服务器端未支持 Server-send event 。");
-    }
-    else {
-        // Set server's status to get have supperly.
-        var current_client_state = null
-        if (current_client_state == "手动获取") {
-        } else {
-            //
-        }
-    }
+const catCoveSSE = {
+    // Config.
+    _sseStatus: "off",
+    sourceUrl: "/subscribe",
+    abstractInfoTarget: "#message",
+    interactionTarget: "#intrc",
+    markTarget: "#mark",
+    siteMessageTarget: "#site",
+
+    // Init.
+    init () {},
+
+    // Get message from sse.
+    linstenFromPublisher() {
+        // Only a loop.
+    },
+
+    // Parse and render message.
+    updateMessage(type, item) {
+        var messageNode = document.querySelector(this.abstractInfoTarget);
+    },
 }

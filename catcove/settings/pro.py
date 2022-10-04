@@ -24,7 +24,7 @@ class ProConfig:
     REDIS_ENCODING: str = "utf8"
 
     # connect
-    KEEP_ALIVE_TIMEOUT: int = 6
+    KEEP_ALIVE_TIMEOUT: int = 15
 
     # file related
     RAW_CONTENT_PATH: Path = Path(PRJ_PATH / "raw")

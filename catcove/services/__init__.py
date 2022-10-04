@@ -26,3 +26,8 @@ def register_services(app: Sanic) -> None:
     from .security.crypto import register_key
 
     register_key(app)
+
+    # SSE
+    from .message import register_stream
+
+    register_stream(app)

@@ -79,7 +79,7 @@ python server.py run --pro
 - [ ] 个人主页
   - [ ] Custome CSS
   - [ ] 头像
-  - [ ] 动态（基于UserPosts）
+  - [ ] 动态（基于UserPosts） <-- Next step.
   - [ ] 账号冻结
     - [ ] 关于登录的业务逻辑
     - [ ] 关于其他部分的业务逻辑

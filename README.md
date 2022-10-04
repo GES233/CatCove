@@ -70,12 +70,9 @@ python server.py run --pro
 - [x] `Markdown` 支持
 - [ ] ~~ORM 的进一步解耦（理想情况： SQLAlchemy/Tortoise-orm 无缝替换）~~
   - 声明式 => 命令式
-- [ ] 消息系统
-  - 后端
-    - [ ] APSchedule
-  - 前端
-    - [ ] 类似于 Flask 的 `flash()` （No-JS）
-    - [ ] SSE （Server-sent events）的实现（需要JS）
+- [ ] 消息系统（需要缓存）
+  - [ ] APSchedule
+  - [x] SSE （Server-sent events）的实现（需要JS）
 - [ ] 文件上传以及下载功能
   - ...
 - [ ] 个人主页

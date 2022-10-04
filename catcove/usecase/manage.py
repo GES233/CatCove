@@ -18,9 +18,7 @@ class ManageService(ServiceBase):
         db_session: sessionmaker,
         user: Users,
         role: str = "",
-        status: dict | None = None,
     ) -> None:
-        super().__init__(status)
         self.db_session = db_session
         self.user = user
         self.user_as_spectator: Spectator | None = None

@@ -22,13 +22,7 @@ class AuthService(ServiceBase):
         ser_type: str | None = None,
         exp: timedelta = timedelta(days=7),
     ) -> None:
-        """ 
-            {
-                "config": {
-                    "type": "token/cookie/null", <-- ser_type
-                }
-            }
-        """
+        self.auth_type = {}
         # Put cookie/token here, plz.
         if token:
             # Token -> payload.

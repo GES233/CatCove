@@ -11,7 +11,7 @@ from .static import load_static
 
 def create_app() -> Sanic:
     """Create a Sanic application to serving."""
-    app = Sanic("Meow", env_prefix="APP_", loads=lambda x: x)
+    app = Sanic("Meow", env_prefix="APP_", dumps=lambda x: x)
 
     register_configure(app)
 

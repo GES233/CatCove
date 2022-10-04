@@ -9,7 +9,7 @@ from ....usecase.api import APIServise
 from .helper import code as api_code
 from .helper import info as api_info
 
-auth_bp = Blueprint("auth", version=0.1)
+auth_bp = Blueprint("api_auth", version=0.1)
 
 
 @auth_bp.post("/login")
@@ -40,11 +40,21 @@ async def login(request: Request) -> HTTPResponse:
     user_exist = await user.check_common_user(nickname, None)
 
     if user_exist != True:
-        return json(body=api.base_resp(...), status=404)
+        return json(body=api.base_resp(
+            api_code.AUTH_USER_NOT_EXISTED,
+            "User existed",
+            "message",
+            None,
+        ).json(), status=404)
 
     password_match = user.user.check_passwd(password)
     if password_match != True:
-        return json(body=api.base_resp(...), status=401)
+        return json(body=api.base_resp(
+            api_code.PASSWORD_NOT_CORRECT,
+            "Password incorrect",
+            "message",
+            None,
+        ).json(), status=401)
 
     # Generate_token payload.
     token_payload = user.get_user_token()
@@ -64,4 +74,11 @@ async def login(request: Request) -> HTTPResponse:
             ...
 
     # Return it.
-    return ...(token.token)
+    return json(
+        api.base_resp(
+            api_code.GET_TOKEN,
+            "Login success",
+            "Token",
+            token.token,
+        ).json()
+    )

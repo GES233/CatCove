@@ -6,8 +6,7 @@ from ..entities.schemas.api import BaseAPI, OriginContentModel
 
 
 class APIServise(ServiceBase):
-    def __init__(self, status: None = None) -> None:
-        super().__init__(status)
+    def __init__(self) -> None:
         self.api = BaseAPI
         self.org = OriginContentModel
 

@@ -61,7 +61,6 @@ async def login(request: Request) -> HTTPResponse:
         _ = token.encrypt()
         if _ == False:
             # Return error.
-            cause = token.service_status["error"]
             ...
 
     # Return it.

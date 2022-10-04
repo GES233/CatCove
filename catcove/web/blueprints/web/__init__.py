@@ -18,14 +18,14 @@ from ....usecase.auth import AuthService
 async def fetch_cookie(request: Request) -> None:
     request.ctx.cookie_ser = AuthService()
     if not request.cookies.get(
-        request.ctx.cookie_ser.service_status["config"]["cookie"]
+        request.ctx.cookie_ser.auth_type["cookie"]
     ):
         # Do nothing.
         request.ctx.current_user = None
     else:
         request.ctx.cookie_ser = AuthService(
             cookie=request.cookies.get(
-                request.ctx.cookie_ser.service_status["config"]["cookie"]
+                request.ctx.cookie_ser.auth_type["cookie"]
             )
         )
         de_cookie = request.ctx.cookie_ser.decrypt()

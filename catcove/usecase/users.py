@@ -16,7 +16,6 @@ class UserService(ServiceBase):
     def __init__(
         self,
         db_session: sessionmaker,
-        status: dict | None = None,
         user: Users | None = None,
         # User with others.
     ) -> None:
@@ -31,7 +30,6 @@ class UserService(ServiceBase):
         a.user = Users(id=2, nickname="2", ...)
         ```
         """
-        super().__init__(status)
         self.db_session = db_session
         if user:
             self.user: Users = user

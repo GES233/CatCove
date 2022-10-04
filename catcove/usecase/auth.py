@@ -22,7 +22,6 @@ class AuthService(ServiceBase):
         ser_type: str | None = None,
         exp: timedelta = timedelta(days=7),
     ) -> None:
-        super().__init__()
         """ 
             {
                 "config": {
@@ -33,20 +32,20 @@ class AuthService(ServiceBase):
         # Put cookie/token here, plz.
         if token:
             # Token -> payload.
-            self.service_status["config"]["type"] = "token"
+            self.auth_type["type"] = "token"
             self.token = token
             self.cookie = None
         elif cookie:
             # Cookie -> payload.
-            self.service_status["config"]["type"] = "cookie"
-            self.service_status["config"]["cookie"] = "UserMeta"
+            self.auth_type["type"] = "cookie"
+            self.auth_type["cookie"] = "UserMeta"
             self.token = None
             self.cookie = cookie
         else:
             # Generate token&cookie.
             self.exp = exp + datetime.utcnow()
-            self.service_status["config"]["type"] = "" if not ser_type else ser_type
-            self.service_status["config"]["cookie"] = "UserMeta"
+            self.auth_type["type"] = "" if not ser_type else ser_type
+            self.auth_type["cookie"] = "UserMeta"
             self.token = self.cookie = None
 
         # 以后肯定会变的。
@@ -93,7 +92,7 @@ class AuthService(ServiceBase):
             # Not have raw/payload.
             return False
 
-        if self.service_status["config"]["type"] != "token":
+        if self.auth_type["type"] != "token":
             if not self.raw:
                 _ = self.dict_to_str()
                 return False if _ == False else ...
@@ -114,7 +113,7 @@ class AuthService(ServiceBase):
     def decrypt(self, pk: str = "") -> bool:
         """From token/cookie to payload."""
         try:
-            if self.service_status["config"]["type"] == "token":
+            if self.auth_type["type"] == "token":
                 """It will raise Error if not fetched key."""
                 if pk == "":
                     raise Exception("Encrypt token need secret key.")
@@ -148,20 +147,20 @@ class AuthService(ServiceBase):
         return True
 
     def set_cookie(self, response: HTTPResponse, remember: bool = True) -> HTTPResponse:
-        response.cookies[self.service_status["config"]["cookie"]] = self.cookie
-        response.cookies[self.service_status["config"]["cookie"]]["path"] = "/"
-        response.cookies[self.service_status["config"]["cookie"]]["httponly"] = True
+        response.cookies[self.auth_type["cookie"]] = self.cookie
+        response.cookies[self.auth_type["cookie"]]["path"] = "/"
+        response.cookies[self.auth_type["cookie"]]["httponly"] = True
         if remember:
-            response.cookies[self.service_status["config"]["cookie"]][
+            response.cookies[self.auth_type["cookie"]][
                 "expires"
             ] = self.exp
 
         return response
 
     def del_cookie(self, request: Request, response: HTTPResponse) -> HTTPResponse:
-        if request.cookies.get(self.service_status["config"]["cookie"]):
-            response.cookies[self.service_status["config"]["cookie"]] = ""
-            response.cookies[self.service_status["config"]["cookie"]]["max-age"] = 0
+        if request.cookies.get(self.auth_type["cookie"]):
+            response.cookies[self.auth_type["cookie"]] = ""
+            response.cookies[self.auth_type["cookie"]]["max-age"] = 0
 
         return response
 

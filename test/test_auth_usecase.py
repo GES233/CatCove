@@ -40,7 +40,7 @@ class TestAuthService(object):
         # Import.
         from catcove.usecase.users import UserService
 
-        usr = UserService(db_session)
+        usr = UserService(db_session())
         return async_as_sync(usr.create_user("123", "123@321.xyz", "123456"))
 
     def test_encrypt(self):

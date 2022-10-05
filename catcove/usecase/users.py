@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy.sql import select, update, or_, insert
 from sqlalchemy.orm import sessionmaker
 
-# from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import ServiceBase
 from ..entities.tables.users import Users, following_table
@@ -15,7 +15,7 @@ class UserService(ServiceBase):
 
     def __init__(
         self,
-        db_session: sessionmaker,
+        db_session: AsyncSession,
         user: Users | None = None,
         # User with others.
     ) -> None:
@@ -40,11 +40,11 @@ class UserService(ServiceBase):
 
         query_id = id if id else self.user.id
 
-        async with self.db_session() as session:
+        async with self.db_session as conn:
             stmt = select(Users).where(Users.id == query_id)
-            users = await session.execute(stmt)
+            users = await conn.execute(stmt)
             user = users.scalars().first()
-            session.expunge(user) if user else ...
+            conn.expunge(user) if user else ...
 
         self.user = user
         return self.user
@@ -56,11 +56,11 @@ class UserService(ServiceBase):
             return False
         # Check expire firstly.
 
-        async with self.db_session() as session:
+        async with self.db_session as conn:
             stmt = select(Users).where(Users.id == token["id"])
-            users = await session.execute(stmt)
+            users = await conn.execute(stmt)
             user: Users = users.scalars().first()
-            session.expunge(user) if user else ...
+            conn.expunge(user) if user else ...
 
         if not user:
             return False
@@ -93,7 +93,7 @@ class UserService(ServiceBase):
 
     async def check_common_user(self, nickname: str, email: str) -> bool:
 
-        async with self.db_session() as session:
+        async with self.db_session as conn:
             stmt = select(Users).where(
                 or_(
                     Users.nickname == nickname,
@@ -101,9 +101,9 @@ class UserService(ServiceBase):
                     Users.email == email,
                 )
             )
-            users = await session.execute(stmt)
+            users = await conn.execute(stmt)
             user: Users | None = users.scalars().first()
-            session.expunge(user) if user else ...
+            conn.expunge(user) if user else ...
 
         if user:
             self.user = user
@@ -113,30 +113,30 @@ class UserService(ServiceBase):
 
     async def create_user(self, nickname: str, email: str, password: str) -> Users:
 
-        async with self.db_session() as session:
-            async with session.begin():
+        async with self.db_session as conn:
+            async with conn.begin():
                 newbie = Users(
                     nickname=nickname,
                     email=email,
                 )
                 newbie.encrypt_passwd(password)
-                session.add(newbie)
-                await session.flush()
-                session.expunge(newbie)
+                conn.add(newbie)
+                await conn.flush()
+                conn.expunge(newbie)
 
         self.user = newbie
         return self.user
 
     async def change_user_status(self, status: str) -> bool:
-        async with self.db_session() as session:
-            async with session.begin():
+        async with self.db_session as conn:
+            async with conn.begin():
                 """
                 sql = update(Users).\
                     where(Users.id == self.user.id).\
                     values(status=status)
                 await session.execute(sql)
                 """
-                result = await session.execute(
+                result = await conn.execute(
                     select(Users).where(Users.id == self.user.id)
                 )
                 now_user: Users = result.scalars().first()
@@ -145,8 +145,8 @@ class UserService(ServiceBase):
                     now_user.status = status
 
                     # Update.
-                    await session.flush()
-                    session.expunge(now_user)
+                    await conn.flush()
+                    conn.expunge(now_user)
 
         if now_user:
             self.user = now_user
@@ -171,10 +171,10 @@ class UserService(ServiceBase):
 
         data = {k: v for k, v in profile.items() if v is not None}
 
-        async with self.db_session() as session:
-            async with session.begin():
+        async with self.db_session as conn:
+            async with conn.begin():
                 stmt = update(Users).where(Users.id == self.user.id).values(data)
-                await session.execute(stmt)
+                await conn.execute(stmt)
 
         return True
 
@@ -185,22 +185,22 @@ class UserService(ServiceBase):
         if not (isinstance(self.user, Users) and self.user.id):
             return False
 
-        async with self.db_session() as session:
-            async with session.begin():
-                result = await session.execute(
+        async with self.db_session as conn:
+            async with conn.begin():
+                result = await conn.execute(
                     select(Users).where(Users.id == self.user.id)
                 )
                 user = result.scalars().first()
 
                 # Not in database.
                 if not user:
-                    await session.close()
+                    await conn.close()
                     return False
                 else:
                     user.encrypt_passwd(password)
-                    await session.flush()
+                    await conn.flush()
                     # Update password to `self.user`
-                    session.expunge(user)
+                    conn.expunge(user)
 
         self.user = user
         return True
@@ -224,8 +224,8 @@ class UserService(ServiceBase):
         if offset <= 0 and limit <= 0:
             return []
 
-        async with self.db_session() as session:
-            async with session.begin():
+        async with self.db_session as conn:
+            async with conn.begin():
                 if following == True:
                     # return following => user AS A follower role
                     stmt = (
@@ -242,12 +242,12 @@ class UserService(ServiceBase):
                         .limit(limit)
                         .offset(offset)
                     )
-                result = await session.execute(stmt)
+                result = await conn.execute(stmt)
                 if not result:
                     following_list = []
                 else:
                     following_list = result.scalar().all()
-                    session.expunge(following_list)
+                    conn.expunge(following_list)
 
         return following_list
 

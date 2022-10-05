@@ -42,7 +42,7 @@ async def _init(engine):
 class TestUserService:
     """Test user service without authentation and others."""
 
-    ser = UserService(db_session)
+    ser = UserService(db_session())
 
     def test_create_user(self):
         # Initialize first.
@@ -162,7 +162,7 @@ class TestUserService:
     def test_be_a_spectator(self):
         # Load user.
         user = self.get_user()
-        m_ser = ManageService(db_session, user)
+        m_ser = ManageService(db_session(), user)
 
         async_as_sync(m_ser.be_spectator("1234"))
 
@@ -172,7 +172,7 @@ class TestUserService:
     def test_be_a_mediator(self):
         # Load user.
         user = self.get_user()
-        m_ser1 = ManageService(db_session, user)
+        m_ser1 = ManageService(db_session(), user)
 
         async_as_sync(m_ser1.be_mediator())
 
@@ -182,7 +182,7 @@ class TestUserService:
         # spectator & mediator.
         user2 = async_as_sync(self.ser.create_user("123456", "123456@zz.top", "123456"))
 
-        m_ser2 = ManageService(db_session, user2)
+        m_ser2 = ManageService(db_session(), user2)
 
         async_as_sync(m_ser2.be_spectator("1234"))
         async_as_sync(m_ser2.be_mediator())

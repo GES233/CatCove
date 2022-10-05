@@ -1,8 +1,8 @@
 from typing import Tuple
 from . import ServiceBase
 
-# from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
+# from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import select, update
 
 from ..entities.tables.users import (
@@ -15,7 +15,7 @@ from ..entities.tables.users import (
 class ManageService(ServiceBase):
     def __init__(
         self,
-        db_session: sessionmaker,
+        db_session: AsyncSession,
         user: Users,
         role: str = "",
     ) -> None:
@@ -28,7 +28,7 @@ class ManageService(ServiceBase):
     async def get_role(self) -> bool:
         if not isinstance(self.user, Users):
             return False
-        async with self.db_session() as session:
+        async with self.db_session as conn:
             # async with session.begin():
             stmt_for_spectator = select(Spectator).where(
                 Spectator.user_id == self.user.id
@@ -36,12 +36,12 @@ class ManageService(ServiceBase):
             stmt_for_mediator = select(Mediator).where(
                 Mediator.user_id == self.user.id
             )
-            _as_spectator = await session.execute(stmt_for_spectator)
+            _as_spectator = await conn.execute(stmt_for_spectator)
             _as_spectator = _as_spectator.scalars().first()
-            session.expunge(_as_spectator) if _as_spectator else ...
-            _as_mediator = await session.execute(stmt_for_mediator)
+            conn.expunge(_as_spectator) if _as_spectator else ...
+            _as_mediator = await conn.execute(stmt_for_mediator)
             _as_mediator = _as_mediator.scalars().first()
-            session.expunge(_as_mediator) if _as_spectator else ...
+            conn.expunge(_as_mediator) if _as_spectator else ...
 
         self.user_as_spectator = _as_spectator
         self.user_as_mediator = _as_mediator
@@ -53,8 +53,8 @@ class ManageService(ServiceBase):
             return None
         """ use `Service.get_user` before. """
 
-        async with self.db_session() as session:
-            async with session.begin():
+        async with self.db_session as conn:
+            async with conn.begin():
                 spactator = Spectator(
                     user_id=self.user.id,
                 )
@@ -66,10 +66,10 @@ class ManageService(ServiceBase):
                     .values({"role": "spactator"})
                 )
 
-                session.add(spactator)
-                await session.execute(stmt)
-                await session.flush()
-                session.expunge(spactator)
+                conn.add(spactator)
+                await conn.execute(stmt)
+                await conn.flush()
+                conn.expunge(spactator)
 
         return spactator
 
@@ -78,8 +78,8 @@ class ManageService(ServiceBase):
             return None
         """ use `Service.get_user` before. """
 
-        async with self.db_session() as session:
-            async with session.begin():
+        async with self.db_session as conn:
+            async with conn.begin():
                 stmt_query = select(Users.role).where(Users.id == self.user.id)
                 stmt_update = (
                     update(Users)
@@ -91,14 +91,14 @@ class ManageService(ServiceBase):
                     user_id=self.user.id,
                 )
 
-                _query_result = await session.execute(stmt_query)
+                _query_result = await conn.execute(stmt_query)
                 role = _query_result.scalars().first() if _query_result else None
                 if role != "spactator":
-                    await session.execute(stmt_update)
+                    await conn.execute(stmt_update)
                 if role:
-                    session.add(mediator)
-                    await session.flush()
-                    session.expunge(mediator)
+                    conn.add(mediator)
+                    await conn.flush()
+                    conn.expunge(mediator)
                 else:
                     mediator = None
 
@@ -117,9 +117,9 @@ class ManageService(ServiceBase):
         if not isinstance(self.user, Users):
             return None
 
-        async with self.db_session() as session:
-            async with session.begin():
-                spectator, mediator = self._check_role_in_session(session)
+        async with self.db_session as conn:
+            async with conn.begin():
+                spectator, mediator = self._check_role_in_session(self.db_session)
 
                 if mediator:
                     # Move role to `mediator`.
@@ -135,9 +135,9 @@ class ManageService(ServiceBase):
         if not isinstance(self.user, Users):
             return None
 
-        async with self.db_session() as session:
-            async with session.begin():
-                spectator, mediator = self._check_role_in_session(session)
+        async with self.db_session as conn:
+            async with conn.begin():
+                spectator, mediator = self._check_role_in_session(self.db_session)
 
                 if not spectator:
                     # Move role to `user`.

@@ -70,8 +70,11 @@ python server.py run --pro
 - [x] `Markdown` 支持
 - [ ] ~~ORM 的进一步解耦（理想情况： SQLAlchemy/Tortoise-orm 无缝替换）~~
   - 声明式 => 命令式
-- [ ] 消息系统（需要缓存）
+- [ ] 定时任务
   - [x] APSchedule
+  - [ ] 业务逻辑层
+- [ ] 消息系统（需要缓存）
+  - [ ] `Sanic.singal`
   - [x] SSE （Server-sent events）的实现（需要JS）
   - [ ] 业务部分
 - [ ] 文件上传以及下载功能

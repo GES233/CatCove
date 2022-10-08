@@ -23,17 +23,23 @@ async def publisher_have_redis(request: Request):
         headers=sse_header,
         content_type="text/event-stream; charset=utf-8",
     )
-    current_user = request.ctx.current_user
-    # Fetch message push to user from redis.
-    ...
-
     # Push message to front-end.
     retry = request.app.ctx.KEEP_ALIVE_TIMEOUT * 100
-    ...
+
+    current_user = request.ctx.current_user
     await response.send(
         event(0, "site", retry, ["Pong"])
     )
-
+    if not current_user:
+        await response.send(
+            event(1, "close", retry, [
+                "You have not login yet.",
+                "so there's no info to you."
+            ])
+        )
+    else:
+        # Fetch message push to user from redis.
+        ...
 
 
 async def publisher_no_redis(request: Request):

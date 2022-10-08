@@ -1,5 +1,5 @@
 # CatCove
-![img](https://img.shields.io/badge/license-WTFPL-blue)
+![img](https://img.shields.io/badge/license-WTFPL-blue) ![![img](https://github.com/psf/black)](https://img.shields.io/badge/code%20style-black-000000.svg)
 
 基于话题的、轻量的SNS（目前进度15%）。
 
@@ -58,6 +58,20 @@ python server.py run --pro
 
 ## TODO
 
+### 制约点
+
+- [ ] 数据库
+  - [ ] 基础知识
+  - [ ] SQLAlchemy
+- [ ] 消息系统
+- [ ] 前端
+  - [ ] 社交类网站的布局
+  - [ ] JS 与 No-JS 的协调
+- [ ] API
+ - ...
+
+### Roadmap
+
 - [x] 可运行的运用
 - [x] 数据库（SQLAlchemy + drivers）
 - [x] 注册/登录
@@ -82,7 +96,7 @@ python server.py run --pro
 - [ ] 个人主页
   - [ ] Custome CSS
   - [ ] 头像
-  - [ ] 动态（基于UserPosts） <-- Next step.
+  - [ ] 动态（基于UserPosts）
   - [ ] 账号冻结
     - [ ] 关于登录的业务逻辑
     - [ ] 关于其他部分的业务逻辑

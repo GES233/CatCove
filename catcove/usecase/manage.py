@@ -3,6 +3,7 @@ from . import ServiceBase
 
 from sqlalchemy.ext.asyncio import AsyncSession
 # from sqlalchemy.orm import sessionmaker
+
 from sqlalchemy.sql import select, update
 
 from ..entities.tables.users import (
@@ -33,9 +34,7 @@ class ManageService(ServiceBase):
             stmt_for_spectator = select(Spectator).where(
                 Spectator.user_id == self.user.id
             )
-            stmt_for_mediator = select(Mediator).where(
-                Mediator.user_id == self.user.id
-            )
+            stmt_for_mediator = select(Mediator).where(Mediator.user_id == self.user.id)
             _as_spectator = await conn.execute(stmt_for_spectator)
             _as_spectator = _as_spectator.scalars().first()
             conn.expunge(_as_spectator) if _as_spectator else ...

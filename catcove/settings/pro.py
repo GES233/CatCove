@@ -1,6 +1,7 @@
 from pathlib import Path
 from .dev import PRJ_PATH
 
+
 class ProConfig:
     # mode
     # DEBUG: bool = False

@@ -260,11 +260,13 @@ class UserService(ServiceBase):
     async def disfollow_user(self, follower_id) -> bool:
         """AKA remove fans(this opration always exists in block)."""
         ...
-    
-    def add_avatar_link(self, instance: BaseModel, remote_path: str | None = None) -> BaseModel | None:
+
+    def add_avatar_link(
+        self, instance: BaseModel, remote_path: str | None = None
+    ) -> BaseModel | None:
         if not isinstance(self.user, Users):
             return None
-        
+
         if not isinstance(self.user.avatar_id, str):
             # Use default.
             ...
@@ -273,6 +275,9 @@ class UserService(ServiceBase):
             avatar_id = self.user.avatar_id
 
         # Add link.
-        instance.avatar_link: str = "/avatar/{}".format(avatar_id) if not remote_path \
+        instance.avatar_link: str = (
+            "/avatar/{}".format(avatar_id)
+            if not remote_path
             else "{}/{}".format(remote_path, avatar_id)
+        )
         return instance

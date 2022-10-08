@@ -34,8 +34,6 @@ async def profile(request: Request) -> HTTPResponse:
     # Return data and render.
     return html(
         render_page_template(
-            "account/me.html",
-            cookie_user=request.ctx.current_user,
-            user=user_profile
+            "account/me.html", cookie_user=request.ctx.current_user, user=user_profile
         )
     )

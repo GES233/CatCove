@@ -47,6 +47,4 @@ async def register(request: Request) -> HTTPResponse:
     ...
 
     # Return it.
-    return json(
-        model.json()
-    )
+    return json(model.json())

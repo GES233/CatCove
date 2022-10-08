@@ -17,16 +17,12 @@ from ....usecase.auth import AuthService
 @views.middleware("request")
 async def fetch_cookie(request: Request) -> None:
     request.ctx.cookie_ser = AuthService()
-    if not request.cookies.get(
-        request.ctx.cookie_ser.auth_type["cookie"]
-    ):
+    if not request.cookies.get(request.ctx.cookie_ser.auth_type["cookie"]):
         # Do nothing.
         request.ctx.current_user = None
     else:
         request.ctx.cookie_ser = AuthService(
-            cookie=request.cookies.get(
-                request.ctx.cookie_ser.auth_type["cookie"]
-            )
+            cookie=request.cookies.get(request.ctx.cookie_ser.auth_type["cookie"])
         )
         de_cookie = request.ctx.cookie_ser.decrypt()
         de__cookie = request.ctx.cookie_ser.str_to_dict()

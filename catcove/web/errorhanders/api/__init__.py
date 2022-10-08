@@ -23,7 +23,6 @@ class CustomJSONRenderer(JSONRenderer):
                 data={"description": output["description"]},
             ).json(),
             status=self.status,
-            
         )
 
     def full(self) -> HTTPResponse:
@@ -46,5 +45,4 @@ class CustomJSONRenderer(JSONRenderer):
                 },
             ).json(),
             status=self.status,
-            
         )

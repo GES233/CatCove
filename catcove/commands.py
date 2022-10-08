@@ -22,10 +22,18 @@ def manage() -> None:
 
 
 @manage.command("init")
-@click.option("--db/--no-db", is_flag=True, default=True, help="Register SQL DataBase settings.")
-@click.option("--redis/--no-redis", is_flag=True, default=False, help="Register Redis settings.")
-@click.option("--raw/--no-raw", is_flag=True, default=False,
-            help="Set file path to store raw file automatically.")
+@click.option(
+    "--db/--no-db", is_flag=True, default=True, help="Register SQL DataBase settings."
+)
+@click.option(
+    "--redis/--no-redis", is_flag=True, default=False, help="Register Redis settings."
+)
+@click.option(
+    "--raw/--no-raw",
+    is_flag=True,
+    default=False,
+    help="Set file path to store raw file automatically.",
+)
 @click.option("--db-uri", default=None, help="Use URI to connect the DB.")
 @click.option("--redis-uri", default=None, help="Use URI to connect the Redis.")
 def set_instance(db, redis, raw, db_uri, redis_uri) -> None:
@@ -81,13 +89,17 @@ def set_instance(db, redis, raw, db_uri, redis_uri) -> None:
             url_schemes = click.prompt(
                 text="Please enter the schemes of url",
                 default="redis",
-                type=click.Choice(["redis", "rediss", "unix"])
+                type=click.Choice(["redis", "rediss", "unix"]),
             )
             re_username = click.prompt(
                 text="Please enter your redis's username(ENTER whitespace if you not set password.)",
             )
-            re_password = click.prompt("Now enter your password") if ' ' not in re_username else None
-            if ' ' in re_username:
+            re_password = (
+                click.prompt("Now enter your password")
+                if " " not in re_username
+                else None
+            )
+            if " " in re_username:
                 re_username = None
             if url_schemes != "unix":
                 # Host and port.
@@ -102,7 +114,7 @@ def set_instance(db, redis, raw, db_uri, redis_uri) -> None:
     if raw == True:
         click.secho(
             "[INFO]    Now we'll configurate the path to store some static file",
-            fg="blue"
+            fg="blue",
         )
         enter_raw_path = click.prompt(text="Enter the COMPLETE path of raw content")
         enter_avatar_path = click.prompt(
@@ -110,7 +122,7 @@ def set_instance(db, redis, raw, db_uri, redis_uri) -> None:
             default=enter_raw_path,
         )
         if enter_avatar_path == enter_raw_path:
-            enter_avatar_path = Path(enter_raw_path)/"avatar".__str__()
+            enter_avatar_path = Path(enter_raw_path) / "avatar".__str__()
 
     _app = Sanic("__temprory_app")
     padding_instance(
@@ -193,7 +205,7 @@ def create_spectator(transformation) -> None:
         else:
             # Query from id.
             user = run_async(user_service.get_user(eval(nickname_)))
-        
+
         if not user:
             click.secho("[ERROR]   Not fetch user in database.", fg="red")
     elif transformation == "crt":
@@ -217,26 +229,30 @@ def create_spectator(transformation) -> None:
             )
         else:
             user = run_async(user_service.create_user(nickname, email, password))
-            
+
     manage_service = ManageService(async_session, user)
-    
+
     # Get current user's role firstly.
     _ = run_async(manage_service.get_role())
     if manage_service.user_as_spectator:
         click.secho("[WARNING] Current user IS spectator now.", fg="yellow")
     else:
-        _ = run_async(manage_service.be_spectator(
-            click.prompt(
-                text="Please enter password now",
-                hide_input=True,
+        _ = run_async(
+            manage_service.be_spectator(
+                click.prompt(
+                    text="Please enter password now",
+                    hide_input=True,
+                )
             )
-        ))
+        )
         click.secho("[INFO]    Successfully now!", fg="green")
 
 
 # Create an instance outside of function.
 from catcove.web.app import create_app
+
 app = create_app()
+
 
 @manage.command("run")
 @click.option("--dev", "mode", flag_value="dev")

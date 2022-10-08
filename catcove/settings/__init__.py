@@ -89,19 +89,26 @@ def set_database_uri(
 
 
 def set_redis_uri(
-    url_schemes: str, username: str | None, password: str | None, host: str, port: str, db: str,
-    path: str | None = None
+    url_schemes: str,
+    username: str | None,
+    password: str | None,
+    host: str,
+    port: str,
+    db: str,
+    path: str | None = None,
 ) -> str:
 
     if username:
         suffix = f"{username}:{password}@"
-    else: suffix = ""
+    else:
+        suffix = ""
 
     if url_schemes == "redis" or "rediss":
         return f"{url_schemes}://{suffix}{host}:{port}/{db}"
     elif url_schemes == "unix":
         return f"{url_schemes}://{suffix}/{path}.sock?db={db}"
-    else: return None
+    else:
+        return None
 
 
 def register_configure(app: Sanic) -> None:

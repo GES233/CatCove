@@ -20,7 +20,7 @@ def setup_md_renderer(app: Sanic) -> None:
     # custome_renderer = CatCovePostsRenderer()
     from .renderer import CustomeRenderer
 
-    app.ctx.post_renderer: Markdown = CatCoveMarkdownParser(
+    app.ctx.basic_renderer: Markdown = CatCoveMarkdownParser(
         renderer=CustomeRenderer(),
         plugins=[
             plugin_strikethrough,  # ~~delete~~
@@ -30,11 +30,6 @@ def setup_md_renderer(app: Sanic) -> None:
             plugin_url,  # av170001
             plugin_highlight,  # ==Highlight from Obsidian==
         ],
-    )
-
-    # Render code.
-    app.ctx.code_renderer: Markdown = create_markdown(
-        renderer=CustomeRenderer(),
     )
 
     # No `section` in comment.
@@ -50,5 +45,5 @@ def setup_md_renderer(app: Sanic) -> None:
     )
 
 
-def render_from_str(raw: str, instance: Markdown) -> str:
+def md_render(raw: str, instance: Markdown) -> str:
     return instance(raw)

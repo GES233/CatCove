@@ -1,12 +1,12 @@
 from datetime import datetime
 from sanic import Blueprint, Request
 
-from .pages import index_bp
+from .pages import index_bp, policy_bp
 from .auth import auth_bp
 from .user import user_bp
 
 """ Render with Jinja2. """
-views = Blueprint.group(index_bp, auth_bp, user_bp)
+views = Blueprint.group(index_bp, policy_bp, auth_bp, user_bp)
 
 # Add a middleware to parse the cookie.
 # And render the result.

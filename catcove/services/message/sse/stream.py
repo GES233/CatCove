@@ -21,7 +21,7 @@ sse_header: List[Header] = Header(
 async def publisher_have_redis(request: Request):
     response = await request.respond(
         headers=sse_header,
-        content_type="text/event-stream",
+        content_type="text/event-stream; charset=utf-8",
     )
     current_user = request.ctx.current_user
     # Fetch message push to user from redis.
@@ -39,7 +39,7 @@ async def publisher_have_redis(request: Request):
 async def publisher_no_redis(request: Request):
     response = await request.respond(
         headers=sse_header,
-        content_type="text/event-stream",
+        content_type="text/event-stream; charset=utf-8",
     )
     await response.send(
         event(0, "site", 3000, ["Pong"])

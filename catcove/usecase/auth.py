@@ -27,6 +27,7 @@ class AuthService(ServiceBase):
         if token:
             # Token -> payload.
             self.auth_type["type"] = "token"
+            self.auth_type["token"] = "Authorization"
             self.token = token
             self.cookie = None
         elif cookie:
@@ -40,6 +41,7 @@ class AuthService(ServiceBase):
             self.exp = exp + datetime.utcnow()
             self.auth_type["type"] = "" if not ser_type else ser_type
             self.auth_type["cookie"] = "UserMeta"
+            self.auth_type["token"] = "Authorization"
             self.token = self.cookie = None
 
         # 以后肯定会变的。

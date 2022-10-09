@@ -21,12 +21,10 @@ async def fetch_cookie(request: Request) -> None:
         # Do nothing.
         request.ctx.current_user = None
     else:
-        request.ctx.cookie_ser = AuthService(
-            cookie=request.cookies.get(request.ctx.cookie_ser.auth_type["cookie"])
-        )
+        request.ctx.cookie_ser.cookie = request.cookies.get(request.ctx.cookie_ser.auth_type["cookie"])
         de_cookie = request.ctx.cookie_ser.decrypt()
         de__cookie = request.ctx.cookie_ser.str_to_dict()
-        if de_cookie == True and de__cookie == True:
+        if (de_cookie == True) and (de__cookie == True):
             _payload = request.ctx.cookie_ser.payload
             if _payload["exp"] < datetime.timestamp(datetime.utcnow()):
                 request.ctx.current_user = None

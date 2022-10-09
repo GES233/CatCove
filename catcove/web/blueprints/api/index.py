@@ -1,4 +1,5 @@
 from sanic import Blueprint, json
+from sanic.request import Request
 from sanic.response import HTTPResponse
 from sanic_ext import openapi
 
@@ -12,7 +13,7 @@ index_bp = Blueprint("api_index", version=0.1)
 @index_bp.route("/")
 @openapi.summary("Index here")
 @openapi.description("Index page, `Hello world` for API.")
-async def index(request) -> HTTPResponse:
+async def index(request: Request) -> HTTPResponse:
     api = APIServise()
     return json(
         body=api.base_resp(

@@ -21,10 +21,10 @@ def load_static(app: Sanic) -> None:
 
     """Custome"""
     # main
-    raw_path = Path(app.config["RAW_CONTENT_PATH"])
+    raw_path = Path(app.config["ASSETS_CONTENT_PATH"])
     if not raw_path.exists():
         raw_path.mkdir()
-    app.static("/raw", raw_path)
+    app.static("/assets", raw_path)
     # avatar
     avatar_path = Path(app.config["AVATAR_PATH"])
     if not avatar_path.exists():

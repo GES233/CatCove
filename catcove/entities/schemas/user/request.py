@@ -6,7 +6,7 @@ class SignUpModel(BaseModel):
     email: EmailStr
     password: str
     confirm: str
-    agree_policy: bool
+    agree_policy: bool | None
 
     @validator("confirm")
     def passwd_match(cls, v, values, **kwargs):

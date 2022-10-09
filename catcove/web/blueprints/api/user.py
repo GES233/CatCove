@@ -1,3 +1,4 @@
+from datetime import timedelta
 from sanic import Blueprint
 from sanic.request import Request
 from sanic.response import HTTPResponse, json
@@ -5,6 +6,9 @@ from sanic_ext import openapi
 
 from ....entities.schemas.user import SignUpModel
 from ....usecase.users import UserService
+from ....usecase.auth import AuthService
+from ....usecase.api import APIServise
+from .helper import code, info
 
 user_bp = Blueprint("api_user", version=0.1)
 
@@ -12,12 +16,13 @@ user_bp = Blueprint("api_user", version=0.1)
 @user_bp.post("/signup")
 @openapi.summary("Create a new user.")
 async def register(request: Request) -> HTTPResponse:
+    api = APIServise()
 
     # Please check password at front-end.
     data = request.json
     nickname = data["nickname"]
     email = data["email"]
-    register_code = data["register_code"]
+    # register_code = data["register_code"]
     password = data["password"]
 
     model = SignUpModel(
@@ -27,24 +32,31 @@ async def register(request: Request) -> HTTPResponse:
 
     user = UserService(request.ctx.db_session)
 
-    common_email = await user.query_common_user(email)
-    common_nickname = await user.query_common_user(nickname)
+    common = await user.query_common_user(model.nickname, model.email)
 
-    if common_email == True:
-        # Construct and return error.
-        ...
-    elif common_nickname == True:
+    if common == True:
         # Construct and return error.
         ...
 
     # not common.
-    _ = await user.create_user(password)
+    _ = await user.create_user(
+        nickname=model.nickname,
+        email=model.email,
+        password=model.password,
+    )
 
     # Generate_token payload.
-    token_payload = user.get_user_token()
-
-    # Encrypt token, zip into cookie.
-    ...
+    token = AuthService(ser_type="token", exp=timedelta(days=30))
+    _ = token.gen_payload(user.user)
+    _ = token.dict_to_str()
+    _ = token.encrypt(request.app.ctx.ecc_pri)
 
     # Return it.
-    return json(model.json())
+    return json(
+        api.base_resp(
+            code.GET_TOKEN,
+            info.OK,
+            "Token",
+            token.token
+        ).json()
+    )

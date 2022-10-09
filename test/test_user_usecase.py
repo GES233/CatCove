@@ -50,7 +50,7 @@ class TestUserService:
 
         # Check an un-exitsted user.
         common_user = async_as_sync(
-            self.ser.check_common_user(nickname="12345", email="12345@zz.top")
+            self.ser.query_common_user(nickname="12345", email="12345@zz.top")
         )
 
         if common_user == False:
@@ -64,7 +64,7 @@ class TestUserService:
 
         # Requery.
         common_user = async_as_sync(
-            self.ser.check_common_user(nickname="None", email="12345@zz.top")
+            self.ser.query_common_user(nickname="None", email="12345@zz.top")
         )
         assert hasattr(self.ser.user, "id")
 
@@ -84,7 +84,7 @@ class TestUserService:
         _ = async_as_sync(self.ser.create_user("12345", "12345@zz.top", "123456"))
 
         common_user = async_as_sync(
-            self.ser.check_common_user(nickname="12345", email="12345@zz.top")
+            self.ser.query_common_user(nickname="12345", email="12345@zz.top")
         )
         if common_user == False:
             assert False
@@ -94,7 +94,7 @@ class TestUserService:
         login_reject = self.ser.user.check_passwd("12345")
 
         # Update password.
-        _ = async_as_sync(self.ser.update_password("12345"))
+        _ = async_as_sync(self.ser.change_password("12345"))
 
         # Re-check.
         login_reaccpect = self.ser.user.check_passwd("12345")

@@ -57,7 +57,7 @@ class RegisterView(HTTPMethodView):
         # Query.
         user_ser = UserService(db_session=request.ctx.db_session)
 
-        common = await user_ser.check_common_user(
+        common = await user_ser.query_common_user(
             nickname=model.nickname, email=model.email
         )
 

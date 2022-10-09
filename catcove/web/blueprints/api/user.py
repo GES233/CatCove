@@ -27,8 +27,8 @@ async def register(request: Request) -> HTTPResponse:
 
     user = UserService(request.ctx.db_session)
 
-    common_email = await user.check_common_user(email)
-    common_nickname = await user.check_common_user(nickname)
+    common_email = await user.query_common_user(email)
+    common_nickname = await user.query_common_user(nickname)
 
     if common_email == True:
         # Construct and return error.

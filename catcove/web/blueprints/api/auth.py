@@ -37,7 +37,7 @@ async def login(request: Request) -> HTTPResponse:
     # Using `request.ctx.token_ser` to replace later.
     token = AuthService()
 
-    user_exist = await user.check_common_user(nickname, None)
+    user_exist = await user.query_common_user(nickname, None)
 
     if user_exist != True:
         return json(

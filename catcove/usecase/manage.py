@@ -26,21 +26,33 @@ class ManageService(ServiceBase):
         self.user_as_mediator: Mediator | None = None
         self.role = role
 
+    async def _check_role_in_session(self, session) -> Tuple:
+        stmt_for_spectator = select(Spectator).where(Spectator.user_id == self.user.id)
+        stmt_for_mediator = select(Mediator).where(Mediator.user_id == self.user.id)
+        _as_spectator = await session.execute(stmt_for_spectator)
+        _as_spectator = _as_spectator.scalars().first() if _as_spectator else None
+        _as_mediator = await session.execute(stmt_for_mediator)
+        _as_mediator = _as_mediator.scalars().first() if _as_mediator else None
+        return _as_spectator, _as_mediator
+
     async def get_role(self) -> bool:
         if not isinstance(self.user, Users):
             return False
         async with self.db_session as conn:
             # async with session.begin():
+            """
             stmt_for_spectator = select(Spectator).where(
                 Spectator.user_id == self.user.id
             )
             stmt_for_mediator = select(Mediator).where(Mediator.user_id == self.user.id)
             _as_spectator = await conn.execute(stmt_for_spectator)
             _as_spectator = _as_spectator.scalars().first()
-            conn.expunge(_as_spectator) if _as_spectator else ...
             _as_mediator = await conn.execute(stmt_for_mediator)
             _as_mediator = _as_mediator.scalars().first()
-            conn.expunge(_as_mediator) if _as_spectator else ...
+            """
+            _as_spectator, _as_mediator = await self._check_role_in_session(conn)
+            conn.expunge(_as_spectator) if _as_spectator else ...
+            conn.expunge(_as_mediator) if _as_mediator else ...
 
         self.user_as_spectator = _as_spectator
         self.user_as_mediator = _as_mediator
@@ -102,15 +114,6 @@ class ManageService(ServiceBase):
                     mediator = None
 
         return mediator
-
-    async def _check_role_in_session(self, session) -> Tuple:
-        stmt_for_spectator = select(Spectator).where(Spectator.user_id == self.user.id)
-        stmt_for_mediator = select(Mediator).where(Mediator.user_id == self.user.id)
-        _as_spectator = await session.execute(stmt_for_spectator)
-        _as_spectator = _as_spectator.scalars().first()
-        _as_mediator = await session.execute(stmt_for_mediator)
-        _as_mediator = _as_mediator.scalars().first()
-        return _as_spectator, _as_mediator
 
     async def delist_spectator(self) -> bool:
         if not isinstance(self.user, Users):

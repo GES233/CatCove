@@ -201,7 +201,7 @@ def create_spectator(transformation) -> None:
     if transformation == "apt":
         nickname_ = click.prompt("Please enter new spectator's nickname or email")
         if not isinstance(eval(nickname_), int):
-            user = run_async(user_service.check_common_user(nickname_, ""))
+            user = run_async(user_service.query_common_user(nickname_, ""))
         else:
             # Query from id.
             user = run_async(user_service.get_user(eval(nickname_)))
@@ -221,7 +221,7 @@ def create_spectator(transformation) -> None:
             confirm = click.prompt(
                 "Please confirm new spectator's password", hide_input=True
             )
-        common = run_async(user_service.check_common_user(nickname, email))
+        common = run_async(user_service.query_common_user(nickname, email))
         if common == True:  # common != False
             click.secho(
                 "[ERROR]   Have common user, please check your nickname or email, or use `--appointment` instead.",

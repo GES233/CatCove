@@ -91,7 +91,7 @@ class UserService(ServiceBase):
             role=self.user.role,
         ).dict()
 
-    async def check_common_user(self, nickname: str, email: str) -> bool:
+    async def query_common_user(self, nickname: str, email: str) -> bool:
 
         async with self.db_session as conn:
             stmt = select(Users).where(
@@ -178,7 +178,7 @@ class UserService(ServiceBase):
 
         return True
 
-    async def update_password(self, password: str) -> bool:
+    async def change_password(self, password: str) -> bool:
         """Update user's password."""
 
         # No person in instance.
@@ -205,7 +205,7 @@ class UserService(ServiceBase):
         self.user = user
         return True
 
-    def get_user_post_permission(self) -> bool:
+    def get_user_status(self) -> bool:
         """Permission for all websites, every request which
         its method is `POST`.
         """
@@ -217,7 +217,7 @@ class UserService(ServiceBase):
             else True
         )
 
-    async def get_following(
+    async def get_follow_list(
         self, following: bool, offset: int, limit: int
     ) -> List[Any]:
         """Return User's following or fans list."""

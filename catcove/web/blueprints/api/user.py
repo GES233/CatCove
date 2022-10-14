@@ -60,3 +60,10 @@ async def register(request: Request) -> HTTPResponse:
             token.token
         ).json()
     )
+
+
+@user_bp.route("/user/<int: id>")
+@openapi.summary("Fetch user from id.")
+async def user(request: Request, id: int) -> HTTPResponse:
+    # 鉴权
+    return json({"User": id})

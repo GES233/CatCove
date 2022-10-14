@@ -248,24 +248,33 @@ def create_spectator(transformation) -> None:
         click.secho("[INFO]    Successfully now!", fg="green")
 
 
+@manage.command("set")
+@click.option("--dev", "mode", flag_value="dev")
+@click.option("--demo", "-d", "mode", flag_value="demo", default=True)
+@click.option("--pro", "mode", flag_value="pro")
+def set_mode(mode) -> None:
+    """Set the mode before run the application."""
+
+    os.environ["APP_ENV"] = mode
+
+    click.secho("[INFO]    Mode successfully setted!", fg="green")
+
+
 # Create an instance outside of function.
 from catcove.web.app import create_app
 
 app = create_app()
 
-
 @manage.command("run")
-@click.option("--dev", "mode", flag_value="dev")
-@click.option("--demo", "-d", "mode", flag_value="demo", default=True)
-@click.option("--pro", "mode", flag_value="pro")
-def run(mode) -> None:
-    """Run the application."""
-
+def run() -> None:
+    if not os.environ.get("APP_ENV"):
+        click.secho("[WARNING] The mode not seted yet, it will use `demo` mode.", fg="yellow")
+        os.environ["APP_ENV"] = "demo"
+    
+    mode = os.environ["APP_ENV"]
     if mode == "dev":
-        os.environ["APP_ENV"] = "dev"
         app.run(host="127.0.0.1", port=6969, dev=True)
     elif mode == "demo":
-        os.environ["APP_ENV"] = "dev"
         app.make_coffee(
             host="0.0.0.0",  # `route print`
             port=80,
@@ -273,7 +282,6 @@ def run(mode) -> None:
             access_log=False,
         )
     else:
-        os.environ["APP_ENV"] = "pro"
         app.make_coffee(
             host="0.0.0.0",  # `route print`
             port=80,

@@ -122,9 +122,9 @@ def register_configure(app: Sanic) -> None:
         app_mode = app.config.ENV
 
     # Use the default config firstly.
-    if app_mode == "dev" or app_mode == "development":
+    if app_mode in ["dev", "development", "demo"]:
         app.update_config(DevConfig)
-    elif app_mode == "test" or app_mode == "tesing":
+    elif app_mode in ["test", "tesing"]:
         app.update_config(DevConfig)  # Heritage seems not work.
         app.update_config(TestConfig)
     else:

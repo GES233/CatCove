@@ -3,7 +3,7 @@
 article div:nth-of-type(2) {
     background-color: #a63bd4;
     border-radius: 8px;
-    background-image: url("/static/img/61247421_p0.jpg"); /* author: Pixiv@はねこと */
+    background-image: url("/img/61247421_p0.jpg"); /* author: Pixiv@はねこと */
     background-position: top;
     background-size: cover;
 }

@@ -3,8 +3,12 @@ import asyncio
 from typing import Any, Callable
 import click
 from pathlib import Path
+from functools import partial
+
 from sanic import Sanic
 from sanic.exceptions import SanicException
+from sanic.worker.loader import AppLoader
+
 
 PROJECT_PATH = Path().cwd()
 APP_PATH = Path(PROJECT_PATH / "catcove")
@@ -248,45 +252,38 @@ def create_spectator(transformation) -> None:
         click.secho("[INFO]    Successfully now!", fg="green")
 
 
-@manage.command("set")
+from catcove.web.app import create_app
+
+@manage.command("run")
 @click.option("--dev", "mode", flag_value="dev")
 @click.option("--demo", "-d", "mode", flag_value="demo", default=True)
 @click.option("--pro", "mode", flag_value="pro")
-def set_mode(mode) -> None:
+def run(mode) -> None:
     """Set the mode before run the application."""
 
     os.environ["APP_ENV"] = mode
 
-    click.secho("[INFO]    Mode successfully setted!", fg="green")
+    loader = AppLoader(factory=partial(create_app, mode))
+    app = loader.load()
 
-
-# Create an instance outside of function.
-from catcove.web.app import create_app
-
-app = create_app()
-
-@manage.command("run")
-def run() -> None:
-    if not os.environ.get("APP_ENV"):
-        click.secho("[WARNING] The mode not seted yet, it will use `demo` mode.", fg="yellow")
-        os.environ["APP_ENV"] = "demo"
-    
-    mode = os.environ["APP_ENV"]
     if mode == "dev":
-        app.run(host="127.0.0.1", port=6969, dev=True)
+        app.prepare(host="127.0.0.1", port=6969, dev=True)
     elif mode == "demo":
-        app.make_coffee(
+        app.prepare(
             host="0.0.0.0",  # `route print`
             port=80,
-            dev=True,
-            access_log=False,
+            debug=True,
+            coffee=True,
         )
     else:
-        app.make_coffee(
+        app.prepare(
             host="0.0.0.0",  # `route print`
             port=80,
             debug=False,
             auto_reload=False,
             access_log=False,
             fast=True,
+            coffee=True,
         )
+
+    Sanic.serve(primary=app, app_loader=loader)

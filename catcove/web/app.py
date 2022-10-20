@@ -9,11 +9,11 @@ from .blueprints import register_routers
 from .static import load_static
 
 
-def create_app() -> Sanic:
+def create_app(mode: str | None = None) -> Sanic:
     """Create a Sanic application to serving."""
     app = Sanic("Meow", env_prefix="APP_", dumps=lambda x: x)
 
-    register_configure(app)
+    register_configure(app, mode)
 
     register_dependencies(app)
 

@@ -111,7 +111,7 @@ def set_redis_uri(
         return None
 
 
-def register_configure(app: Sanic) -> None:
+def register_configure(app: Sanic, mode: str | None = None) -> None:
 
     # Set mode from enviorment firstly.
     # **This Setting IS NOT used for running.**
@@ -120,6 +120,9 @@ def register_configure(app: Sanic) -> None:
         app_mode = "dev"
     else:
         app_mode = app.config.ENV
+    
+    if mode:
+        app_mode = mode
 
     # Use the default config firstly.
     if app_mode in ["dev", "development", "demo"]:

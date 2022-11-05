@@ -261,7 +261,8 @@ from catcove.web.app import create_app
 def run(mode) -> None:
     """Set the mode before run the application."""
 
-    os.environ["APP_ENV"] = mode
+    # Optional.
+    # os.environ["APP_ENV"] = mode
 
     loader = AppLoader(factory=partial(create_app, mode))
     app = loader.load()

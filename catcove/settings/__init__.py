@@ -4,7 +4,7 @@ import yaml
 import os
 
 from .dev import DevConfig
-from .test import TestConfig
+from .test import TestConfig as TestConfigAppend
 from .pro import ProConfig
 
 
@@ -114,7 +114,6 @@ def set_redis_uri(
 def register_configure(app: Sanic, mode: str | None = None) -> None:
 
     # Set mode from enviorment firstly.
-    # **This Setting IS NOT used for running.**
     # `APP_ENV`
     if not app.config.get("ENV"):
         app_mode = "dev"
@@ -128,8 +127,8 @@ def register_configure(app: Sanic, mode: str | None = None) -> None:
     if app_mode in ["dev", "development", "demo"]:
         app.update_config(DevConfig)
     elif app_mode in ["test", "tesing"]:
-        app.update_config(DevConfig)  # Heritage seems not work.
-        app.update_config(TestConfig)
+        app.update_config(DevConfig)
+        app.update_config(TestConfigAppend)
     else:
         app.update_config(ProConfig)
 
